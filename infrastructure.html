@@ -1,0 +1,1940 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kenya Water Resources Dashboard | Infrastructure Analysis</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.min.css" />
+    <style>
+        /* Using the exact same CSS variables and styles from index.html */
+        :root {
+            /* Colors - Professional Dashboard Theme */
+            --primary: #2c3e50;
+            --primary-light: #34495e;
+            --secondary: #3498db;
+            --accent: #1abc9c;
+            --success: #2ecc71;
+            --warning: #f39c12;
+            --danger: #e74c3c;
+            --info: #9b59b6;
+
+            --dark: #1a1a2e;
+            --light: #f8f9fa;
+            --gray: #6c757d;
+            --gray-light: #e9ecef;
+            --border: #dee2e6;
+
+            /* Backgrounds */
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8f9fa;
+            --bg-sidebar: #2c3e50;
+            --bg-card: #ffffff;
+
+            /* Typography */
+            --font-xs: 0.75rem;
+            --font-sm: 0.875rem;
+            --font-base: 0.9375rem;
+            --font-md: 1rem;
+            --font-lg: 1.125rem;
+            --font-xl: 1.25rem;
+            --font-2xl: 1.5rem;
+            --font-3xl: 1.75rem;
+
+            /* Spacing */
+            --space-1: 0.25rem;
+            --space-2: 0.5rem;
+            --space-3: 0.75rem;
+            --space-4: 1rem;
+            --space-5: 1.25rem;
+            --space-6: 1.5rem;
+            --space-7: 1.75rem;
+            --space-8: 2rem;
+            --space-9: 2.5rem;
+            --space-10: 3rem;
+
+            /* Design Elements */
+            --radius-sm: 0.25rem;
+            --radius: 0.375rem;
+            --radius-lg: 0.5rem;
+            --radius-xl: 0.75rem;
+
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+            --shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.1);
+
+            --transition: all 0.2s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            font-size: var(--font-base);
+            line-height: 1.5;
+            color: var(--dark);
+            background-color: var(--light);
+            overflow-x: hidden;
+        }
+
+        .dashboard-container {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            min-height: 100vh;
+        }
+
+        /* Sidebar - Identical to index.html */
+        .sidebar {
+            background: var(--bg-sidebar);
+            color: white;
+            padding: var(--space-6);
+            position: fixed;
+            width: 280px;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 1000;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            margin-bottom: var(--space-8);
+            padding-bottom: var(--space-4);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-header i {
+            font-size: var(--font-2xl);
+            color: var(--accent);
+        }
+
+        .sidebar-header h1 {
+            font-size: var(--font-lg);
+            font-weight: 600;
+            line-height: 1.2;
+        }
+
+        .sidebar-nav {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-2);
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            padding: var(--space-3) var(--space-4);
+            border-radius: var(--radius);
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .nav-item.active {
+            background: var(--secondary);
+            color: white;
+            font-weight: 500;
+        }
+
+        .nav-item i {
+            width: 20px;
+            text-align: center;
+        }
+
+        .sidebar-section {
+            margin-top: var(--space-8);
+        }
+
+        .sidebar-section h3 {
+            font-size: var(--font-sm);
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.6);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: var(--space-3);
+        }
+
+        /* Main Content */
+        .main-content {
+            grid-column: 2;
+            padding: var(--space-4);
+            background: var(--bg-secondary);
+        }
+
+        /* Top Bar */
+        .top-bar {
+            background: var(--bg-primary);
+            border-radius: var(--radius-lg);
+            padding: var(--space-4) var(--space-6);
+            margin-bottom: var(--space-4);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow);
+        }
+
+        .page-title {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+        }
+
+        .page-title h2 {
+            font-size: var(--font-xl);
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .page-title i {
+            color: var(--secondary);
+        }
+
+        .toolbar {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--space-4);
+            margin-bottom: var(--space-4);
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            padding: var(--space-5);
+            display: flex;
+            align-items: center;
+            gap: var(--space-4);
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            border-left: 4px solid transparent;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .stat-card.primary {
+            border-left-color: var(--primary);
+        }
+
+        .stat-card.success {
+            border-left-color: var(--success);
+        }
+
+        .stat-card.warning {
+            border-left-color: var(--warning);
+        }
+
+        .stat-card.info {
+            border-left-color: var(--info);
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: var(--font-xl);
+            color: white;
+        }
+
+        .stat-card.primary .stat-icon {
+            background: var(--primary);
+        }
+
+        .stat-card.success .stat-icon {
+            background: var(--success);
+        }
+
+        .stat-card.warning .stat-icon {
+            background: var(--warning);
+        }
+
+        .stat-card.info .stat-icon {
+            background: var(--info);
+        }
+
+        .stat-content h3 {
+            font-size: var(--font-2xl);
+            font-weight: 700;
+            margin-bottom: var(--space-1);
+        }
+
+        .stat-content p {
+            font-size: var(--font-sm);
+            color: var(--gray);
+        }
+
+        /* Infrastructure-specific styles */
+        .analysis-section {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            padding: var(--space-6);
+            margin-bottom: var(--space-4);
+            box-shadow: var(--shadow);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            margin-bottom: var(--space-6);
+            padding-bottom: var(--space-3);
+            border-bottom: 2px solid var(--gray-light);
+        }
+
+        .section-header i {
+            color: var(--secondary);
+            font-size: var(--font-xl);
+        }
+
+        .section-header h3 {
+            font-size: var(--font-lg);
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        /* Technology Grid */
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: var(--space-4);
+            margin-bottom: var(--space-6);
+        }
+
+        .tech-card {
+            background: var(--bg-primary);
+            border-radius: var(--radius);
+            padding: var(--space-4);
+            border: 1px solid var(--border);
+            transition: var(--transition);
+        }
+
+        .tech-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--secondary);
+        }
+
+        .tech-header {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            margin-bottom: var(--space-3);
+        }
+
+        .tech-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius);
+            background: var(--secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: var(--font-lg);
+        }
+
+        .tech-title {
+            font-size: var(--font-md);
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .tech-stats {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: var(--space-2);
+        }
+
+        .tech-count {
+            font-size: var(--font-2xl);
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .tech-percentage {
+            font-size: var(--font-sm);
+            font-weight: 600;
+            color: var(--success);
+            background: rgba(46, 204, 113, 0.1);
+            padding: var(--space-1) var(--space-2);
+            border-radius: var(--radius-sm);
+        }
+
+        .tech-desc {
+            font-size: var(--font-sm);
+            color: var(--gray);
+            line-height: 1.4;
+        }
+
+        /* Status Distribution */
+        .status-distribution {
+            background: var(--bg-primary);
+            border-radius: var(--radius);
+            padding: var(--space-4);
+            margin-bottom: var(--space-6);
+            border: 1px solid var(--border);
+        }
+
+        .status-bar {
+            height: 12px;
+            background: var(--gray-light);
+            border-radius: 6px;
+            margin: var(--space-3) 0;
+            overflow: hidden;
+        }
+
+        .status-fill {
+            height: 100%;
+            border-radius: 6px;
+            transition: width 0.8s ease;
+        }
+
+        .status-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-2);
+        }
+
+        .status-name {
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+            font-size: var(--font-sm);
+            font-weight: 500;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        /* Charts Container */
+        .charts-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: var(--space-4);
+            margin-bottom: var(--space-4);
+        }
+
+        .chart-card {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            padding: var(--space-4);
+            box-shadow: var(--shadow);
+            height: 350px;
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-3);
+        }
+
+        .chart-header h4 {
+            font-size: var(--font-md);
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .chart-container {
+            height: 280px;
+            position: relative;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            padding: var(--space-4);
+            box-shadow: var(--shadow);
+            overflow-x: auto;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: var(--font-sm);
+        }
+
+        .data-table th {
+            background: var(--bg-secondary);
+            padding: var(--space-3);
+            text-align: left;
+            font-weight: 600;
+            color: var(--primary);
+            border-bottom: 2px solid var(--border);
+        }
+
+        .data-table td {
+            padding: var(--space-3);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .data-table tbody tr:hover {
+            background: var(--gray-light);
+        }
+
+        /* Badge */
+        .badge {
+            display: inline-block;
+            padding: var(--space-1) var(--space-2);
+            border-radius: var(--radius-sm);
+            font-size: var(--font-xs);
+            font-weight: 600;
+        }
+
+        .badge-success {
+            background: rgba(46, 204, 113, 0.1);
+            color: var(--success);
+        }
+
+        .badge-warning {
+            background: rgba(243, 156, 18, 0.1);
+            color: var(--warning);
+        }
+
+        .badge-danger {
+            background: rgba(231, 76, 60, 0.1);
+            color: var(--danger);
+        }
+
+        /* Alert */
+        .alert {
+            padding: var(--space-4);
+            border-radius: var(--radius);
+            margin-bottom: var(--space-4);
+            border-left: 4px solid;
+        }
+
+        .alert-warning {
+            background: rgba(243, 156, 18, 0.05);
+            border-left-color: var(--warning);
+        }
+
+        .alert-header {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            margin-bottom: var(--space-2);
+        }
+
+        .alert-header i {
+            color: var(--warning);
+            font-size: var(--font-lg);
+        }
+
+        /* Button Styles */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--space-2);
+            padding: var(--space-2) var(--space-4);
+            border-radius: var(--radius);
+            font-size: var(--font-sm);
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2980b9;
+            transform: translateY(-1px);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--gray);
+        }
+
+        .btn-outline:hover {
+            border-color: var(--secondary);
+            color: var(--secondary);
+        }
+
+        /* Loading Overlay */
+        .loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.9);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            border-radius: var(--radius-lg);
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--gray-light);
+            border-top: 3px solid var(--secondary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: var(--space-3);
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .dashboard-container {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                position: relative;
+                width: 100%;
+                height: auto;
+            }
+
+            .main-content {
+                grid-column: 1;
+            }
+
+            .charts-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .tech-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .top-bar {
+                flex-direction: column;
+                gap: var(--space-3);
+                align-items: stretch;
+            }
+
+            .chart-card {
+                height: 300px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-secondary);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--gray);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar - Identical to index.html -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <i class="fas fa-tint"></i>
+                <div>
+                    <h1>Kenya Water Resources</h1>
+                    <p style="font-size: var(--font-xs); opacity: 0.7;">Dashboard v2.0</p>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="index.html" class="nav-item">
+                    <i class="fas fa-home"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="infrastructure.html" class="nav-item active">
+                    <i class="fas fa-network-wired"></i>
+                    <span>Infrastructure</span>
+                </a>
+                <a href="hydrogeology.html" class="nav-item">
+                    <i class="fas fa-layer-group"></i>
+                    <span>Hydrogeology</span>
+                </a>
+                <a href="analysis.html" class="nav-item">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Analysis</span>
+                </a>
+                <a href="reports.html" class="nav-item">
+                    <i class="fas fa-file-alt"></i>
+                    <span>Reports</span>
+                </a>
+                <a href="methodology.html" class="nav-item">
+                    <i class="fas fa-cogs"></i>
+                    <span>Methodology</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-section">
+                <h3>Infrastructure Stats</h3>
+                <div style="background: rgba(255,255,255,0.05); padding: var(--space-3); border-radius: var(--radius);">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: var(--space-2);">
+                        <span style="font-size: var(--font-xs); opacity: 0.7;">Total Points:</span>
+                        <span style="font-weight: 600;" id="sidebar-total">Loading...</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: var(--space-2);">
+                        <span style="font-size: var(--font-xs); opacity: 0.7;">Motorized:</span>
+                        <span style="font-weight: 600; color: var(--info);" id="sidebar-motorized">Loading...</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between;">
+                        <span style="font-size: var(--font-xs); opacity: 0.7;">Unknown Tech:</span>
+                        <span style="font-weight: 600;" id="sidebar-unknown">Loading...</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <h3>Data Sources</h3>
+                <div style="display: flex; flex-direction: column; gap: var(--space-2);">
+                    <div style="display: flex; align-items: center; gap: var(--space-2); font-size: var(--font-xs);">
+                        <i class="fas fa-check-circle" style="color: var(--success);"></i>
+                        <span>Evidence Action</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: var(--space-2); font-size: var(--font-xs);">
+                        <i class="fas fa-check-circle" style="color: var(--success);"></i>
+                        <span>Water Institute</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: var(--space-2); font-size: var(--font-xs);">
+                        <i class="fas fa-check-circle" style="color: var(--success);"></i>
+                        <span>NASA EarthData</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Top Bar -->
+            <div class="top-bar">
+                <div class="page-title">
+                    <i class="fas fa-network-wired"></i>
+                    <div>
+                        <h2>Infrastructure Analysis</h2>
+                        <p style="font-size: var(--font-sm); color: var(--gray); margin-top: 2px;">
+                            Detailed assessment of water infrastructure across Kenya
+                        </p>
+                    </div>
+                </div>
+
+                <div class="toolbar">
+                    <div style="margin-right: var(--space-4);">
+                        <p style="font-size: var(--font-xs); color: var(--gray);">Last updated:</p>
+                        <p style="font-size: var(--font-sm); font-weight: 500;" id="last-updated">Loading...</p>
+                    </div>
+                    <button class="btn btn-primary" id="refresh-data">
+                        <i class="fas fa-sync-alt"></i>
+                        Refresh Data
+                    </button>
+                </div>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="stats-grid">
+                <div class="stat-card primary">
+                    <div class="stat-icon">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="total-points">Loading...</h3>
+                        <p>Total Water Points</p>
+                    </div>
+                </div>
+
+                <div class="stat-card success">
+                    <div class="stat-icon">
+                        <i class="fas fa-gas-pump"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="motorized-count">Loading...</h3>
+                        <p>Motorized Systems</p>
+                    </div>
+                </div>
+
+                <div class="stat-card warning">
+                    <div class="stat-icon">
+                        <i class="fas fa-question-circle"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="unknown-tech">Loading...</h3>
+                        <p>Unknown Technology</p>
+                    </div>
+                </div>
+
+                <div class="stat-card info">
+                    <div class="stat-icon">
+                        <i class="fas fa-building"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="public-infra">Loading...</h3>
+                        <p>Public Infrastructure</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Technology Assessment Section -->
+            <div class="analysis-section">
+                <div class="section-header">
+                    <i class="fas fa-cogs"></i>
+                    <h3>Technology Assessment</h3>
+                </div>
+
+                <div class="alert alert-warning" id="documentation-alert" style="display: none;">
+                    <div class="alert-header">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <h4>Documentation Gap</h4>
+                    </div>
+                    <p style="font-size: var(--font-sm); color: var(--gray);" id="documentation-text">
+                        Loading...
+                    </p>
+                </div>
+
+                <div class="tech-grid" id="tech-grid">
+                    <!-- Tech cards will be populated dynamically -->
+                    <div class="tech-card" style="text-align: center; padding: var(--space-8);">
+                        <div class="loading-spinner"></div>
+                        <p style="margin-top: var(--space-3); color: var(--gray);">Loading technology data...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Status Distribution Section -->
+            <div class="analysis-section">
+                <div class="section-header">
+                    <i class="fas fa-chart-bar"></i>
+                    <h3>Operational Status Distribution</h3>
+                </div>
+
+                <div class="status-distribution" id="status-distribution">
+                    <!-- Status distribution will be populated dynamically -->
+                    <div style="text-align: center; padding: var(--space-6);">
+                        <div class="loading-spinner"></div>
+                        <p style="margin-top: var(--space-3); color: var(--gray);">Loading status data...</p>
+                    </div>
+                </div>
+
+                <div id="geographic-insights" style="display: none;">
+                    <div
+                        style="display: grid; grid-template-columns: 2fr 1fr; gap: var(--space-4); margin-top: var(--space-6);">
+                        <div>
+                            <h4
+                                style="font-size: var(--font-md); margin-bottom: var(--space-3); color: var(--primary);">
+                                Geographic Patterns
+                            </h4>
+                            <ul id="geographic-patterns"
+                                style="list-style: none; display: flex; flex-direction: column; gap: var(--space-3);">
+                                <!-- Will be populated dynamically -->
+                            </ul>
+                        </div>
+
+                        <div
+                            style="background: var(--bg-secondary); padding: var(--space-4); border-radius: var(--radius);">
+                            <div
+                                style="display: flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-2);">
+                                <i class="fas fa-lightbulb"
+                                    style="color: var(--warning); font-size: var(--font-lg);"></i>
+                                <h4 style="font-size: var(--font-md); color: var(--primary);">Key Insight</h4>
+                            </div>
+                            <p style="font-size: var(--font-sm); color: var(--gray); line-height: 1.5;"
+                                id="key-insight">
+                                Loading...
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts Section -->
+            <div class="charts-container">
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h4>Technology Distribution</h4>
+                        <div class="btn-group">
+                            <button class="btn btn-sm btn-outline active" data-chart="pie">Pie</button>
+                            <button class="btn btn-sm btn-outline" data-chart="bar">Bar</button>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="tech-chart"></canvas>
+                    </div>
+                </div>
+
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h4>Status by County</h4>
+                        <div class="btn-group">
+                            <button class="btn btn-sm btn-outline active" data-chart="top10">Top 10</button>
+                            <button class="btn btn-sm btn-outline" data-chart="all">All Counties</button>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="county-chart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sample Data Section -->
+            <div class="analysis-section">
+                <div class="section-header">
+                    <i class="fas fa-table"></i>
+                    <h3>Sample Data from Water Points Dataset</h3>
+                </div>
+
+                <div class="data-table-container">
+                    <table class="data-table" id="sample-data-table">
+                        <thead>
+                            <tr>
+                                <th>County</th>
+                                <th>Water Source</th>
+                                <th>Technology</th>
+                                <th>Status</th>
+                                <th>Location</th>
+                            </tr>
+                        </thead>
+                        <tbody id="sample-data-body">
+                            <tr>
+                                <td colspan="5" style="text-align: center; padding: var(--space-8);">
+                                    <div class="loading-spinner" style="margin: 0 auto;"></div>
+                                    <p style="margin-top: var(--space-3); color: var(--gray);">Loading data...</p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div style="display: flex; justify-content: flex-end; gap: var(--space-3); margin-top: var(--space-4);">
+                    <button class="btn btn-outline" id="export-data">
+                        <i class="fas fa-download"></i>
+                        Export Data
+                    </button>
+                    <button class="btn btn-primary" id="analyze-data">
+                        <i class="fas fa-chart-line"></i>
+                        Advanced Analysis
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://unpkg.com/chart.js@4.4.0/dist/chart.umd.js"></script>
+
+    <script>
+        // Infrastructure Dashboard State
+        const InfrastructureDashboard = {
+            // Data storage
+            waterPoints: [],
+            technologyStats: {},
+            statusStats: {},
+            countyStats: {},
+
+            // Chart instances
+            charts: {},
+
+            // Summary statistics
+            summary: {
+                totalPoints: 0,
+                motorizedCount: 0,
+                unknownTechCount: 0,
+                publicInfraCount: 0,
+                functionalCount: 0,
+                nonFunctionalCount: 0,
+                needsRepairCount: 0,
+                unknownStatusCount: 0
+            }
+        };
+
+        // Technology categories mapping
+        const TechnologyCategories = {
+            motorized: ['Motorized', 'Motorized - Diesel', 'Motorized - Solar', 'Motorized - Grid'],
+            handpump: ['Hand Pump', 'Handpump', 'Hand pump', 'India Mark II', 'Afridev'],
+            public: ['Public', 'Public Tap', 'Public Standpipe', 'Kiosk'],
+            gravity: ['Gravity', 'Gravity-fed', 'Spring protection'],
+            rain: ['Rainwater', 'Rainwater harvesting', 'Rooftop catchment'],
+            other: ['Other', 'Other - Please specify']
+        };
+
+        // Convert ESRI JSON to GeoJSON (same as index.html)
+        function esriToGeoJSON(esriJson) {
+            if (!esriJson || !esriJson.features) {
+                console.error('Invalid ESRI JSON format');
+                return { type: 'FeatureCollection', features: [] };
+            }
+
+            const features = esriJson.features.map(feature => {
+                // Handle ESRI geometry format
+                let geometry = null;
+                if (feature.geometry) {
+                    if (feature.geometry.rings) {
+                        // Polygon geometry
+                        geometry = {
+                            type: 'Polygon',
+                            coordinates: feature.geometry.rings
+                        };
+                    } else if (feature.geometry.x !== undefined && feature.geometry.y !== undefined) {
+                        // Point geometry (coordinates are swapped in ESRI JSON)
+                        geometry = {
+                            type: 'Point',
+                            coordinates: [feature.geometry.x, feature.geometry.y]
+                        };
+                    } else if (feature.geometry.paths) {
+                        // Polyline geometry
+                        geometry = {
+                            type: 'LineString',
+                            coordinates: feature.geometry.paths[0]
+                        };
+                    }
+                }
+
+                return {
+                    type: 'Feature',
+                    properties: feature.attributes || {},
+                    geometry: geometry
+                };
+            });
+
+            return {
+                type: 'FeatureCollection',
+                features: features
+            };
+        }
+
+        // Load water points data
+        async function loadWaterPointsData() {
+            showLoading('Loading infrastructure data...');
+
+            try {
+                const paths = [
+                    'data/Asal_water_points.json',
+                    'Asal_water_points.json'
+                ];
+
+                let data = null;
+                for (const path of paths) {
+                    try {
+                        const response = await fetch(path);
+                        if (response.ok) {
+                            data = await response.json();
+                            console.log(`Loaded water points from: ${path}`);
+                            break;
+                        }
+                    } catch (e) {
+                        console.log(`Failed to load from ${path}:`, e.message);
+                        continue;
+                    }
+                }
+
+                if (!data) {
+                    throw new Error('No water points data found');
+                }
+
+                // Convert ESRI JSON to GeoJSON
+                const geoJsonData = esriToGeoJSON(data);
+                InfrastructureDashboard.waterPoints = geoJsonData.features || [];
+
+                // Analyze data
+                analyzeInfrastructureData();
+                updateUI();
+                initializeCharts();
+                populateSampleData();
+
+                hideLoading();
+                showNotification('Infrastructure data loaded successfully', 'success');
+
+            } catch (error) {
+                console.error('Error loading water points:', error);
+                showNotification('Failed to load infrastructure data', 'error');
+                hideLoading();
+            }
+        }
+
+        // Analyze infrastructure data
+        function analyzeInfrastructureData() {
+            const waterPoints = InfrastructureDashboard.waterPoints;
+            InfrastructureDashboard.summary.totalPoints = waterPoints.length;
+
+            // Reset statistics
+            InfrastructureDashboard.technologyStats = {};
+            InfrastructureDashboard.statusStats = {
+                Functional: 0,
+                'Non-Functional': 0,
+                'Needs Repair': 0,
+                Unknown: 0
+            };
+            InfrastructureDashboard.countyStats = {};
+
+            // Analyze each water point
+            waterPoints.forEach(point => {
+                const props = point.properties || {};
+
+                // Extract and normalize technology
+                const tech = props.water_tech || props.WATER_TECH || props.technology || 'Unknown';
+                const normalizedTech = normalizeTechnology(tech);
+
+                // Update technology statistics
+                if (!InfrastructureDashboard.technologyStats[normalizedTech]) {
+                    InfrastructureDashboard.technologyStats[normalizedTech] = {
+                        count: 0,
+                        category: getTechnologyCategory(normalizedTech)
+                    };
+                }
+                InfrastructureDashboard.technologyStats[normalizedTech].count++;
+
+                // Update technology category counts
+                const category = getTechnologyCategory(normalizedTech);
+                if (category === 'motorized') InfrastructureDashboard.summary.motorizedCount++;
+                if (normalizedTech === 'Unknown') InfrastructureDashboard.summary.unknownTechCount++;
+                if (category === 'public') InfrastructureDashboard.summary.publicInfraCount++;
+
+                // Extract and normalize status
+                const status = props.status_cle || props.STATUS || props.status || 'Unknown';
+                const normalizedStatus = normalizeStatus(status);
+
+                // Update status statistics
+                if (InfrastructureDashboard.statusStats[normalizedStatus] !== undefined) {
+                    InfrastructureDashboard.statusStats[normalizedStatus]++;
+
+                    // Update summary counts
+                    if (normalizedStatus === 'Functional') InfrastructureDashboard.summary.functionalCount++;
+                    if (normalizedStatus === 'Non-Functional') InfrastructureDashboard.summary.nonFunctionalCount++;
+                    if (normalizedStatus === 'Needs Repair') InfrastructureDashboard.summary.needsRepairCount++;
+                    if (normalizedStatus === 'Unknown') InfrastructureDashboard.summary.unknownStatusCount++;
+                }
+
+                // Update county statistics
+                const county = props.clean_adm1 || props.COUNTY || props.county || 'Unknown';
+                if (!InfrastructureDashboard.countyStats[county]) {
+                    InfrastructureDashboard.countyStats[county] = {
+                        total: 0,
+                        functional: 0,
+                        nonFunctional: 0,
+                        needsRepair: 0,
+                        unknown: 0
+                    };
+                }
+                InfrastructureDashboard.countyStats[county].total++;
+
+                if (normalizedStatus === 'Functional') InfrastructureDashboard.countyStats[county].functional++;
+                if (normalizedStatus === 'Non-Functional') InfrastructureDashboard.countyStats[county].nonFunctional++;
+                if (normalizedStatus === 'Needs Repair') InfrastructureDashboard.countyStats[county].needsRepair++;
+                if (normalizedStatus === 'Unknown') InfrastructureDashboard.countyStats[county].unknown++;
+            });
+
+            console.log('Infrastructure analysis completed:', {
+                totalPoints: InfrastructureDashboard.summary.totalPoints,
+                technologyCategories: Object.keys(InfrastructureDashboard.technologyStats).length,
+                counties: Object.keys(InfrastructureDashboard.countyStats).length
+            });
+        }
+
+        // Normalize technology values
+        function normalizeTechnology(tech) {
+            if (!tech || tech === '-' || tech === 'null' || tech === 'NULL' || tech.trim() === '') {
+                return 'Unknown';
+            }
+
+            const lowerTech = tech.toLowerCase().trim();
+
+            // Check for motorized technologies
+            if (lowerTech.includes('motorized') ||
+                lowerTech.includes('diesel') ||
+                lowerTech.includes('solar') ||
+                lowerTech.includes('electric') ||
+                lowerTech.includes('grid')) {
+                return 'Motorized';
+            }
+
+            // Check for hand pumps
+            if (lowerTech.includes('hand') ||
+                lowerTech.includes('pump') ||
+                lowerTech.includes('afridev') ||
+                lowerTech.includes('india mark')) {
+                return 'Hand Pump';
+            }
+
+            // Check for public systems
+            if (lowerTech.includes('public') ||
+                lowerTech.includes('tap') ||
+                lowerTech.includes('standpipe') ||
+                lowerTech.includes('kiosk')) {
+                return 'Public';
+            }
+
+            // Check for gravity systems
+            if (lowerTech.includes('gravity') || lowerTech.includes('spring')) {
+                return 'Gravity';
+            }
+
+            // Check for rainwater systems
+            if (lowerTech.includes('rain') || lowerTech.includes('rooftop')) {
+                return 'Rainwater';
+            }
+
+            return tech.charAt(0).toUpperCase() + tech.slice(1).toLowerCase();
+        }
+
+        // Get technology category
+        function getTechnologyCategory(tech) {
+            const lowerTech = tech.toLowerCase();
+
+            for (const [category, keywords] of Object.entries(TechnologyCategories)) {
+                for (const keyword of keywords) {
+                    if (lowerTech.includes(keyword.toLowerCase())) {
+                        return category;
+                    }
+                }
+            }
+
+            return 'other';
+        }
+
+        // Normalize status values
+        function normalizeStatus(status) {
+            if (!status || status === '-' || status === 'null' || status === 'NULL' || status.trim() === '') {
+                return 'Unknown';
+            }
+
+            const lowerStatus = status.toLowerCase().trim();
+
+            if (lowerStatus.includes('functional') && !lowerStatus.includes('non')) {
+                return 'Functional';
+            } else if (lowerStatus.includes('non-functional') || lowerStatus.includes('abandoned')) {
+                return 'Non-Functional';
+            } else if (lowerStatus.includes('repair') || lowerStatus.includes('maintenance')) {
+                return 'Needs Repair';
+            }
+
+            return 'Unknown';
+        }
+
+        // Update UI with analyzed data
+        function updateUI() {
+            const summary = InfrastructureDashboard.summary;
+
+            // Update stats cards
+            document.getElementById('total-points').textContent = summary.totalPoints.toLocaleString();
+            document.getElementById('motorized-count').textContent = summary.motorizedCount.toLocaleString();
+            document.getElementById('unknown-tech').textContent = summary.unknownTechCount.toLocaleString();
+            document.getElementById('public-infra').textContent = summary.publicInfraCount.toLocaleString();
+
+            // Update sidebar
+            document.getElementById('sidebar-total').textContent = summary.totalPoints.toLocaleString();
+
+            const motorizedPercentage = summary.totalPoints > 0 ?
+                Math.round((summary.motorizedCount / summary.totalPoints) * 100) : 0;
+            document.getElementById('sidebar-motorized').textContent = `${motorizedPercentage}%`;
+
+            const unknownTechPercentage = summary.totalPoints > 0 ?
+                Math.round((summary.unknownTechCount / summary.totalPoints) * 100) : 0;
+            document.getElementById('sidebar-unknown').textContent = `${unknownTechPercentage}%`;
+
+            // Update documentation alert
+            if (summary.unknownTechCount > 0) {
+                document.getElementById('documentation-alert').style.display = 'block';
+                document.getElementById('documentation-text').textContent =
+                    `${summary.unknownTechCount.toLocaleString()} installations (${unknownTechPercentage}%) have unknown technology, hindering maintenance planning and resource allocation.`;
+            }
+
+            // Update last updated time
+            updateLastUpdated();
+
+            // Update technology grid
+            updateTechnologyGrid();
+
+            // Update status distribution
+            updateStatusDistribution();
+
+            // Update geographic insights
+            updateGeographicInsights();
+        }
+
+        // Update technology grid
+        function updateTechnologyGrid() {
+            const techGrid = document.getElementById('tech-grid');
+            const techStats = InfrastructureDashboard.technologyStats;
+            const totalPoints = InfrastructureDashboard.summary.totalPoints;
+
+            // Sort technologies by count
+            const sortedTechs = Object.entries(techStats)
+                .sort((a, b) => b[1].count - a[1].count)
+                .slice(0, 4); // Top 4 technologies
+
+            const techCards = sortedTechs.map(([tech, data]) => {
+                const percentage = totalPoints > 0 ?
+                    Math.round((data.count / totalPoints) * 100) : 0;
+
+                // Get icon based on technology category
+                const icon = getTechnologyIcon(data.category);
+                const description = getTechnologyDescription(tech, data.category);
+
+                return `
+                    <div class="tech-card">
+                        <div class="tech-header">
+                            <div class="tech-icon">
+                                <i class="fas ${icon}"></i>
+                            </div>
+                            <div class="tech-title">${tech}</div>
+                        </div>
+                        <div class="tech-stats">
+                            <div class="tech-count">${data.count.toLocaleString()}</div>
+                            <div class="tech-percentage">${percentage}%</div>
+                        </div>
+                        <p class="tech-desc">${description}</p>
+                    </div>
+                `;
+            });
+
+            techGrid.innerHTML = techCards.join('');
+        }
+
+        // Get technology icon
+        function getTechnologyIcon(category) {
+            const icons = {
+                motorized: 'fa-gas-pump',
+                handpump: 'fa-hand-paper',
+                public: 'fa-building',
+                gravity: 'fa-mountain',
+                rain: 'fa-cloud-rain',
+                other: 'fa-cogs'
+            };
+            return icons[category] || 'fa-cog';
+        }
+
+        // Get technology description
+        function getTechnologyDescription(tech, category) {
+            const descriptions = {
+                motorized: 'Power-operated systems for deep groundwater extraction in areas with energy access.',
+                handpump: 'Manual systems ideal for rural areas with limited or no electricity access.',
+                public: 'Community water points serving larger populations through distribution networks.',
+                gravity: 'Natural flow systems requiring minimal energy, suitable for hilly terrain.',
+                rain: 'Seasonal water collection systems, effective in areas with regular rainfall.',
+                other: 'Specialized or less common water point technologies.'
+            };
+
+            return descriptions[category] || `${tech} technology used in various water point installations.`;
+        }
+
+        // Update status distribution
+        function updateStatusDistribution() {
+            const statusDist = document.getElementById('status-distribution');
+            const statusStats = InfrastructureDashboard.statusStats;
+            const totalPoints = InfrastructureDashboard.summary.totalPoints;
+
+            const statusColors = {
+                'Functional': '#2ecc71',
+                'Non-Functional': '#e74c3c',
+                'Needs Repair': '#f39c12',
+                'Unknown': '#95a5a6'
+            };
+
+            const statusItems = Object.entries(statusStats).map(([status, count]) => {
+                const percentage = totalPoints > 0 ?
+                    Math.round((count / totalPoints) * 100) : 0;
+                const color = statusColors[status] || statusColors['Unknown'];
+
+                return `
+                    <div class="status-label">
+                        <div class="status-name">
+                            <div class="status-dot" style="background: ${color};"></div>
+                            <span>${status}</span>
+                        </div>
+                        <span style="font-weight: 600; font-size: var(--font-md);">${percentage}%</span>
+                    </div>
+                    <div class="status-bar">
+                        <div class="status-fill" style="width: ${percentage}%; background: ${color};"></div>
+                    </div>
+                `;
+            });
+
+            statusDist.innerHTML = statusItems.join('');
+
+            // Show geographic insights section
+            document.getElementById('geographic-insights').style.display = 'block';
+        }
+
+        // Update geographic insights
+        function updateGeographicInsights() {
+            const countyStats = InfrastructureDashboard.countyStats;
+
+            // Find counties with most functional points
+            const functionalCounties = Object.entries(countyStats)
+                .sort((a, b) => {
+                    const rateA = a[1].total > 0 ? (a[1].functional / a[1].total) * 100 : 0;
+                    const rateB = b[1].total > 0 ? (b[1].functional / b[1].total) * 100 : 0;
+                    return rateB - rateA;
+                })
+                .slice(0, 3);
+
+            // Find counties with most non-functional points
+            const nonFunctionalCounties = Object.entries(countyStats)
+                .sort((a, b) => {
+                    const rateA = a[1].total > 0 ? (a[1].nonFunctional / a[1].total) * 100 : 0;
+                    const rateB = b[1].total > 0 ? (b[1].nonFunctional / a[1].total) * 100 : 0;
+                    return rateB - rateA;
+                })
+                .slice(0, 2);
+
+            // Update geographic patterns
+            const patternsList = document.getElementById('geographic-patterns');
+            const patterns = [
+                `<li style="display: flex; align-items: center; gap: var(--space-3);">
+                    <div style="width: 8px; height: 8px; background: var(--success); border-radius: 50%;"></div>
+                    <span style="font-size: var(--font-sm);">High functionality in ${functionalCounties.map(c => c[0]).join(', ')}</span>
+                </li>`,
+                `<li style="display: flex; align-items: center; gap: var(--space-3);">
+                    <div style="width: 8px; height: 8px; background: var(--danger); border-radius: 50%;"></div>
+                    <span style="font-size: var(--font-sm);">Repair needs in ${nonFunctionalCounties.map(c => c[0]).join(', ')}</span>
+                </li>`,
+                `<li style="display: flex; align-items: center; gap: var(--space-3);">
+                    <div style="width: 8px; height: 8px; background: var(--warning); border-radius: 50%;"></div>
+                    <span style="font-size: var(--font-sm);">Technology varies significantly across counties</span>
+                </li>`
+            ];
+
+            patternsList.innerHTML = patterns.join('');
+
+            // Update key insight
+            const groundwaterPoints = InfrastructureDashboard.waterPoints.filter(point => {
+                const source = (point.properties.water_sour || point.properties.WATER_SOUR || '').toLowerCase();
+                return source.includes('well') || source.includes('borehole') || source.includes('groundwater');
+            }).length;
+
+            const groundwaterPercentage = InfrastructureDashboard.summary.totalPoints > 0 ?
+                Math.round((groundwaterPoints / InfrastructureDashboard.summary.totalPoints) * 100) : 0;
+
+            document.getElementById('key-insight').textContent =
+                `${groundwaterPercentage}% of water points rely on groundwater sources, highlighting the critical importance of sustainable aquifer management for water security.`;
+        }
+
+        // Initialize Charts
+        function initializeCharts() {
+            // Prepare technology chart data
+            const techStats = InfrastructureDashboard.technologyStats;
+            const sortedTechs = Object.entries(techStats)
+                .sort((a, b) => b[1].count - a[1].count)
+                .slice(0, 6); // Top 6 technologies
+
+            const techLabels = sortedTechs.map(([tech]) => tech);
+            const techValues = sortedTechs.map(([, data]) => data.count);
+            const techColors = ['#3498db', '#95a5a6', '#9b59b6', '#2ecc71', '#f39c12', '#e74c3c'];
+
+            // Technology Distribution Chart
+            const techCtx = document.getElementById('tech-chart').getContext('2d');
+            InfrastructureDashboard.charts.tech = new Chart(techCtx, {
+                type: 'pie',
+                data: {
+                    labels: techLabels,
+                    datasets: [{
+                        data: techValues,
+                        backgroundColor: techColors,
+                        borderWidth: 1,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                            labels: {
+                                padding: 15,
+                                usePointStyle: true,
+                                font: {
+                                    size: 11
+                                }
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: (context) => {
+                                    const total = techValues.reduce((a, b) => a + b, 0);
+                                    const value = context.raw || 0;
+                                    const percentage = ((value / total) * 100).toFixed(1);
+                                    return `${context.label}: ${value.toLocaleString()} (${percentage}%)`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Prepare county chart data
+            const countyStats = InfrastructureDashboard.countyStats;
+            const sortedCounties = Object.entries(countyStats)
+                .filter(([county]) => county !== 'Unknown')
+                .sort((a, b) => b[1].total - a[1].total)
+                .slice(0, 10); // Top 10 counties by total points
+
+            const countyLabels = sortedCounties.map(([county]) => county);
+            const functionalRates = sortedCounties.map(([, stats]) =>
+                stats.total > 0 ? Math.round((stats.functional / stats.total) * 100) : 0
+            );
+            const nonFunctionalRates = sortedCounties.map(([, stats]) =>
+                stats.total > 0 ? Math.round((stats.nonFunctional / stats.total) * 100) : 0
+            );
+            const repairRates = sortedCounties.map(([, stats]) =>
+                stats.total > 0 ? Math.round((stats.needsRepair / stats.total) * 100) : 0
+            );
+
+            // County Status Chart
+            const countyCtx = document.getElementById('county-chart').getContext('2d');
+            InfrastructureDashboard.charts.county = new Chart(countyCtx, {
+                type: 'bar',
+                data: {
+                    labels: countyLabels,
+                    datasets: [
+                        {
+                            label: 'Functional',
+                            data: functionalRates,
+                            backgroundColor: '#2ecc71',
+                            borderWidth: 0
+                        },
+                        {
+                            label: 'Non-Functional',
+                            data: nonFunctionalRates,
+                            backgroundColor: '#e74c3c',
+                            borderWidth: 0
+                        },
+                        {
+                            label: 'Needs Repair',
+                            data: repairRates,
+                            backgroundColor: '#f39c12',
+                            borderWidth: 0
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                padding: 10,
+                                usePointStyle: true,
+                                font: {
+                                    size: 11
+                                }
+                            }
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false,
+                            callbacks: {
+                                label: (context) => {
+                                    return `${context.dataset.label}: ${context.raw}%`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            stacked: false,
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                font: {
+                                    size: 10
+                                },
+                                maxRotation: 45
+                            }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: {
+                                callback: (value) => `${value}%`,
+                                font: {
+                                    size: 10
+                                }
+                            },
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.05)'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Populate sample data table
+        function populateSampleData() {
+            const tbody = document.getElementById('sample-data-body');
+            const samplePoints = InfrastructureDashboard.waterPoints.slice(0, 8); // Get 8 sample points
+
+            const rows = samplePoints.map(point => {
+                const props = point.properties || {};
+                const county = props.clean_adm1 || props.COUNTY || props.county || 'Unknown';
+                const source = props.water_sour || props.WATER_SOUR || 'Unknown';
+                const tech = props.water_tech || props.WATER_TECH || 'Unknown';
+                const status = props.status_cle || props.STATUS || props.status || 'Unknown';
+
+                // Get badge class based on status
+                let badgeClass = 'badge-warning';
+                if (status.toLowerCase().includes('functional') && !status.toLowerCase().includes('non')) {
+                    badgeClass = 'badge-success';
+                } else if (status.toLowerCase().includes('non-functional')) {
+                    badgeClass = 'badge-danger';
+                }
+
+                // Extract location coordinates
+                let location = 'Unknown';
+                if (point.geometry && point.geometry.coordinates) {
+                    const [lng, lat] = point.geometry.coordinates;
+                    location = `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+                }
+
+                return `
+                    <tr>
+                        <td>${county}</td>
+                        <td>${source}</td>
+                        <td>${tech}</td>
+                        <td><span class="badge ${badgeClass}">${status}</span></td>
+                        <td>${location}</td>
+                    </tr>
+                `;
+            });
+
+            tbody.innerHTML = rows.join('');
+        }
+
+        // Setup Event Listeners
+        function setupEventListeners() {
+            // Chart type toggles
+            document.querySelectorAll('[data-chart]').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const chartType = e.target.dataset.chart;
+
+                    // Update button states
+                    e.target.parentElement.querySelectorAll('.btn').forEach(b => {
+                        b.classList.remove('active');
+                    });
+                    e.target.classList.add('active');
+
+                    // Handle chart type changes
+                    if (chartType === 'pie' || chartType === 'bar') {
+                        // Switch technology chart type
+                        if (InfrastructureDashboard.charts.tech) {
+                            InfrastructureDashboard.charts.tech.config.type = chartType;
+                            InfrastructureDashboard.charts.tech.update();
+                        }
+                    } else if (chartType === 'top10') {
+                        // Show top 10 counties (already default)
+                        if (InfrastructureDashboard.charts.county) {
+                            // Reinitialize with top 10
+                            const countyStats = InfrastructureDashboard.countyStats;
+                            const sortedCounties = Object.entries(countyStats)
+                                .filter(([county]) => county !== 'Unknown')
+                                .sort((a, b) => b[1].total - a[1].total)
+                                .slice(0, 10);
+
+                            updateCountyChart(sortedCounties);
+                        }
+                    } else if (chartType === 'all') {
+                        // Show all counties
+                        if (InfrastructureDashboard.charts.county) {
+                            const countyStats = InfrastructureDashboard.countyStats;
+                            const allCounties = Object.entries(countyStats)
+                                .filter(([county]) => county !== 'Unknown')
+                                .sort((a, b) => b[1].total - a[1].total);
+
+                            updateCountyChart(allCounties.slice(0, 20)); // Limit to 20 for readability
+                        }
+                    }
+                });
+            });
+
+            // Refresh button
+            document.getElementById('refresh-data').addEventListener('click', () => {
+                showLoading('Refreshing infrastructure data...');
+                setTimeout(() => {
+                    loadWaterPointsData();
+                }, 500);
+            });
+
+            // Export button
+            document.getElementById('export-data').addEventListener('click', () => {
+                exportInfrastructureData();
+            });
+
+            // Analyze button
+            document.getElementById('analyze-data').addEventListener('click', () => {
+                showNotification('Opening advanced analysis...', 'info');
+                // In a real implementation, this would open a detailed analysis view
+                setTimeout(() => {
+                    showNotification('Advanced analysis ready', 'success');
+                }, 1500);
+            });
+
+            // Animate status bars on scroll
+            animateStatusBars();
+        }
+
+        // Update county chart with specific data
+        function updateCountyChart(countyData) {
+            const countyLabels = countyData.map(([county]) => county);
+            const functionalRates = countyData.map(([, stats]) =>
+                stats.total > 0 ? Math.round((stats.functional / stats.total) * 100) : 0
+            );
+            const nonFunctionalRates = countyData.map(([, stats]) =>
+                stats.total > 0 ? Math.round((stats.nonFunctional / stats.total) * 100) : 0
+            );
+            const repairRates = countyData.map(([, stats]) =>
+                stats.total > 0 ? Math.round((stats.needsRepair / stats.total) * 100) : 0
+            );
+
+            InfrastructureDashboard.charts.county.data.labels = countyLabels;
+            InfrastructureDashboard.charts.county.data.datasets[0].data = functionalRates;
+            InfrastructureDashboard.charts.county.data.datasets[1].data = nonFunctionalRates;
+            InfrastructureDashboard.charts.county.data.datasets[2].data = repairRates;
+            InfrastructureDashboard.charts.county.update();
+        }
+
+        // Export infrastructure data
+        function exportInfrastructureData() {
+            showNotification('Preparing data for export...', 'info');
+
+            // Create CSV content
+            let csvContent = "County,Technology,Status,Source,Latitude,Longitude\n";
+
+            InfrastructureDashboard.waterPoints.forEach(point => {
+                const props = point.properties || {};
+                const county = props.clean_adm1 || props.COUNTY || props.county || 'Unknown';
+                const tech = props.water_tech || props.WATER_TECH || 'Unknown';
+                const status = props.status_cle || props.STATUS || props.status || 'Unknown';
+                const source = props.water_sour || props.WATER_SOUR || 'Unknown';
+
+                let lat = '', lng = '';
+                if (point.geometry && point.geometry.coordinates) {
+                    [lng, lat] = point.geometry.coordinates;
+                }
+
+                csvContent += `"${county}","${tech}","${status}","${source}","${lat}","${lng}"\n`;
+            });
+
+            // Create download link
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.setAttribute('href', url);
+            link.setAttribute('download', 'kenya_water_infrastructure_data.csv');
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            setTimeout(() => {
+                showNotification('Infrastructure data exported successfully', 'success');
+            }, 1000);
+        }
+
+        // Update Last Updated Time
+        function updateLastUpdated() {
+            const now = new Date();
+            const options = {
+                weekday: 'short',
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            };
+            document.getElementById('last-updated').textContent =
+                now.toLocaleDateString('en-US', options);
+        }
+
+        // Show Loading
+        function showLoading(message = 'Loading...') {
+            let loading = document.querySelector('.loading-overlay');
+            if (!loading) {
+                loading = document.createElement('div');
+                loading.className = 'loading-overlay';
+                loading.style.position = 'fixed';
+                loading.style.zIndex = '9999';
+                document.body.appendChild(loading);
+            }
+            loading.innerHTML = `
+                <div class="loading-spinner"></div>
+                <div class="loading-text" style="font-size: var(--font-sm);">${message}</div>
+            `;
+            loading.style.display = 'flex';
+        }
+
+        // Hide Loading
+        function hideLoading() {
+            const loading = document.querySelector('.loading-overlay');
+            if (loading) {
+                loading.style.display = 'none';
+            }
+        }
+
+        // Show Notification
+        function showNotification(message, type = 'info') {
+            // Remove existing notification
+            const existing = document.querySelector('.notification');
+            if (existing) existing.remove();
+
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 12px 20px;
+                background: ${type === 'success' ? '#2ecc71' : type === 'error' ? '#e74c3c' : '#3498db'};
+                color: white;
+                border-radius: var(--radius);
+                font-size: var(--font-sm);
+                z-index: 10000;
+                animation: slideIn 0.3s ease;
+                max-width: 300px;
+                box-shadow: var(--shadow-md);
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            `;
+
+            const icon = type === 'success' ? 'fa-check' : type === 'error' ? 'fa-exclamation' : 'fa-info';
+            notification.innerHTML = `
+                <i class="fas ${icon}"></i>
+                <span>${message}</span>
+            `;
+
+            document.body.appendChild(notification);
+
+            // Add animation styles if not present
+            if (!document.querySelector('#notification-styles')) {
+                const style = document.createElement('style');
+                style.id = 'notification-styles';
+                style.textContent = `
+                    @keyframes slideIn {
+                        from { transform: translateX(100%); opacity: 0; }
+                        to { transform: translateX(0); opacity: 1; }
+                    }
+                    @keyframes slideOut {
+                        from { transform: translateX(0); opacity: 1; }
+                        to { transform: translateX(100%); opacity: 0; }
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
+        // Animate Status Bars
+        function animateStatusBars() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const bars = entry.target.querySelectorAll('.status-fill');
+                        bars.forEach(bar => {
+                            const width = bar.style.width;
+                            bar.style.width = '0';
+                            setTimeout(() => {
+                                bar.style.width = width;
+                            }, 300);
+                        });
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.5 });
+
+            const statusSection = document.querySelector('.status-distribution');
+            if (statusSection) {
+                observer.observe(statusSection);
+            }
+        }
+
+        // Initialize Dashboard
+        document.addEventListener('DOMContentLoaded', () => {
+            setupEventListeners();
+            loadWaterPointsData();
+        });
+
+        // Handle tech card clicks
+        document.addEventListener('click', (e) => {
+            const techCard = e.target.closest('.tech-card');
+            if (techCard && !e.target.closest('.btn')) {
+                const title = techCard.querySelector('.tech-title').textContent;
+                showNotification(`Viewing details for ${title} technology`, 'info');
+            }
+        });
+    </script>
+</body>
+
+</html>

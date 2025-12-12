@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recommendations & Conclusions | Kenya Groundwater Analysis</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <style>
+        .recommendation-timeline {
+            position: relative;
+            max-width: 800px;
+            margin: 40px auto;
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-left: 50px;
+            margin-bottom: 40px;
+        }
+
+        .timeline-item:before {
+            content: '';
+            position: absolute;
+            left: 15px;
+            top: 0;
+            width: 2px;
+            height: 100%;
+            background: var(--accent-blue);
+        }
+
+        .timeline-item:last-child:before {
+            height: 30px;
+        }
+
+        .timeline-icon {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 32px;
+            height: 32px;
+            background: var(--gradient-primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: bold;
+            z-index: 2;
+        }
+
+        .timeline-content {
+            background: white;
+            padding: 25px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            border-left: 4px solid var(--accent-blue);
+        }
+
+        .priority-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .priority-high {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .priority-medium {
+            background: #fff3e0;
+            color: #ef6c00;
+        }
+
+        .priority-low {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .conclusion-box {
+            background: linear-gradient(135deg, #0a2463 0%, #1e3c72 100%);
+            color: white;
+            padding: 40px;
+            border-radius: var(--border-radius);
+            margin: 40px 0;
+        }
+
+        .conclusion-box h2,
+        .conclusion-box h3,
+        .conclusion-box h4 {
+            color: white;
+        }
+
+        .conclusion-box h2:after {
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        .implementation-framework {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin: 30px 0;
+        }
+
+        .framework-phase {
+            background: white;
+            padding: 25px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+        }
+
+        .phase-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .phase-number {
+            width: 40px;
+            height: 40px;
+            background: var(--gradient-primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .phase-timeline {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-top: 5px;
+        }
+
+        .stakeholder-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .stakeholder-card {
+            background: white;
+            padding: 20px;
+            border-radius: var(--border-radius-sm);
+            box-shadow: var(--shadow-light);
+            text-align: center;
+        }
+
+        .stakeholder-icon {
+            font-size: 2rem;
+            color: var(--accent-blue);
+            margin-bottom: 15px;
+        }
+
+        .action-checklist {
+            background: #f8fafc;
+            padding: 30px;
+            border-radius: var(--border-radius);
+            margin: 30px 0;
+        }
+
+        .checklist-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .checklist-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .checklist-checkbox {
+            width: 24px;
+            height: 24px;
+            border: 2px solid var(--accent-blue);
+            border-radius: 4px;
+            flex-shrink: 0;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .checklist-checkbox.checked {
+            background: var(--accent-blue);
+            color: white;
+        }
+
+        .checklist-content {
+            flex: 1;
+        }
+
+        .impact-assessment {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .impact-card {
+            padding: 25px;
+            border-radius: var(--border-radius-sm);
+            color: white;
+            text-align: center;
+        }
+
+        .impact-card.positive {
+            background: linear-gradient(135deg, #2ed573, #7bed9f);
+        }
+
+        .impact-card.negative {
+            background: linear-gradient(135deg, #ff4757, #ff6b81);
+        }
+
+        .impact-card.neutral {
+            background: linear-gradient(135deg, #747d8c, #a4b0be);
+        }
+
+        .impact-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 5px;
+        }
+
+        .download-section {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+            padding: 40px;
+            border-radius: var(--border-radius);
+            text-align: center;
+            margin: 40px 0;
+        }
+
+        .download-options {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .download-card {
+            background: white;
+            padding: 30px;
+            border-radius: var(--border-radius-sm);
+            box-shadow: var(--shadow);
+            text-align: center;
+            flex: 1;
+            min-width: 200px;
+            max-width: 300px;
+        }
+
+        .download-icon {
+            font-size: 3rem;
+            color: var(--accent-blue);
+            margin-bottom: 20px;
+        }
+
+        .reference-list {
+            background: white;
+            padding: 30px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            margin: 30px 0;
+        }
+
+        .reference-item {
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .reference-item:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="main-nav">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-water"></i>
+                <span>Kenya Water Analysis</span>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+                <li><a href="infrastructure.html"><i class="fas fa-tint"></i> Infrastructure</a></li>
+                <li><a href="hydrogeology.html"><i class="fas fa-mountain"></i> Hydrogeology</a></li>
+                <li><a href="methodology.html"><i class="fas fa-project-diagram"></i> Methodology</a></li>
+                <li><a href="dashboard.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                <li><a href="recommendations.html" class="active"><i class="fas fa-lightbulb"></i> Recommendations</a>
+                </li>
+            </ul>
+            <button class="nav-toggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <header class="page-header" style="background: linear-gradient(135deg, #0a2463 0%, #1e3c72 100%);">
+        <div class="container">
+            <h1>Recommendations & Conclusions</h1>
+            <p class="lead">Strategic recommendations for sustainable water resource management in Kenya</p>
+            <div class="breadcrumb">
+                <a href="index.html">Home</a>
+                <span><i class="fas fa-chevron-right"></i></span>
+                <span>Recommendations</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <!-- Executive Summary -->
+        <section class="section-padding">
+            <div class="container">
+                <h2 class="section-title">Executive Summary of Findings</h2>
+
+                <div class="conclusion-box">
+                    <h3>Integrated Analytical Framework</h3>
+                    <p>This study successfully develops and demonstrates an integrated analytical framework that
+                        combines water infrastructure monitoring with hydrogeological assessment, providing
+                        comprehensive insights for evidence-based water resource management in Kenya.</p>
+
+                    <div class="three-column" style="margin-top: 30px;">
+                        <div class="key-findings">
+                            <h4>Key Achievement 1</h4>
+                            <p>Development of multi-page Power BI dashboard integrating spatial infrastructure data with
+                                geological assessment.</p>
+                        </div>
+
+                        <div class="key-findings">
+                            <h4>Key Achievement 2</h4>
+                            <p>Successful application of GIS, remote sensing, and AHP methodology for groundwater
+                                potential mapping.</p>
+                        </div>
+
+                        <div class="key-findings">
+                            <h4>Key Achievement 3</h4>
+                            <p>Identification of critical infrastructure gaps and geological constraints affecting water
+                                access sustainability.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="impact-assessment">
+                    <div class="impact-card positive">
+                        <div class="impact-value">85%</div>
+                        <div class="impact-label">Accuracy Rate</div>
+                        <p>Groundwater potential classification accuracy</p>
+                    </div>
+
+                    <div class="impact-card negative">
+                        <div class="impact-value">27%</div>
+                        <div class="impact-label">Unknown Technology</div>
+                        <p>Documentation gap requiring immediate attention</p>
+                    </div>
+
+                    <div class="impact-card neutral">
+                        <div class="impact-value">40%</div>
+                        <div class="impact-label">High Potential Area</div>
+                        <p>Of Kenya's land area suitable for groundwater development</p>
+                    </div>
+
+                    <div class="impact-card positive">
+                        <div class="impact-value">2,450</div>
+                        <div class="impact-label">People per Point</div>
+                        <p>Current service ratio (needs improvement)</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Immediate Actions -->
+        <section class="section-padding bg-light">
+            <div class="container">
+                <h2 class="section-title">Immediate Actions (0-3 Months)</h2>
+                <p class="section-lead">Priority recommendations for immediate implementation to address critical gaps
+                </p>
+
+                <div class="recommendation-timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-icon">1</div>
+                        <div class="timeline-content">
+                            <span class="priority-badge priority-high">High Priority</span>
+                            <h4>Technology Audit & Documentation</h4>
+                            <p>Conduct comprehensive assessment of 5,900 unknown technology installations to enable
+                                proper maintenance planning and spare parts provisioning.</p>
+
+                            <div class="action-checklist">
+                                <h5>Action Items:</h5>
+                                <div class="checklist-item">
+                                    <div class="checklist-checkbox" onclick="toggleCheckbox(this)"></div>
+                                    <div class="checklist-content">
+                                        <strong>Establish audit team</strong>
+                                        <p>Form multidisciplinary team including hydrogeologists, engineers, and data
+                                            specialists</p>
+                                    </div>
+                                </div>
+
+                                <div class="checklist-item">
+                                    <div class="checklist-checkbox" onclick="toggleCheckbox(this)"></div>
+                                    <div class="checklist-content">
+                                        <strong>Develop audit protocol</strong>
+                                        <p>Create standardized checklist for technology classification and documentation
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div class="checklist-item">
+                                    <div class="checklist-checkbox" onclick="toggleCheckbox(this)"></div>
+                                    <div class="checklist-content">
+                                        <strong>Pilot in 3 counties</strong>
+                                        <p>Implement audit in Nairobi, Kiambu, and Marsabit counties</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-icon">2</div>
+                        <div class="timeline-content">
+                            <span class="priority-badge priority-high">High Priority</span>
+                            <h4>Rehabilitation Prioritization</h4>
+                            <p>Develop targeted rehabilitation program for non-functional water points in
+                                high-population areas with favorable geological conditions.</p>
+
+                            <div class="action-checklist">
+                                <h5>Action Items:</h5>
+                                <div class="checklist-item">
+                                    <div class="checklist-checkbox" onclick="toggleCheckbox(this)"></div>
+                                    <div class="checklist-content">
+                                        <strong>Identify priority areas</strong>
+                                        <p>Use dashboard to identify high-impact non-functional points</p>
+                                    </div>
+                                </div>
+
+                                <div class="checklist-item">
+                                    <div class="checklist-checkbox" onclick="toggleCheckbox(this)"></div>
+                                    <div class="checklist-content">
+                                        <strong>Allocate resources</strong>
+                                        <p>Secure funding and materials for rehabilitation program</p>
+                                    </div>
+                                </div>
+
+                                <div class="checklist-item">
+                                    <div class="checklist-checkbox" onclick="toggleCheckbox(this)"></div>
+                                    <div class="checklist-content">
+                                        <strong>Community engagement</strong>
+                                        <p>Involve local communities in rehabilitation planning and implementation</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-icon">3</div>
+                        <div class="timeline-content">
+                            <span class="priority-badge priority-medium">Medium Priority</span>
+                            <h4>Data Standardization</h4>
+                            <p>Implement improved data collection protocols with standardized technology classification,
+                                status reporting, and geological context documentation.</p>
+
+                            <div class="action-checklist">
+                                <h5>Action Items:</h5>
+                                <div class="checklist-item">
+                                    <div class="checklist-checkbox" onclick="toggleCheckbox(this)"></div>
+                                    <div class="checklist-content">
+                                        <strong>Develop standards</strong>
+                                        <p>Create national water point data collection standards</p>
+                                    </div>
+                                </div>
+
+                                <div class="checklist-item">
+                                    <div class="checklist-checkbox" onclick="toggleCheckbox(this)"></div>
+                                    <div class="checklist-content">
+                                        <strong>Training programs</strong>
+                                        <p>Train county water officers on new data collection protocols</p>
+                                    </div>
+                                </div>
+
+                                <div class="checklist-item">
+                                    <div class="checklist-checkbox" onclick="toggleCheckbox(this)"></div>
+                                    <div class="checklist-content">
+                                        <strong>Digital tools</strong>
+                                        <p>Develop mobile data collection applications</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Medium-Term Development -->
+        <section class="section-padding">
+            <div class="container">
+                <h2 class="section-title">Medium-Term Development (3-12 Months)</h2>
+                <p class="section-lead">Strategic initiatives for sustainable water resource development</p>
+
+                <div class="implementation-framework">
+                    <div class="framework-phase">
+                        <div class="phase-header">
+                            <div class="phase-number">1</div>
+                            <div>
+                                <h4>Geological Targeting</h4>
+                                <div class="phase-timeline">Months 4-6</div>
+                            </div>
+                        </div>
+                        <p>Focus new water development in areas with moderate to high groundwater potential identified
+                            through GIS-AHP analysis, avoiding low-potential zones without specialized approaches.</p>
+
+                        <ul>
+                            <li>Integrate geological maps into county water planning</li>
+                            <li>Train drilling contractors on geological assessment</li>
+                            <li>Develop site selection guidelines based on potential zones</li>
+                            <li>Establish monitoring system for new developments</li>
+                        </ul>
+                    </div>
+
+                    <div class="framework-phase">
+                        <div class="phase-header">
+                            <div class="phase-number">2</div>
+                            <div>
+                                <h4>Technology Matching</h4>
+                                <div class="phase-timeline">Months 7-9</div>
+                            </div>
+                        </div>
+                        <p>Align water development technologies with geological characteristics: motorized systems for
+                            high-yield areas, manual systems for low-yield areas, specialized equipment for fractured
+                            rock.</p>
+
+                        <ul>
+                            <li>Develop technology selection guidelines</li>
+                            <li>Create maintenance protocols for each technology type</li>
+                            <li>Establish spare parts supply chains</li>
+                            <li>Train community maintenance teams</li>
+                        </ul>
+                    </div>
+
+                    <div class="framework-phase">
+                        <div class="phase-header">
+                            <div class="phase-number">3</div>
+                            <div>
+                                <h4>Capacity Building</h4>
+                                <div class="phase-timeline">Months 10-12</div>
+                            </div>
+                        </div>
+                        <p>Strengthen local management capabilities through training programs, spare parts supply
+                            chains, and community-based maintenance systems for sustainable operations.</p>
+
+                        <ul>
+                            <li>Develop training curriculum for water management</li>
+                            <li>Establish county-level training centers</li>
+                            <li>Create certification program for water technicians</li>
+                            <li>Develop community management models</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Long-Term Planning -->
+        <section class="section-padding bg-gradient">
+            <div class="container">
+                <h2 class="section-title text-white">Long-Term Planning (1-3 Years)</h2>
+                <p class="section-lead text-white">Strategic initiatives for sustainable water resource development and
+                    climate resilience</p>
+
+                <div class="three-column">
+                    <div class="recommendation-card">
+                        <div class="rec-number">1</div>
+                        <h4>Integrated Water Management</h4>
+                        <p>Develop county-level water master plans incorporating geological data, climate projections,
+                            population trends, and infrastructure mapping for holistic resource management.</p>
+                    </div>
+
+                    <div class="recommendation-card">
+                        <div class="rec-number">2</div>
+                        <h4>Climate Resilience</h4>
+                        <p>Design water infrastructure considering climate change impacts on water resources,
+                            incorporating adaptive capacity, drought resilience, and flood protection measures.</p>
+                    </div>
+
+                    <div class="recommendation-card">
+                        <div class="rec-number">3</div>
+                        <h4>Community Engagement</h4>
+                        <p>Strengthen community participation in water point management through ownership models,
+                            decision-making inclusion, and benefit-sharing mechanisms.</p>
+                    </div>
+                </div>
+
+                <div class="implementation-framework" style="margin-top: 40px;">
+                    <div class="framework-phase">
+                        <h4>Policy Development</h4>
+                        <ul>
+                            <li>National guidelines for geological integration in water planning</li>
+                            <li>Standards for climate-resilient water infrastructure</li>
+                            <li>Regulations for sustainable groundwater extraction</li>
+                            <li>Framework for public-private partnerships</li>
+                        </ul>
+                    </div>
+
+                    <div class="framework-phase">
+                        <h4>Institutional Strengthening</h4>
+                        <ul>
+                            <li>Capacity building at county water departments</li>
+                            <li>Establishment of water resource monitoring units</li>
+                            <li>Development of decision support systems</li>
+                            <li>Inter-agency coordination mechanisms</li>
+                        </ul>
+                    </div>
+
+                    <div class="framework-phase">
+                        <h4>Financing Mechanisms</h4>
+                        <ul>
+                            <li>Blended financing for sustainable water infrastructure</li>
+                            <li>Results-based financing for rehabilitation</li>
+                            <li>Community-managed water funds</li>
+                            <li>Climate adaptation financing</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Stakeholder Engagement -->
+        <section class="section-padding">
+            <div class="container">
+                <h2 class="section-title">Stakeholder Engagement</h2>
+                <p class="section-lead">Key stakeholders and their roles in implementing recommendations</p>
+
+                <div class="stakeholder-grid">
+                    <div class="stakeholder-card">
+                        <div class="stakeholder-icon">
+                            <i class="fas fa-landmark"></i>
+                        </div>
+                        <h4>National Government</h4>
+                        <p>Policy development, funding allocation, national standards</p>
+                        <div class="priority-badge priority-high">High Priority</div>
+                    </div>
+
+                    <div class="stakeholder-card">
+                        <div class="stakeholder-icon">
+                            <i class="fas fa-building"></i>
+                        </div>
+                        <h4>County Governments</h4>
+                        <p>Implementation, local regulations, community engagement</p>
+                        <div class="priority-badge priority-high">High Priority</div>
+                    </div>
+
+                    <div class="stakeholder-card">
+                        <div class="stakeholder-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <h4>Communities</h4>
+                        <p>Management, operation, maintenance, feedback</p>
+                        <div class="priority-badge priority-medium">Medium Priority</div>
+                    </div>
+
+                    <div class="stakeholder-card">
+                        <div class="stakeholder-icon">
+                            <i class="fas fa-handshake"></i>
+                        </div>
+                        <h4>Development Partners</h4>
+                        <p>Funding, technical assistance, capacity building</p>
+                        <div class="priority-badge priority-medium">Medium Priority</div>
+                    </div>
+
+                    <div class="stakeholder-card">
+                        <div class="stakeholder-icon">
+                            <i class="fas fa-graduation-cap"></i>
+                        </div>
+                        <h4>Research Institutions</h4>
+                        <p>Monitoring, evaluation, innovation, training</p>
+                        <div class="priority-badge priority-low">Low Priority</div>
+                    </div>
+
+                    <div class="stakeholder-card">
+                        <div class="stakeholder-icon">
+                            <i class="fas fa-industry"></i>
+                        </div>
+                        <h4>Private Sector</h4>
+                        <p>Technology provision, maintenance services, innovation</p>
+                        <div class="priority-badge priority-low">Low Priority</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Future Research Directions -->
+        <section class="section-padding bg-light">
+            <div class="container">
+                <h2 class="section-title">Future Research Directions</h2>
+
+                <div class="three-column">
+                    <div class="content-card">
+                        <h4><i class="fas fa-cloud-sun"></i> Climate Integration</h4>
+                        <p>Incorporate climate change projections into groundwater potential modeling to assess future
+                            water availability under different climate scenarios.</p>
+                        <div class="phase-timeline">Year 2-3</div>
+                    </div>
+
+                    <div class="content-card">
+                        <h4><i class="fas fa-satellite"></i> Real-Time Monitoring</h4>
+                        <p>Develop IoT-based sensor networks for real-time water point monitoring, including
+                            functionality status, water quality, and usage patterns.</p>
+                        <div class="phase-timeline">Year 2</div>
+                    </div>
+
+                    <div class="content-card">
+                        <h4><i class="fas fa-flask"></i> Water Quality Integration</h4>
+                        <p>Expand analysis to include water quality parameters (chemical, biological) to provide
+                            comprehensive assessment of water safety.</p>
+                        <div class="phase-timeline">Year 1-2</div>
+                    </div>
+
+                    <div class="content-card">
+                        <h4><i class="fas fa-chart-line"></i> Economic Analysis</h4>
+                        <p>Incorporate cost-benefit analysis of different water technologies in various geological
+                            settings to optimize investment decisions.</p>
+                        <div class="phase-timeline">Year 2</div>
+                    </div>
+
+                    <div class="content-card">
+                        <h4><i class="fas fa-globe-africa"></i> Regional Application</h4>
+                        <p>Adapt methodology for application in other water-stressed regions in East Africa to support
+                            regional water security planning.</p>
+                        <div class="phase-timeline">Year 3</div>
+                    </div>
+
+                    <div class="content-card">
+                        <h4><i class="fas fa-robot"></i> Machine Learning Enhancement</h4>
+                        <p>Integrate machine learning algorithms for predictive maintenance, failure forecasting, and
+                            optimal site selection.</p>
+                        <div class="phase-timeline">Year 2-3</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Download Section -->
+        <section class="section-padding">
+            <div class="container">
+                <div class="download-section">
+                    <h2>Download Complete Report</h2>
+                    <p class="section-lead">Access the full technical report, datasets, and implementation guidelines
+                    </p>
+
+                    <div class="download-options">
+                        <div class="download-card">
+                            <div class="download-icon">
+                                <i class="fas fa-file-pdf"></i>
+                            </div>
+                            <h4>Full Technical Report</h4>
+                            <p>Complete analysis with all findings, methodologies, and recommendations</p>
+                            <button class="btn btn-primary" onclick="downloadReport('pdf')">
+                                <i class="fas fa-download"></i> Download PDF
+                            </button>
+                        </div>
+
+                        <div class="download-card">
+                            <div class="download-icon">
+                                <i class="fas fa-file-excel"></i>
+                            </div>
+                            <h4>Datasets</h4>
+                            <p>Complete water point data, groundwater potential maps, and analysis results</p>
+                            <button class="btn btn-primary" onclick="downloadReport('data')">
+                                <i class="fas fa-download"></i> Download Data
+                            </button>
+                        </div>
+
+                        <div class="download-card">
+                            <div class="download-icon">
+                                <i class="fas fa-book"></i>
+                            </div>
+                            <h4>Implementation Guidelines</h4>
+                            <p>Step-by-step guide for implementing recommendations at county level</p>
+                            <button class="btn btn-primary" onclick="downloadReport('guidelines')">
+                                <i class="fas fa-download"></i> Download Guide
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- References -->
+        <section class="section-padding bg-light">
+            <div class="container">
+                <h2 class="section-title">References</h2>
+
+                <div class="reference-list">
+                    <div class="reference-item">
+                        <h4>1. Gleeson et al. (2020)</h4>
+                        <p><em>Global Groundwater Sustainability.</em> Annual Review of Earth and Planetary Sciences.
+                        </p>
+                    </div>
+
+                    <div class="reference-item">
+                        <h4>2. Cheng et al. (2002)</h4>
+                        <p><em>Analytic hierarchy process (AHP).</em> Measuring Business Excellence.</p>
+                    </div>
+
+                    <div class="reference-item">
+                        <h4>3. Shinde et al. (2024)</h4>
+                        <p><em>Assessment of groundwater potential zone mapping.</em> Environmental Sciences Europe.</p>
+                    </div>
+
+                    <div class="reference-item">
+                        <h4>4. Pinto et al. (2015)</h4>
+                        <p><em>Delineation of groundwater potential zones.</em> Applied Water Science.</p>
+                    </div>
+
+                    <div class="reference-item">
+                        <h4>5. Agarwal et al. (2013)</h4>
+                        <p><em>Delineation of groundwater potential zone.</em> Journal of Earth System Science.</p>
+                    </div>
+
+                    <div class="reference-item">
+                        <h4>6. Kenya Water Institute (2024)</h4>
+                        <p><em>National Water Point Monitoring Data.</em> Government of Kenya.</p>
+                    </div>
+
+                    <div class="reference-item">
+                        <h4>7. Evidence Action (2023-2024)</h4>
+                        <p><em>Kenya Water Point Data.</em> Evidence Action Monitoring Database.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact & Acknowledgments -->
+        <section class="section-padding">
+            <div class="container">
+                <h2 class="section-title">Contact & Acknowledgments</h2>
+
+                <div class="two-column">
+                    <div>
+                        <h4>Acknowledgments</h4>
+                        <ul class="methodology-list">
+                            <li><i class="fas fa-university"></i> Kenya Water Institute for data access and technical
+                                support</li>
+                            <li><i class="fas fa-building"></i> County Water Departments for field validation and
+                                collaboration</li>
+                            <li><i class="fas fa-chart-line"></i> Evidence Action for water point monitoring data</li>
+                            <li><i class="fas fa-flask"></i> Research institutions for methodological guidance</li>
+                            <li><i class="fas fa-users"></i> Local communities for participation in validation surveys
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h4>Contact Information</h4>
+                        <div class="content-card">
+                            <p><strong>Research Institution:</strong> Water Resources Research Institute</p>
+                            <p><strong>Contact Email:</strong> research@waterresources.ke</p>
+                            <p><strong>Website:</strong> www.waterresourcesresearch.ke</p>
+                            <p><strong>Telephone:</strong> +254 700 000 000</p>
+                            <p><strong>Address:</strong> P.O. Box 00000-00100, Nairobi, Kenya</p>
+
+                            <div style="margin-top: 20px;">
+                                <button class="btn btn-outline">
+                                    <i class="fas fa-envelope"></i> Contact Us
+                                </button>
+                                <button class="btn btn-outline">
+                                    <i class="fas fa-calendar"></i> Request Meeting
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h4><i class="fas fa-water"></i> Kenya Groundwater Analysis</h4>
+                    <p>Comprehensive water resource assessment for sustainable management in Kenya.</p>
+                </div>
+
+                <div class="footer-col">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="infrastructure.html">Infrastructure Analysis</a></li>
+                        <li><a href="hydrogeology.html">Hydrogeological Assessment</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="dashboard.html">Interactive Dashboard</a></li>
+                        <li><a href="methodology.html">Methodology</a></li>
+                        <li><a href="recommendations.html">Recommendations</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h4>Contact</h4>
+                    <p><i class="fas fa-envelope"></i> research@waterresources.ke</p>
+                    <p><i class="fas fa-map-marker-alt"></i> Water Resources Research Institute</p>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2025 Water Resources Research Institute. All rights reserved.</p>
+                <p>Publication Date: December 2025 | Version: 1.0</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="js/main.js"></script>
+    <script>
+        function toggleCheckbox(element) {
+            element.classList.toggle('checked');
+            if (element.classList.contains('checked')) {
+                element.innerHTML = '<i class="fas fa-check"></i>';
+            } else {
+                element.innerHTML = '';
+            }
+        }
+
+        function downloadReport(type) {
+            let fileName, fileType, message;
+
+            switch (type) {
+                case 'pdf':
+                    fileName = 'Kenya-Groundwater-Analysis-Report-2025.pdf';
+                    fileType = 'PDF';
+                    message = 'Technical Report';
+                    break;
+                case 'data':
+                    fileName = 'Kenya-Water-Data-2025.zip';
+                    fileType = 'ZIP';
+                    message = 'Datasets';
+                    break;
+                case 'guidelines':
+                    fileName = 'Implementation-Guidelines-2025.pdf';
+                    fileType = 'PDF';
+                    message = 'Implementation Guidelines';
+                    break;
+                default:
+                    fileName = 'report.pdf';
+                    fileType = 'PDF';
+                    message = 'Report';
+            }
+
+            alert(`Downloading ${message}...\n\nIn a production environment, this would download: ${fileName}`);
+
+            // In production, this would trigger actual download
+            // For now, we'll simulate it
+            const link = document.createElement('a');
+            link.href = '#'; // In production, this would be the actual file URL
+            link.download = fileName;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // Initialize checklist items
+        document.addEventListener('DOMContentLoaded', function () {
+            // Add some checked items for demonstration
+            const checkboxes = document.querySelectorAll('.checklist-checkbox');
+            checkboxes.forEach((checkbox, index) => {
+                if (index < 2) { // Check first two items
+                    checkbox.classList.add('checked');
+                    checkbox.innerHTML = '<i class="fas fa-check"></i>';
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

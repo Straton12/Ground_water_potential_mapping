@@ -1,0 +1,2727 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kenya Water Resources Dashboard | Groundwater Analysis</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.min.css" />
+    <style>
+        :root {
+            /* Colors - Professional Dashboard Theme */
+            --primary: #2c3e50;
+            --primary-light: #34495e;
+            --secondary: #3498db;
+            --accent: #1abc9c;
+            --success: #2ecc71;
+            --warning: #f39c12;
+            --danger: #e74c3c;
+            --info: #9b59b6;
+
+            --dark: #1a1a2e;
+            --light: #f8f9fa;
+            --gray: #6c757d;
+            --gray-light: #e9ecef;
+            --border: #dee2e6;
+
+            /* Backgrounds */
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8f9fa;
+            --bg-sidebar: #2c3e50;
+            --bg-card: #ffffff;
+
+            /* Typography */
+            --font-xs: 0.75rem;
+            --font-sm: 0.875rem;
+            --font-base: 0.9375rem;
+            --font-md: 1rem;
+            --font-lg: 1.125rem;
+            --font-xl: 1.25rem;
+            --font-2xl: 1.5rem;
+            --font-3xl: 1.75rem;
+
+            /* Spacing */
+            --space-1: 0.25rem;
+            --space-2: 0.5rem;
+            --space-3: 0.75rem;
+            --space-4: 1rem;
+            --space-5: 1.25rem;
+            --space-6: 1.5rem;
+            --space-7: 1.75rem;
+            --space-8: 2rem;
+            --space-9: 2.5rem;
+            --space-10: 3rem;
+
+            /* Design Elements */
+            --radius-sm: 0.25rem;
+            --radius: 0.375rem;
+            --radius-lg: 0.5rem;
+            --radius-xl: 0.75rem;
+
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+            --shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.1);
+
+            --transition: all 0.2s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            font-size: var(--font-base);
+            line-height: 1.5;
+            color: var(--dark);
+            background-color: var(--light);
+            overflow-x: hidden;
+        }
+
+        .dashboard-container {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background: var(--bg-sidebar);
+            color: white;
+            padding: var(--space-6);
+            position: fixed;
+            width: 280px;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 1000;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            margin-bottom: var(--space-8);
+            padding-bottom: var(--space-4);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-header i {
+            font-size: var(--font-2xl);
+            color: var(--accent);
+        }
+
+        .sidebar-header h1 {
+            font-size: var(--font-lg);
+            font-weight: 600;
+            line-height: 1.2;
+        }
+
+        .sidebar-nav {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-2);
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            padding: var(--space-3) var(--space-4);
+            border-radius: var(--radius);
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .nav-item.active {
+            background: var(--secondary);
+            color: white;
+            font-weight: 500;
+        }
+
+        .nav-item i {
+            width: 20px;
+            text-align: center;
+        }
+
+        .sidebar-section {
+            margin-top: var(--space-8);
+        }
+
+        .sidebar-section h3 {
+            font-size: var(--font-sm);
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.6);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: var(--space-3);
+        }
+
+        /* Main Content */
+        .main-content {
+            grid-column: 2;
+            padding: var(--space-4);
+            background: var(--bg-secondary);
+        }
+
+        /* Top Bar */
+        .top-bar {
+            background: var(--bg-primary);
+            border-radius: var(--radius-lg);
+            padding: var(--space-4) var(--space-6);
+            margin-bottom: var(--space-4);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow);
+        }
+
+        .page-title {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+        }
+
+        .page-title h2 {
+            font-size: var(--font-xl);
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .page-title i {
+            color: var(--secondary);
+        }
+
+        .toolbar {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--space-4);
+            margin-bottom: var(--space-4);
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            padding: var(--space-5);
+            display: flex;
+            align-items: center;
+            gap: var(--space-4);
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            border-left: 4px solid transparent;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .stat-card.primary {
+            border-left-color: var(--primary);
+        }
+
+        .stat-card.success {
+            border-left-color: var(--success);
+        }
+
+        .stat-card.warning {
+            border-left-color: var(--warning);
+        }
+
+        .stat-card.info {
+            border-left-color: var(--info);
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: var(--font-xl);
+            color: white;
+        }
+
+        .stat-card.primary .stat-icon {
+            background: var(--primary);
+        }
+
+        .stat-card.success .stat-icon {
+            background: var(--success);
+        }
+
+        .stat-card.warning .stat-icon {
+            background: var(--warning);
+        }
+
+        .stat-card.info .stat-icon {
+            background: var(--info);
+        }
+
+        .stat-content h3 {
+            font-size: var(--font-2xl);
+            font-weight: 700;
+            margin-bottom: var(--space-1);
+        }
+
+        .stat-content p {
+            font-size: var(--font-sm);
+            color: var(--gray);
+        }
+
+        /* Main Dashboard Grid */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: var(--space-4);
+            margin-bottom: var(--space-4);
+        }
+
+        /* Map Container */
+        .map-container {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            height: 600px;
+            position: relative;
+        }
+
+        #main-map {
+            width: 100%;
+            height: 100%;
+            border-radius: var(--radius-lg);
+        }
+
+        /* Map Controls */
+        .map-controls-container {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            padding: var(--space-4);
+            box-shadow: var(--shadow);
+            height: 600px;
+            overflow-y: auto;
+        }
+
+        .control-section {
+            margin-bottom: var(--space-6);
+        }
+
+        .control-section h4 {
+            font-size: var(--font-md);
+            font-weight: 600;
+            margin-bottom: var(--space-3);
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+        }
+
+        .control-section h4 i {
+            color: var(--secondary);
+        }
+
+        /* Filter Controls */
+        .filter-group {
+            margin-bottom: var(--space-4);
+        }
+
+        .filter-group label {
+            display: block;
+            font-size: var(--font-sm);
+            font-weight: 500;
+            margin-bottom: var(--space-2);
+            color: var(--gray);
+        }
+
+        .filter-select,
+        .filter-input {
+            width: 100%;
+            padding: var(--space-2) var(--space-3);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            font-size: var(--font-sm);
+            background: var(--bg-primary);
+            transition: var(--transition);
+        }
+
+        .filter-select:focus,
+        .filter-input:focus {
+            outline: none;
+            border-color: var(--secondary);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+
+        .filter-checkboxes {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-2);
+        }
+
+        .filter-checkbox {
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+            cursor: pointer;
+            font-size: var(--font-sm);
+        }
+
+        .filter-checkbox input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+
+        /* Layer Controls */
+        .layer-controls {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-2);
+        }
+
+        .layer-control {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: var(--space-2) var(--space-3);
+            background: var(--bg-secondary);
+            border-radius: var(--radius);
+            transition: var(--transition);
+        }
+
+        .layer-control:hover {
+            background: var(--gray-light);
+        }
+
+        .layer-info {
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+        }
+
+        .layer-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 2px;
+            display: inline-block;
+        }
+
+        /* Button Styles */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--space-2);
+            padding: var(--space-2) var(--space-4);
+            border-radius: var(--radius);
+            font-size: var(--font-sm);
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2980b9;
+            transform: translateY(-1px);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--gray);
+        }
+
+        .btn-outline:hover {
+            border-color: var(--secondary);
+            color: var(--secondary);
+        }
+
+        .btn-sm {
+            padding: var(--space-1) var(--space-3);
+            font-size: var(--font-xs);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: var(--space-2);
+        }
+
+        /* Charts Grid */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--space-4);
+            margin-bottom: var(--space-4);
+        }
+
+        .chart-card {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            padding: var(--space-4);
+            box-shadow: var(--shadow);
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-3);
+        }
+
+        .chart-header h4 {
+            font-size: var(--font-md);
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .chart-container {
+            height: 250px;
+            position: relative;
+        }
+
+        /* Map Overlay Controls */
+        .map-overlay-controls {
+            position: absolute;
+            top: var(--space-4);
+            right: var(--space-4);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-2);
+        }
+
+        .map-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: var(--radius);
+            background: white;
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: var(--shadow);
+        }
+
+        .map-btn:hover {
+            background: var(--secondary);
+            color: white;
+            border-color: var(--secondary);
+        }
+
+        /* Legend */
+        .map-legend {
+            position: absolute;
+            bottom: var(--space-4);
+            right: var(--space-4);
+            background: white;
+            border-radius: var(--radius);
+            padding: var(--space-3);
+            box-shadow: var(--shadow);
+            z-index: 1000;
+            max-width: 250px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .legend-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-2);
+        }
+
+        .legend-header h5 {
+            font-size: var(--font-sm);
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .legend-content {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-2);
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+            font-size: var(--font-xs);
+        }
+
+        .legend-color {
+            width: 16px;
+            height: 16px;
+            border-radius: var(--radius-sm);
+            flex-shrink: 0;
+        }
+
+        /* Loading Overlay */
+        .loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.9);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            border-radius: var(--radius-lg);
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--gray-light);
+            border-top: 3px solid var(--secondary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: var(--space-3);
+        }
+
+        .loading-text {
+            font-size: var(--font-sm);
+            color: var(--gray);
+            font-weight: 500;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* County Info Panel */
+        .county-info-panel {
+            position: absolute;
+            top: var(--space-4);
+            left: var(--space-4);
+            background: white;
+            border-radius: var(--radius);
+            padding: var(--space-3);
+            box-shadow: var(--shadow);
+            z-index: 1000;
+            max-width: 300px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .info-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-2);
+            padding-bottom: var(--space-2);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .info-header h5 {
+            font-size: var(--font-sm);
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .info-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: var(--space-2);
+            margin-top: var(--space-2);
+        }
+
+        .info-stat {
+            text-align: center;
+            padding: var(--space-2);
+            background: var(--bg-secondary);
+            border-radius: var(--radius);
+        }
+
+        .info-stat-value {
+            font-size: var(--font-lg);
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .info-stat-label {
+            font-size: var(--font-xs);
+            color: var(--gray);
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            background: var(--bg-secondary);
+            border-radius: var(--radius);
+            padding: var(--space-1);
+            margin-bottom: var(--space-4);
+        }
+
+        .tab {
+            flex: 1;
+            padding: var(--space-2) var(--space-3);
+            text-align: center;
+            font-size: var(--font-sm);
+            font-weight: 500;
+            color: var(--gray);
+            cursor: pointer;
+            border-radius: calc(var(--radius) - var(--space-1));
+            transition: var(--transition);
+        }
+
+        .tab:hover {
+            background: var(--gray-light);
+        }
+
+        .tab.active {
+            background: var(--secondary);
+            color: white;
+        }
+
+        /* Tooltips */
+        .tooltip {
+            position: relative;
+        }
+
+        .tooltip:hover::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--dark);
+            color: white;
+            padding: var(--space-2) var(--space-3);
+            border-radius: var(--radius-sm);
+            font-size: var(--font-xs);
+            white-space: nowrap;
+            z-index: 1000;
+            margin-bottom: var(--space-1);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .dashboard-container {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                position: relative;
+                width: 100%;
+                height: auto;
+            }
+
+            .main-content {
+                grid-column: 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .top-bar {
+                flex-direction: column;
+                gap: var(--space-3);
+                align-items: stretch;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .map-container {
+                height: 400px;
+            }
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-secondary);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--gray);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <i class="fas fa-tint"></i>
+                <div>
+                    <h1>Kenya Water Resources</h1>
+                    <p style="font-size: var(--font-xs); opacity: 0.7;">Dashboard v2.0</p>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="index.html" class="nav-item active">
+                    <i class="fas fa-home"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="infrastructure.html" class="nav-item">
+                    <i class="fas fa-network-wired"></i>
+                    <span>Infrastructure</span>
+                </a>
+                <a href="hydrogeology.html" class="nav-item">
+                    <i class="fas fa-layer-group"></i>
+                    <span>Hydrogeology</span>
+                </a>
+                <a href="analysis.html" class="nav-item">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Analysis</span>
+                </a>
+                <a href="reports.html" class="nav-item">
+                    <i class="fas fa-file-alt"></i>
+                    <span>Reports</span>
+                </a>
+                <a href="methodology.html" class="nav-item">
+                    <i class="fas fa-cogs"></i>
+                    <span>Methodology</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-section">
+                <h3>Quick Stats</h3>
+                <div style="background: rgba(255,255,255,0.05); padding: var(--space-3); border-radius: var(--radius);">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: var(--space-2);">
+                        <span style="font-size: var(--font-xs); opacity: 0.7;">Total Points:</span>
+                        <span style="font-weight: 600;" id="sidebar-total">0</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: var(--space-2);">
+                        <span style="font-size: var(--font-xs); opacity: 0.7;">Functional:</span>
+                        <span style="font-weight: 600; color: var(--success);" id="sidebar-functional">0%</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between;">
+                        <span style="font-size: var(--font-xs); opacity: 0.7;">ASAL Counties:</span>
+                        <span style="font-weight: 600;" id="sidebar-asal">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <h3>Data Sources</h3>
+                <div style="display: flex; flex-direction: column; gap: var(--space-2);">
+                    <div style="display: flex; align-items: center; gap: var(--space-2); font-size: var(--font-xs);">
+                        <i class="fas fa-check-circle" style="color: var(--success);"></i>
+                        <span>Evidence Action</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: var(--space-2); font-size: var(--font-xs);">
+                        <i class="fas fa-check-circle" style="color: var(--success);"></i>
+                        <span>Water Institute</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: var(--space-2); font-size: var(--font-xs);">
+                        <i class="fas fa-check-circle" style="color: var(--success);"></i>
+                        <span>NASA EarthData</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Top Bar -->
+            <div class="top-bar">
+                <div class="page-title">
+                    <i class="fas fa-water"></i>
+                    <div>
+                        <h2>Water Resources Dashboard</h2>
+                        <p style="font-size: var(--font-sm); color: var(--gray); margin-top: 2px;">
+                            Real-time monitoring of water points across Kenya
+                        </p>
+                    </div>
+                </div>
+
+                <div class="toolbar">
+                    <div style="margin-right: var(--space-4);">
+                        <p style="font-size: var(--font-xs); color: var(--gray);">Last updated:</p>
+                        <p style="font-size: var(--font-sm); font-weight: 500;" id="last-updated">Today, 10:30 AM</p>
+                    </div>
+                    <button class="btn btn-primary" id="refresh-data">
+                        <i class="fas fa-sync-alt"></i>
+                        Refresh
+                    </button>
+                </div>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="stats-grid">
+                <div class="stat-card primary">
+                    <div class="stat-icon">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="total-points">0</h3>
+                        <p>Total Water Points</p>
+                    </div>
+                </div>
+
+                <div class="stat-card success">
+                    <div class="stat-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="functional-rate">0%</h3>
+                        <p>Functional Rate</p>
+                    </div>
+                </div>
+
+                <div class="stat-card warning">
+                    <div class="stat-icon">
+                        <i class="fas fa-layer-group"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="groundwater-percent">0%</h3>
+                        <p>Groundwater Sources</p>
+                    </div>
+                </div>
+
+                <div class="stat-card info">
+                    <div class="stat-icon">
+                        <i class="fas fa-vector-square"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="county-count">0</h3>
+                        <p>ASAL Counties</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabs for Map Views -->
+            <div class="tabs" id="map-tabs">
+                <div class="tab active" data-view="points">Water Points</div>
+                <div class="tab" data-view="suitability">Suitability Map</div>
+                <div class="tab" data-view="infrastructure">Infrastructure</div>
+                <div class="tab" data-view="analysis">Analysis</div>
+            </div>
+
+            <!-- Main Dashboard Grid -->
+            <div class="dashboard-grid">
+                <!-- Map Container -->
+                <div class="map-container">
+                    <div id="main-map"></div>
+
+                    <!-- Loading Overlay -->
+                    <div class="loading-overlay" id="map-loading">
+                        <div class="loading-spinner"></div>
+                        <div class="loading-text" id="loading-text">Loading map data...</div>
+                    </div>
+
+                    <!-- Map Overlay Controls -->
+                    <div class="map-overlay-controls">
+                        <button class="map-btn tooltip" data-tooltip="Reset View" id="reset-view">
+                            <i class="fas fa-globe-africa"></i>
+                        </button>
+                        <button class="map-btn tooltip" data-tooltip="My Location" id="locate-me">
+                            <i class="fas fa-location-crosshairs"></i>
+                        </button>
+                        <button class="map-btn tooltip" data-tooltip="Export Map" id="export-map">
+                            <i class="fas fa-download"></i>
+                        </button>
+                        <button class="map-btn tooltip" data-tooltip="Full Screen" id="fullscreen">
+                            <i class="fas fa-expand"></i>
+                        </button>
+                    </div>
+
+                    <!-- Legend -->
+                    <div class="map-legend" id="map-legend">
+                        <div class="legend-header">
+                            <h5>Water Point Status</h5>
+                            <button class="btn btn-sm btn-outline" id="toggle-legend">Hide</button>
+                        </div>
+                        <div class="legend-content" id="legend-content">
+                            <!-- Legend items will be populated dynamically -->
+                        </div>
+                    </div>
+
+                    <!-- County Info Panel -->
+                    <div class="county-info-panel" id="county-info" style="display: none;">
+                        <div class="info-header">
+                            <h5 id="county-name">County Details</h5>
+                            <button class="btn btn-sm btn-outline" id="close-info">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <div id="county-details">
+                            <!-- County details will be populated dynamically -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Map Controls -->
+                <div class="map-controls-container">
+                    <div class="control-section">
+                        <h4><i class="fas fa-filter"></i> Data Filters</h4>
+
+                        <div class="filter-group">
+                            <label for="county-filter">Select County</label>
+                            <select id="county-filter" class="filter-select">
+                                <option value="all">All Counties</option>
+                                <!-- Populated dynamically -->
+                            </select>
+                        </div>
+
+                        <div class="filter-group">
+                            <label>Status Filter</label>
+                            <div class="filter-checkboxes">
+                                <label class="filter-checkbox">
+                                    <input type="checkbox" value="Functional" checked>
+                                    <span style="color:#2ecc71; margin-right: 4px;">●</span>
+                                    Functional
+                                </label>
+                                <label class="filter-checkbox">
+                                    <input type="checkbox" value="Non-Functional" checked>
+                                    <span style="color:#e74c3c; margin-right: 4px;">●</span>
+                                    Non-Functional
+                                </label>
+                                <label class="filter-checkbox">
+                                    <input type="checkbox" value="Needs Repair" checked>
+                                    <span style="color:#f39c12; margin-right: 4px;">●</span>
+                                    Needs Repair
+                                </label>
+                                <label class="filter-checkbox">
+                                    <input type="checkbox" value="Unknown" checked>
+                                    <span style="color:#95a5a6; margin-right: 4px;">●</span>
+                                    Unknown
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="filter-group">
+                            <label for="technology-filter">Technology Type</label>
+                            <select id="technology-filter" class="filter-select">
+                                <option value="all">All Technologies</option>
+                                <!-- Populated dynamically -->
+                            </select>
+                        </div>
+
+                        <div class="filter-group">
+                            <label for="source-filter">Water Source</label>
+                            <select id="source-filter" class="filter-select">
+                                <option value="all">All Sources</option>
+                                <!-- Populated dynamically -->
+                            </select>
+                        </div>
+
+                        <div class="btn-group" style="margin-top: var(--space-4);">
+                            <button class="btn btn-primary" id="apply-filters">
+                                <i class="fas fa-check"></i>
+                                Apply Filters
+                            </button>
+                            <button class="btn btn-outline" id="reset-filters">
+                                <i class="fas fa-redo"></i>
+                                Reset
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="control-section">
+                        <h4><i class="fas fa-layer-group"></i> Map Layers</h4>
+
+                        <div class="layer-controls">
+                            <div class="layer-control">
+                                <div class="layer-info">
+                                    <div class="layer-color" style="background-color: #0066ff;"></div>
+                                    <span>Water Points</span>
+                                </div>
+                                <input type="checkbox" id="layer-waterpoints" checked>
+                            </div>
+
+                            <div class="layer-control">
+                                <div class="layer-info">
+                                    <div class="layer-color" style="background-color: #1a5fb4;"></div>
+                                    <span>County Boundaries</span>
+                                </div>
+                                <input type="checkbox" id="layer-counties" checked>
+                            </div>
+
+                            <div class="layer-control">
+                                <div class="layer-info">
+                                    <div class="layer-color" style="background-color: #26a269;"></div>
+                                    <span>Sub-Counties</span>
+                                </div>
+                                <input type="checkbox" id="layer-subcounties">
+                            </div>
+
+                            <div class="layer-control">
+                                <div class="layer-info">
+                                    <div class="layer-color"
+                                        style="background: linear-gradient(to right, #e74c3c, #f39c12, #2ecc71);"></div>
+                                    <span>Suitability Map</span>
+                                </div>
+                                <input type="checkbox" id="layer-suitability">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="control-section">
+                        <h4><i class="fas fa-palette"></i> Base Map</h4>
+
+                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-2);">
+                            <button class="btn btn-outline active" data-basemap="osm">
+                                <i class="fas fa-map"></i>
+                                OpenStreetMap
+                            </button>
+                            <button class="btn btn-outline" data-basemap="satellite">
+                                <i class="fas fa-satellite"></i>
+                                Satellite
+                            </button>
+                            <button class="btn btn-outline" data-basemap="topo">
+                                <i class="fas fa-mountain"></i>
+                                Topography
+                            </button>
+                            <button class="btn btn-outline" data-basemap="dark">
+                                <i class="fas fa-moon"></i>
+                                Dark Mode
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="control-section">
+                        <h4><i class="fas fa-sliders-h"></i> Display Settings</h4>
+
+                        <div class="filter-group">
+                            <label for="point-opacity">Point Opacity</label>
+                            <input type="range" id="point-opacity" min="0" max="100" value="80" class="filter-input">
+                        </div>
+
+                        <div class="filter-group">
+                            <label for="point-size">Point Size</label>
+                            <input type="range" id="point-size" min="1" max="10" value="5" class="filter-input">
+                        </div>
+
+                        <div class="filter-group">
+                            <label for="cluster-distance">Cluster Distance</label>
+                            <input type="range" id="cluster-distance" min="10" max="100" value="50"
+                                class="filter-input">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts Grid -->
+            <div class="charts-grid">
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h4>Status Distribution</h4>
+                        <div class="btn-group">
+                            <button class="btn btn-sm btn-outline active" data-chart-type="pie">Pie</button>
+                            <button class="btn btn-sm btn-outline" data-chart-type="bar">Bar</button>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="status-chart"></canvas>
+                    </div>
+                </div>
+
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h4>Technology Types</h4>
+                        <div class="btn-group">
+                            <button class="btn btn-sm btn-outline" data-chart-type="bar">Bar</button>
+                            <button class="btn btn-sm btn-outline active" data-chart-type="doughnut">Donut</button>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="tech-chart"></canvas>
+                    </div>
+                </div>
+
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h4>County Performance</h4>
+                        <div class="btn-group">
+                            <button class="btn btn-sm btn-outline active"
+                                data-chart-type="horizontal">Horizontal</button>
+                            <button class="btn btn-sm btn-outline" data-chart-type="vertical">Vertical</button>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="county-chart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+    <script src="https://unpkg.com/chart.js@4.4.0/dist/chart.umd.js"></script>
+    <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+    <script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
+
+    <script>
+        // Application State
+        const WaterDashboard = {
+            // Core State
+            map: null,
+            activeView: 'points',
+
+            // Data Storage
+            waterPoints: [],
+            counties: [],
+            subCounties: [],
+            suitabilityData: [],
+
+            // Filter State
+            filters: {
+                county: 'all',
+                status: ['Functional', 'Non-Functional', 'Needs Repair', 'Unknown'],
+                technology: 'all',
+                source: 'all'
+            },
+
+            // Layer References
+            layers: {
+                waterPoints: L.layerGroup(),
+                clustered: null,
+                heatmap: null,
+                counties: L.layerGroup(),
+                subCounties: L.layerGroup(),
+                suitability: L.layerGroup(),
+                currentBasemap: 'osm'
+            },
+
+            // Statistics
+            stats: {
+                totalPoints: 0,
+                functional: 0,
+                nonFunctional: 0,
+                needsRepair: 0,
+                unknown: 0,
+                groundwaterPoints: 0,
+                countiesCount: 0
+            },
+
+            // Chart Instances
+            charts: {},
+
+            // UI State
+            ui: {
+                selectedCounty: null,
+                legendVisible: true,
+                infoPanelVisible: false
+            }
+        };
+
+        // Configuration
+        const Config = {
+            statusColors: {
+                'Functional': '#2ecc71',
+                'Non-Functional': '#e74c3c',
+                'Needs Repair': '#f39c12',
+                'Unknown': '#95a5a6'
+            },
+
+            suitabilityColors: {
+                1: '#e74c3c',  // Very Low
+                2: '#f39c12',  // Low
+                3: '#f1c40f',  // Medium-Low
+                4: '#2ecc71',  // Medium
+                5: '#27ae60',  // Medium-High
+                6: '#1e8449',  // High
+                7: '#186a3b'   // Very High
+            },
+
+            basemaps: {
+                osm: L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '© OpenStreetMap contributors',
+                    maxZoom: 19
+                }),
+                satellite: L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+                    attribution: '© Esri, Maxar, Earthstar Geographics',
+                    maxZoom: 19
+                }),
+                topo: L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
+                    attribution: '© OpenTopoMap',
+                    maxZoom: 17
+                }),
+                dark: L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+                    attribution: '© CARTO',
+                    maxZoom: 19
+                })
+            },
+
+            kenyaBounds: [[-4.9, 33.8], [5.0, 42.0]],
+            asalBounds: [[0.5, 36.5], [4.5, 41.0]]
+        };
+
+        // Initialize Application
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                await initializeDashboard();
+                setupEventListeners();
+                updateUI();
+            } catch (error) {
+                console.error('Failed to initialize dashboard:', error);
+                showError('Failed to load dashboard. Please refresh the page.');
+            }
+        });
+
+        // Initialize Dashboard
+        async function initializeDashboard() {
+            updateLoadingText('Initializing dashboard...');
+
+            // Initialize map
+            initializeMap();
+
+            // Load all data
+            await Promise.all([
+                loadWaterPoints(),
+                loadCounties(),
+                loadSubCounties(),
+                loadSuitabilityData()
+            ]);
+
+            // Initialize charts
+            initializeCharts();
+
+            // Setup map layers
+            setupMapLayers();
+
+            // Update statistics
+            calculateStatistics();
+
+            // Hide loading overlay
+            setTimeout(() => {
+                document.getElementById('map-loading').style.opacity = '0';
+                setTimeout(() => {
+                    document.getElementById('map-loading').style.display = 'none';
+                }, 300);
+            }, 500);
+        }
+
+        // Initialize Map
+        function initializeMap() {
+            WaterDashboard.map = L.map('main-map', {
+                center: [0.5, 37.8],
+                zoom: 6,
+                minZoom: 5,
+                maxZoom: 18,
+                maxBounds: Config.kenyaBounds,
+                maxBoundsViscosity: 1.0
+            });
+
+            // Add default basemap
+            Config.basemaps.osm.addTo(WaterDashboard.map);
+
+            // Add scale control
+            L.control.scale({ imperial: false, position: 'bottomleft' }).addTo(WaterDashboard.map);
+
+            // Add geocoder
+            L.Control.geocoder({
+                defaultMarkGeocode: false,
+                position: 'topleft',
+                placeholder: 'Search location...'
+            })
+                .on('markgeocode', (e) => {
+                    WaterDashboard.map.fitBounds(e.geocode.bbox);
+                })
+                .addTo(WaterDashboard.map);
+        }
+
+        // Convert ESRI JSON to GeoJSON
+        function esriToGeoJSON(esriJson) {
+            if (!esriJson || !esriJson.features) {
+                console.error('Invalid ESRI JSON format');
+                return { type: 'FeatureCollection', features: [] };
+            }
+
+            const features = esriJson.features.map(feature => {
+                // Handle ESRI geometry format
+                let geometry = null;
+                if (feature.geometry) {
+                    if (feature.geometry.rings) {
+                        // Polygon geometry
+                        geometry = {
+                            type: 'Polygon',
+                            coordinates: feature.geometry.rings
+                        };
+                    } else if (feature.geometry.x !== undefined && feature.geometry.y !== undefined) {
+                        // Point geometry (coordinates are swapped in ESRI JSON)
+                        geometry = {
+                            type: 'Point',
+                            coordinates: [feature.geometry.x, feature.geometry.y]
+                        };
+                    } else if (feature.geometry.paths) {
+                        // Polyline geometry
+                        geometry = {
+                            type: 'LineString',
+                            coordinates: feature.geometry.paths[0]
+                        };
+                    }
+                }
+
+                return {
+                    type: 'Feature',
+                    properties: feature.attributes || {},
+                    geometry: geometry
+                };
+            });
+
+            return {
+                type: 'FeatureCollection',
+                features: features
+            };
+        }
+
+        // Load Water Points Data
+        async function loadWaterPoints() {
+            updateLoadingText('Loading water points data...');
+
+            try {
+                const paths = [
+                    'data/Asal_water_points.json',
+                    'Asal_water_points.json'
+                ];
+
+                let data = null;
+                for (const path of paths) {
+                    try {
+                        const response = await fetch(path);
+                        if (response.ok) {
+                            data = await response.json();
+                            console.log(`Loaded water points from: ${path}`);
+                            break;
+                        }
+                    } catch (e) {
+                        console.log(`Failed to load from ${path}:`, e.message);
+                        continue;
+                    }
+                }
+
+                if (!data) {
+                    throw new Error('No water points data found');
+                }
+
+                // Convert ESRI JSON to GeoJSON
+                const geoJsonData = esriToGeoJSON(data);
+                WaterDashboard.waterPoints = geoJsonData.features || [];
+
+                // Process water points
+                processWaterPoints();
+
+                // Populate filters
+                populateFilters();
+
+            } catch (error) {
+                console.error('Error loading water points:', error);
+                // Don't load sample data, just show error
+                showError(`Water points data not found. Please check data files.`);
+            }
+        }
+
+        // Load Counties Data
+        async function loadCounties() {
+            try {
+                const paths = [
+                    'data/Asal_counties.json',
+                    'Asal_counties.json'
+                ];
+
+                let data = null;
+                for (const path of paths) {
+                    try {
+                        const response = await fetch(path);
+                        if (response.ok) {
+                            data = await response.json();
+                            console.log(`Loaded counties from: ${path}`);
+                            break;
+                        }
+                    } catch (e) {
+                        continue;
+                    }
+                }
+
+                if (data) {
+                    // Convert ESRI JSON to GeoJSON
+                    const geoJsonData = esriToGeoJSON(data);
+                    WaterDashboard.counties = geoJsonData.features || [];
+                    createCountyLayers();
+                } else {
+                    console.log('No counties data found');
+                }
+
+            } catch (error) {
+                console.error('Error loading counties:', error);
+                // Create placeholder counties
+                createPlaceholderCounties();
+            }
+        }
+
+        // Load Sub-Counties Data
+        async function loadSubCounties() {
+            try {
+                const paths = [
+                    'data/Asal_sub_counties.json',
+                    'Asal_sub_counties.json',
+                    'data/Asal_sub_countie.json',
+                    'Asal_sub_countie.json'
+                ];
+
+                let data = null;
+                for (const path of paths) {
+                    try {
+                        const response = await fetch(path);
+                        if (response.ok) {
+                            data = await response.json();
+                            console.log(`Loaded sub-counties from: ${path}`);
+                            break;
+                        }
+                    } catch (e) {
+                        continue;
+                    }
+                }
+
+                if (data) {
+                    // Convert ESRI JSON to GeoJSON
+                    const geoJsonData = esriToGeoJSON(data);
+                    WaterDashboard.subCounties = geoJsonData.features || [];
+                    createSubCountyLayers();
+                }
+
+            } catch (error) {
+                console.error('Error loading sub-counties:', error);
+            }
+        }
+
+        // Load Suitability Data
+        async function loadSuitabilityData() {
+            try {
+                const paths = [
+                    'data/Suitable_json.json',
+                    'Suitable_json.json',
+                    'data/Suitable.json',
+                    'Suitable.json'
+                ];
+
+                let data = null;
+                for (const path of paths) {
+                    try {
+                        const response = await fetch(path);
+                        if (response.ok) {
+                            data = await response.json();
+                            console.log(`Loaded suitability data from: ${path}`);
+                            break;
+                        }
+                    } catch (e) {
+                        continue;
+                    }
+                }
+
+                if (data) {
+                    // Convert ESRI JSON to GeoJSON
+                    const geoJsonData = esriToGeoJSON(data);
+                    WaterDashboard.suitabilityData = geoJsonData.features || [];
+                    createSuitabilityLayer();
+                } else {
+                    console.log('No suitability data found');
+                }
+
+            } catch (error) {
+                console.error('Error loading suitability data:', error);
+            }
+        }
+
+        // Process Water Points
+        function processWaterPoints() {
+            // Clear existing layer
+            WaterDashboard.layers.waterPoints.clearLayers();
+
+            // Reset statistics
+            WaterDashboard.stats = {
+                totalPoints: WaterDashboard.waterPoints.length,
+                functional: 0,
+                nonFunctional: 0,
+                needsRepair: 0,
+                unknown: 0,
+                groundwaterPoints: 0,
+                countiesCount: 0
+            };
+
+            const counties = new Set();
+            const technologies = new Set();
+            const sources = new Set();
+
+            // Process each water point
+            WaterDashboard.waterPoints.forEach((point, index) => {
+                const props = point.properties || {};
+                const geometry = point.geometry || {};
+
+                // Extract coordinates from GeoJSON format
+                let lat, lng;
+                if (geometry.type === 'Point' && geometry.coordinates) {
+                    // GeoJSON format: [longitude, latitude]
+                    [lng, lat] = geometry.coordinates;
+                } else if (geometry.x && geometry.y) {
+                    // ESRI format
+                    lat = geometry.y;
+                    lng = geometry.x;
+                } else {
+                    return; // Skip invalid points
+                }
+
+                // Extract properties
+                const status = props.status_cle || props.STATUS || props.status || 'Unknown';
+                const tech = props.water_tech || props.WATER_TECH || props.technology || 'Unknown';
+                const source = props.water_sour || props.WATER_SOUR || props.source || 'Unknown';
+                const county = props.clean_adm1 || props.COUNTY || props.county || 'Unknown';
+
+                // Normalize status
+                let normalizedStatus = 'Unknown';
+                if (status === 'Functional') {
+                    normalizedStatus = 'Functional';
+                    WaterDashboard.stats.functional++;
+                } else if (status === 'Non-Functional' || status === 'Abandoned') {
+                    normalizedStatus = 'Non-Functional';
+                    WaterDashboard.stats.nonFunctional++;
+                } else if (status.includes('Repair') || status.includes('repair')) {
+                    normalizedStatus = 'Needs Repair';
+                    WaterDashboard.stats.needsRepair++;
+                } else {
+                    normalizedStatus = 'Unknown';
+                    WaterDashboard.stats.unknown++;
+                }
+
+                // Groundwater count
+                if (source && (
+                    source.toLowerCase().includes('well') ||
+                    source.toLowerCase().includes('borehole') ||
+                    source.toLowerCase().includes('groundwater') ||
+                    source.toLowerCase().includes('hand dug well')
+                )) {
+                    WaterDashboard.stats.groundwaterPoints++;
+                }
+
+                // Add to sets for filters
+                if (county && county !== 'Unknown') {
+                    counties.add(county);
+                }
+                if (tech && tech !== 'Unknown') {
+                    technologies.add(tech);
+                }
+                if (source && source !== 'Unknown') {
+                    sources.add(source);
+                }
+
+                // Create marker
+                const color = Config.statusColors[normalizedStatus] || Config.statusColors['Unknown'];
+                const marker = L.circleMarker([lat, lng], {
+                    radius: 5,
+                    fillColor: color,
+                    color: '#ffffff',
+                    weight: 2,
+                    opacity: 1,
+                    fillOpacity: 0.8
+                });
+
+                // Add popup
+                marker.bindPopup(createPopupContent(props, [lat, lng], normalizedStatus));
+
+                // Add click event for highlighting
+                marker.on('click', () => {
+                    highlightFeature(marker);
+                });
+
+                // Add to layer
+                marker.addTo(WaterDashboard.layers.waterPoints);
+            });
+
+            // Update county count
+            WaterDashboard.stats.countiesCount = counties.size;
+
+            // Update filter dropdowns
+            updateFilterOptions(counties, technologies, sources);
+
+            console.log(`Processed ${WaterDashboard.stats.totalPoints} water points`);
+        }
+
+        // Create Popup Content
+        function createPopupContent(props, coordinates, status) {
+            const color = Config.statusColors[status] || Config.statusColors['Unknown'];
+
+            return `
+                <div style="min-width: 250px; font-family: -apple-system, sans-serif;">
+                    <div style="background: ${color}; color: white; padding: 8px 12px; margin: -10px -10px 10px -10px; border-radius: 4px 4px 0 0;">
+                        <strong>Water Point Details</strong>
+                    </div>
+                    <div style="padding: 4px 0;">
+                        <div style="display: grid; grid-template-columns: 100px 1fr; gap: 4px; margin-bottom: 4px;">
+                            <strong>Status:</strong>
+                            <span style="color: ${color}; font-weight: 500;">${status}</span>
+                        </div>
+                        <div style="display: grid; grid-template-columns: 100px 1fr; gap: 4px; margin-bottom: 4px;">
+                            <strong>Source:</strong>
+                            <span>${props.water_sour || props.WATER_SOUR || 'Unknown'}</span>
+                        </div>
+                        <div style="display: grid; grid-template-columns: 100px 1fr; gap: 4px; margin-bottom: 4px;">
+                            <strong>Technology:</strong>
+                            <span>${props.water_tech || props.WATER_TECH || 'Unknown'}</span>
+                        </div>
+                        <div style="display: grid; grid-template-columns: 100px 1fr; gap: 4px; margin-bottom: 4px;">
+                            <strong>County:</strong>
+                            <span>${props.clean_adm1 || props.COUNTY || 'Unknown'}</span>
+                        </div>
+                        <div style="display: grid; grid-template-columns: 100px 1fr; gap: 4px; margin-bottom: 4px;">
+                            <strong>Location:</strong>
+                            <span>${coordinates[0].toFixed(4)}, ${coordinates[1].toFixed(4)}</span>
+                        </div>
+                        ${props.install_yea ? `
+                        <div style="display: grid; grid-template-columns: 100px 1fr; gap: 4px; margin-bottom: 4px;">
+                            <strong>Install Year:</strong>
+                            <span>${props.install_yea}</span>
+                        </div>` : ''}
+                        ${props.management ? `
+                        <div style="display: grid; grid-template-columns: 100px 1fr; gap: 4px;">
+                            <strong>Management:</strong>
+                            <span>${props.management}</span>
+                        </div>` : ''}
+                    </div>
+                    <div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid #eee; text-align: center;">
+                        <small style="color: #666;">Click to highlight | Double-click to zoom</small>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Create County Layers
+        function createCountyLayers() {
+            WaterDashboard.layers.counties.clearLayers();
+
+            WaterDashboard.counties.forEach(county => {
+                const geometry = county.geometry;
+                const props = county.properties || {};
+
+                if (!geometry || !geometry.coordinates) {
+                    console.warn('Invalid county geometry:', county);
+                    return;
+                }
+
+                try {
+                    const layer = L.geoJSON(geometry, {
+                        style: {
+                            color: '#1a5fb4',
+                            weight: 2,
+                            opacity: 0.8,
+                            fillColor: '#1a5fb4',
+                            fillOpacity: 0.05
+                        }
+                    });
+
+                    // Add hover effects
+                    layer.on('mouseover', (e) => {
+                        e.target.setStyle({
+                            fillOpacity: 0.2,
+                            weight: 3
+                        });
+
+                        // Show county name
+                        const countyName = props.ADM1_EN || props.county || 'Unknown';
+                        layer.bindTooltip(countyName, {
+                            permanent: false,
+                            direction: 'center',
+                            className: 'county-tooltip'
+                        }).openTooltip();
+                    });
+
+                    layer.on('mouseout', (e) => {
+                        e.target.setStyle({
+                            fillOpacity: 0.05,
+                            weight: 2
+                        });
+                        e.target.closeTooltip();
+                    });
+
+                    // Add click event
+                    layer.on('click', (e) => {
+                        showCountyInfo(props);
+                        highlightCounty(layer);
+                    });
+
+                    layer.addTo(WaterDashboard.layers.counties);
+                } catch (error) {
+                    console.error('Error creating county layer:', error, county);
+                }
+            });
+
+            console.log(`Created ${WaterDashboard.counties.length} county layers`);
+        }
+
+        // Create Sub-County Layers
+        function createSubCountyLayers() {
+            WaterDashboard.layers.subCounties.clearLayers();
+
+            WaterDashboard.subCounties.forEach(subCounty => {
+                const geometry = subCounty.geometry;
+                const props = subCounty.properties || {};
+
+                if (!geometry || !geometry.coordinates) {
+                    return;
+                }
+
+                try {
+                    const layer = L.geoJSON(geometry, {
+                        style: {
+                            color: '#26a269',
+                            weight: 1,
+                            opacity: 0.5,
+                            fillColor: '#26a269',
+                            fillOpacity: 0.02
+                        }
+                    });
+
+                    layer.addTo(WaterDashboard.layers.subCounties);
+                } catch (error) {
+                    console.error('Error creating sub-county layer:', error);
+                }
+            });
+        }
+
+        // Create Placeholder Counties (for fallback)
+        function createPlaceholderCounties() {
+            // Create a simple rectangle for Kenya
+            const placeholder = L.rectangle(Config.kenyaBounds, {
+                color: '#1a5fb4',
+                weight: 2,
+                opacity: 0.3,
+                fillOpacity: 0.05
+            }).bindPopup('Kenya Country Boundary');
+
+            placeholder.addTo(WaterDashboard.layers.counties);
+            console.log('Created placeholder county layer');
+        }
+
+        // Create Suitability Layer
+        function createSuitabilityLayer() {
+            WaterDashboard.layers.suitability.clearLayers();
+
+            WaterDashboard.suitabilityData.forEach(area => {
+                const geometry = area.geometry;
+                const props = area.properties || {};
+                const suitability = props.gridcode || 0;
+
+                if (!geometry || !geometry.coordinates) {
+                    return;
+                }
+
+                // Normalize suitability score to 1-7 scale
+                let normalizedScore = Math.min(7, Math.max(1, Math.floor(suitability / 1000) || 1));
+                const color = Config.suitabilityColors[normalizedScore] || Config.suitabilityColors[1];
+
+                try {
+                    const layer = L.geoJSON(geometry, {
+                        style: {
+                            fillColor: color,
+                            weight: 0.5,
+                            opacity: 0.3,
+                            color: color,
+                            fillOpacity: 0.3
+                        }
+                    });
+
+                    // Add popup
+                    layer.bindPopup(`
+                        <div style="font-size: 12px;">
+                            <strong>Groundwater Suitability:</strong> ${getSuitabilityLabel(normalizedScore)}<br>
+                            <strong>Score:</strong> ${normalizedScore}/7<br>
+                            <strong>Original Gridcode:</strong> ${suitability}<br>
+                            <small>Higher score indicates better groundwater potential</small>
+                        </div>
+                    `);
+
+                    layer.addTo(WaterDashboard.layers.suitability);
+                } catch (error) {
+                    console.error('Error creating suitability layer:', error);
+                }
+            });
+
+            // Update legend
+            updateLegend();
+
+            console.log(`Created ${WaterDashboard.suitabilityData.length} suitability layers`);
+        }
+
+        // Get Suitability Label
+        function getSuitabilityLabel(score) {
+            const labels = {
+                1: 'Very Low',
+                2: 'Low',
+                3: 'Medium-Low',
+                4: 'Medium',
+                5: 'Medium-High',
+                6: 'High',
+                7: 'Very High'
+            };
+            return labels[score] || 'Unknown';
+        }
+
+        // Setup Map Layers
+        function setupMapLayers() {
+            // Add water points layer
+            WaterDashboard.layers.waterPoints.addTo(WaterDashboard.map);
+
+            // Add counties layer
+            WaterDashboard.layers.counties.addTo(WaterDashboard.map);
+
+            // Setup layer controls
+            setupLayerControls();
+
+            // Update legend
+            updateLegend();
+        }
+
+        // Setup Layer Controls
+        function setupLayerControls() {
+            // Water points layer
+            document.getElementById('layer-waterpoints').addEventListener('change', (e) => {
+                if (e.target.checked) {
+                    WaterDashboard.map.addLayer(WaterDashboard.layers.waterPoints);
+                } else {
+                    WaterDashboard.map.removeLayer(WaterDashboard.layers.waterPoints);
+                }
+            });
+
+            // Counties layer
+            document.getElementById('layer-counties').addEventListener('change', (e) => {
+                if (e.target.checked) {
+                    WaterDashboard.map.addLayer(WaterDashboard.layers.counties);
+                } else {
+                    WaterDashboard.map.removeLayer(WaterDashboard.layers.counties);
+                }
+            });
+
+            // Sub-counties layer
+            const subcountiesCheckbox = document.getElementById('layer-subcounties');
+            if (subcountiesCheckbox) {
+                subcountiesCheckbox.addEventListener('change', (e) => {
+                    if (e.target.checked && WaterDashboard.layers.subCounties) {
+                        WaterDashboard.map.addLayer(WaterDashboard.layers.subCounties);
+                    } else if (WaterDashboard.layers.subCounties) {
+                        WaterDashboard.map.removeLayer(WaterDashboard.layers.subCounties);
+                    }
+                });
+            }
+
+            // Suitability layer
+            document.getElementById('layer-suitability').addEventListener('change', (e) => {
+                if (e.target.checked && WaterDashboard.layers.suitability) {
+                    WaterDashboard.map.addLayer(WaterDashboard.layers.suitability);
+                } else if (WaterDashboard.layers.suitability) {
+                    WaterDashboard.map.removeLayer(WaterDashboard.layers.suitability);
+                }
+            });
+        }
+
+        // Initialize Charts
+        function initializeCharts() {
+            // Status Chart
+            const statusCtx = document.getElementById('status-chart').getContext('2d');
+            WaterDashboard.charts.status = new Chart(statusCtx, {
+                type: 'pie',
+                data: {
+                    labels: ['Functional', 'Non-Functional', 'Needs Repair', 'Unknown'],
+                    datasets: [{
+                        data: [0, 0, 0, 0],
+                        backgroundColor: [
+                            Config.statusColors.Functional,
+                            Config.statusColors['Non-Functional'],
+                            Config.statusColors['Needs Repair'],
+                            Config.statusColors.Unknown
+                        ],
+                        borderWidth: 1,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 15,
+                                usePointStyle: true
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: (context) => {
+                                    const total = WaterDashboard.stats.totalPoints || 1;
+                                    const value = context.raw || 0;
+                                    const percentage = ((value / total) * 100).toFixed(1);
+                                    return `${context.label}: ${value} (${percentage}%)`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Technology Chart
+            const techCtx = document.getElementById('tech-chart').getContext('2d');
+            WaterDashboard.charts.tech = new Chart(techCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Loading...'],
+                    datasets: [{
+                        data: [1],
+                        backgroundColor: ['#3498db'],
+                        borderWidth: 1,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '60%',
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 15,
+                                usePointStyle: true
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Setup Event Listeners
+        function setupEventListeners() {
+            // Tab switching
+            document.querySelectorAll('#map-tabs .tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    // Remove active class from all tabs
+                    document.querySelectorAll('#map-tabs .tab').forEach(t => {
+                        t.classList.remove('active');
+                    });
+
+                    // Add active class to clicked tab
+                    tab.classList.add('active');
+
+                    // Update view
+                    WaterDashboard.activeView = tab.dataset.view;
+                    updateMapView();
+                });
+            });
+
+            // Filter controls
+            document.getElementById('apply-filters').addEventListener('click', applyFilters);
+            document.getElementById('reset-filters').addEventListener('click', resetFilters);
+
+            // Map controls
+            document.getElementById('reset-view').addEventListener('click', () => {
+                WaterDashboard.map.fitBounds(Config.kenyaBounds);
+            });
+
+            document.getElementById('locate-me').addEventListener('click', locateUser);
+            document.getElementById('export-map').addEventListener('click', exportMap);
+            document.getElementById('fullscreen').addEventListener('click', toggleFullscreen);
+
+            // Legend toggle
+            document.getElementById('toggle-legend').addEventListener('click', toggleLegend);
+
+            // Info panel close
+            document.getElementById('close-info').addEventListener('click', () => {
+                document.getElementById('county-info').style.display = 'none';
+                WaterDashboard.ui.infoPanelVisible = false;
+            });
+
+            // Basemap selection
+            document.querySelectorAll('[data-basemap]').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    // Update button states
+                    document.querySelectorAll('[data-basemap]').forEach(b => {
+                        b.classList.remove('active');
+                    });
+                    e.target.classList.add('active');
+
+                    // Change basemap
+                    changeBasemap(e.target.dataset.basemap);
+                });
+            });
+
+            // Display settings
+            document.getElementById('point-opacity').addEventListener('input', (e) => {
+                const opacity = e.target.value / 100;
+                WaterDashboard.layers.waterPoints.eachLayer(layer => {
+                    layer.setStyle({ fillOpacity: opacity });
+                });
+            });
+
+            document.getElementById('point-size').addEventListener('input', (e) => {
+                const size = parseInt(e.target.value);
+                WaterDashboard.layers.waterPoints.eachLayer(layer => {
+                    layer.setStyle({ radius: size });
+                });
+            });
+
+            // Refresh button
+            document.getElementById('refresh-data').addEventListener('click', () => {
+                location.reload();
+            });
+        }
+
+        // Change Basemap
+        function changeBasemap(basemapKey) {
+            // Remove current basemap
+            Object.values(Config.basemaps).forEach(layer => {
+                WaterDashboard.map.removeLayer(layer);
+            });
+
+            // Add new basemap
+            if (Config.basemaps[basemapKey]) {
+                Config.basemaps[basemapKey].addTo(WaterDashboard.map);
+                WaterDashboard.layers.currentBasemap = basemapKey;
+            }
+        }
+
+        // Update Map View Based on Active Tab
+        function updateMapView() {
+            // First, hide all layers
+            if (WaterDashboard.layers.suitability) {
+                WaterDashboard.map.removeLayer(WaterDashboard.layers.suitability);
+            }
+            if (WaterDashboard.layers.heatmap) {
+                WaterDashboard.map.removeLayer(WaterDashboard.layers.heatmap);
+            }
+
+            switch (WaterDashboard.activeView) {
+                case 'points':
+                    // Water points are already visible
+                    break;
+
+                case 'suitability':
+                    WaterDashboard.map.addLayer(WaterDashboard.layers.suitability);
+                    break;
+
+                case 'infrastructure':
+                    // Show both suitability and water points
+                    WaterDashboard.map.addLayer(WaterDashboard.layers.suitability);
+                    break;
+
+                case 'analysis':
+                    // Create heatmap
+                    createHeatmap();
+                    break;
+            }
+        }
+
+        // Apply Filters
+        function applyFilters() {
+            // Get filter values
+            const county = document.getElementById('county-filter').value;
+            const tech = document.getElementById('technology-filter').value;
+            const source = document.getElementById('source-filter').value;
+
+            // Get status checkboxes
+            const statusCheckboxes = document.querySelectorAll('.filter-checkbox input[type="checkbox"]');
+            const status = Array.from(statusCheckboxes)
+                .filter(cb => cb.checked)
+                .map(cb => cb.value);
+
+            // Update filters
+            WaterDashboard.filters = { county, status, technology: tech, source };
+
+            // Filter water points
+            filterWaterPoints();
+        }
+
+        // Filter Water Points
+        function filterWaterPoints() {
+            // Clear existing markers
+            WaterDashboard.layers.waterPoints.clearLayers();
+
+            // Reset statistics
+            WaterDashboard.stats = {
+                totalPoints: 0,
+                functional: 0,
+                nonFunctional: 0,
+                needsRepair: 0,
+                unknown: 0,
+                groundwaterPoints: 0,
+                countiesCount: 0
+            };
+
+            const counties = new Set();
+            const technologies = new Set();
+            const sources = new Set();
+
+            WaterDashboard.waterPoints.forEach(point => {
+                const props = point.properties || {};
+                const geometry = point.geometry || {};
+
+                // Extract data
+                const status = props.status_cle || props.STATUS || props.status || 'Unknown';
+                const tech = props.water_tech || props.WATER_TECH || props.technology || 'Unknown';
+                const source = props.water_sour || props.WATER_SOUR || props.source || 'Unknown';
+                const county = props.clean_adm1 || props.COUNTY || props.county || 'Unknown';
+
+                // Normalize status
+                let normalizedStatus = 'Unknown';
+                if (status === 'Functional') {
+                    normalizedStatus = 'Functional';
+                } else if (status === 'Non-Functional' || status === 'Abandoned') {
+                    normalizedStatus = 'Non-Functional';
+                } else if (status.includes('Repair') || status.includes('repair')) {
+                    normalizedStatus = 'Needs Repair';
+                } else {
+                    normalizedStatus = 'Unknown';
+                }
+
+                // Apply filters
+                if (WaterDashboard.filters.county !== 'all' && county !== WaterDashboard.filters.county) {
+                    return;
+                }
+
+                if (WaterDashboard.filters.technology !== 'all' && tech !== WaterDashboard.filters.technology) {
+                    return;
+                }
+
+                if (WaterDashboard.filters.source !== 'all' && source !== WaterDashboard.filters.source) {
+                    return;
+                }
+
+                if (!WaterDashboard.filters.status.includes(normalizedStatus)) {
+                    return;
+                }
+
+                // Create marker for filtered point
+                let lat, lng;
+                if (geometry.type === 'Point' && geometry.coordinates) {
+                    [lng, lat] = geometry.coordinates;
+                } else if (geometry.x && geometry.y) {
+                    lat = geometry.y;
+                    lng = geometry.x;
+                } else {
+                    return;
+                }
+
+                // Update statistics
+                WaterDashboard.stats.totalPoints++;
+                if (normalizedStatus === 'Functional') {
+                    WaterDashboard.stats.functional++;
+                } else if (normalizedStatus === 'Non-Functional') {
+                    WaterDashboard.stats.nonFunctional++;
+                } else if (normalizedStatus === 'Needs Repair') {
+                    WaterDashboard.stats.needsRepair++;
+                } else {
+                    WaterDashboard.stats.unknown++;
+                }
+
+                if (source && (
+                    source.toLowerCase().includes('well') ||
+                    source.toLowerCase().includes('borehole') ||
+                    source.toLowerCase().includes('groundwater') ||
+                    source.toLowerCase().includes('hand dug well')
+                )) {
+                    WaterDashboard.stats.groundwaterPoints++;
+                }
+
+                // Add to sets
+                if (county && county !== 'Unknown') counties.add(county);
+                if (tech && tech !== 'Unknown') technologies.add(tech);
+                if (source && source !== 'Unknown') sources.add(source);
+
+                const color = Config.statusColors[normalizedStatus] || Config.statusColors['Unknown'];
+                const marker = L.circleMarker([lat, lng], {
+                    radius: 5,
+                    fillColor: color,
+                    color: '#ffffff',
+                    weight: 2,
+                    opacity: 1,
+                    fillOpacity: 0.8
+                });
+
+                marker.bindPopup(createPopupContent(props, [lat, lng], normalizedStatus));
+
+                marker.on('click', () => {
+                    highlightFeature(marker);
+                });
+
+                marker.addTo(WaterDashboard.layers.waterPoints);
+            });
+
+            // Update county count
+            WaterDashboard.stats.countiesCount = counties.size;
+
+            // Update statistics and UI
+            calculateStatistics();
+            updateUI();
+        }
+
+        // Reset Filters
+        function resetFilters() {
+            // Reset form elements
+            document.getElementById('county-filter').value = 'all';
+            document.getElementById('technology-filter').value = 'all';
+            document.getElementById('source-filter').value = 'all';
+
+            // Check all status checkboxes
+            document.querySelectorAll('.filter-checkbox input[type="checkbox"]').forEach(cb => {
+                cb.checked = true;
+            });
+
+            // Reset filters
+            WaterDashboard.filters = {
+                county: 'all',
+                status: ['Functional', 'Non-Functional', 'Needs Repair', 'Unknown'],
+                technology: 'all',
+                source: 'all'
+            };
+
+            // Reprocess all water points
+            processWaterPoints();
+            calculateStatistics();
+            updateUI();
+        }
+
+        // Highlight Feature
+        function highlightFeature(feature) {
+            // Reset all features to normal style
+            WaterDashboard.layers.waterPoints.eachLayer(layer => {
+                if (layer !== feature) {
+                    layer.setStyle({
+                        fillOpacity: 0.3,
+                        opacity: 0.5
+                    });
+                }
+            });
+
+            // Highlight clicked feature
+            feature.setStyle({
+                fillOpacity: 1,
+                opacity: 1,
+                weight: 3
+            });
+
+            // Bring to front
+            feature.bringToFront();
+
+            // Auto-close other popups
+            WaterDashboard.layers.waterPoints.eachLayer(layer => {
+                if (layer !== feature && layer.isPopupOpen()) {
+                    layer.closePopup();
+                }
+            });
+        }
+
+        // Highlight County
+        function highlightCounty(countyLayer) {
+            // Reset all counties
+            WaterDashboard.layers.counties.eachLayer(layer => {
+                layer.setStyle({
+                    fillOpacity: 0.05,
+                    weight: 2
+                });
+            });
+
+            // Highlight selected county
+            countyLayer.setStyle({
+                fillOpacity: 0.3,
+                weight: 4,
+                color: '#e74c3c'
+            });
+
+            // Bring to front
+            countyLayer.bringToFront();
+        }
+
+        // Show County Info
+        function showCountyInfo(props) {
+            const countyName = props.ADM1_EN || props.county || 'Unknown';
+            const area = props.Shape_Area ? Math.round(props.Shape_Area * 10000) : 'N/A';
+
+            // Calculate county-specific statistics
+            const countyPoints = WaterDashboard.waterPoints.filter(point => {
+                const pointProps = point.properties || {};
+                const pointCounty = pointProps.clean_adm1 || pointProps.COUNTY || pointProps.county || 'Unknown';
+                return pointCounty === countyName;
+            });
+
+            const functionalPoints = countyPoints.filter(point => {
+                const props = point.properties || {};
+                const status = props.status_cle || props.STATUS || props.status || 'Unknown';
+                return status === 'Functional';
+            });
+
+            const functionalRate = countyPoints.length > 0 ?
+                Math.round((functionalPoints.length / countyPoints.length) * 100) : 0;
+
+            // Update info panel
+            document.getElementById('county-name').textContent = countyName;
+            document.getElementById('county-details').innerHTML = `
+                <div style="padding: 8px 0;">
+                    <p style="margin-bottom: 12px; color: #666;">${countyName} County Details</p>
+                    
+                    <div class="info-stats">
+                        <div class="info-stat">
+                            <div class="info-stat-value">${countyPoints.length}</div>
+                            <div class="info-stat-label">Water Points</div>
+                        </div>
+                        
+                        <div class="info-stat">
+                            <div class="info-stat-value">${functionalRate}%</div>
+                            <div class="info-stat-label">Functional Rate</div>
+                        </div>
+                        
+                        <div class="info-stat">
+                            <div class="info-stat-value">${area}</div>
+                            <div class="info-stat-label">Area (km²)</div>
+                        </div>
+                        
+                        <div class="info-stat">
+                            <div class="info-stat-value">${Math.round(countyPoints.length / (area / 1000))}</div>
+                            <div class="info-stat-label">Points/1000km²</div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #eee;">
+                        <button class="btn btn-primary" style="width: 100%;" onclick="zoomToCounty('${countyName}')">
+                            <i class="fas fa-search-location"></i>
+                            Zoom to County
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            // Show info panel
+            document.getElementById('county-info').style.display = 'block';
+            WaterDashboard.ui.infoPanelVisible = true;
+        }
+
+        // Zoom to County
+        window.zoomToCounty = function (countyName) {
+            // Find county layer and zoom to it
+            let found = false;
+            WaterDashboard.layers.counties.eachLayer(layer => {
+                const bounds = layer.getBounds();
+                if (bounds.isValid()) {
+                    WaterDashboard.map.fitBounds(bounds, { padding: [50, 50] });
+                    found = true;
+                }
+            });
+
+            if (!found) {
+                WaterDashboard.map.fitBounds(Config.kenyaBounds);
+            }
+        };
+
+        // Locate User
+        function locateUser() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const { latitude, longitude } = position.coords;
+                        WaterDashboard.map.setView([latitude, longitude], 12);
+
+                        L.marker([latitude, longitude])
+                            .addTo(WaterDashboard.map)
+                            .bindPopup('Your Location')
+                            .openPopup();
+                    },
+                    (error) => {
+                        alert('Unable to get your location. Please enable location services.');
+                    }
+                );
+            } else {
+                alert('Geolocation is not supported by your browser.');
+            }
+        }
+
+        // Export Map
+        function exportMap() {
+            alert('Export feature would generate a high-resolution map image.\n\nIn a production environment, this would use:\n- html2canvas for client-side export\n- Server-side rendering for PDF\n- Multiple format options (PNG, PDF, SVG)');
+        }
+
+        // Toggle Fullscreen
+        function toggleFullscreen() {
+            const mapContainer = document.querySelector('.map-container');
+
+            if (!document.fullscreenElement) {
+                if (mapContainer.requestFullscreen) {
+                    mapContainer.requestFullscreen();
+                } else if (mapContainer.webkitRequestFullscreen) {
+                    mapContainer.webkitRequestFullscreen();
+                }
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen();
+                }
+            }
+        }
+
+        // Toggle Legend
+        function toggleLegend() {
+            const legend = document.getElementById('map-legend');
+            const toggleBtn = document.getElementById('toggle-legend');
+
+            if (WaterDashboard.ui.legendVisible) {
+                legend.style.display = 'none';
+                toggleBtn.textContent = 'Show';
+                WaterDashboard.ui.legendVisible = false;
+            } else {
+                legend.style.display = 'block';
+                toggleBtn.textContent = 'Hide';
+                WaterDashboard.ui.legendVisible = true;
+            }
+        }
+
+        // Update Filter Options
+        function updateFilterOptions(counties, technologies, sources) {
+            // County filter
+            const countySelect = document.getElementById('county-filter');
+            countySelect.innerHTML = '<option value="all">All Counties</option>';
+            counties.forEach(county => {
+                if (county && county !== 'Unknown') {
+                    const option = document.createElement('option');
+                    option.value = county;
+                    option.textContent = county;
+                    countySelect.appendChild(option);
+                }
+            });
+
+            // Technology filter
+            const techSelect = document.getElementById('technology-filter');
+            techSelect.innerHTML = '<option value="all">All Technologies</option>';
+            technologies.forEach(tech => {
+                if (tech && tech !== 'Unknown') {
+                    const option = document.createElement('option');
+                    option.value = tech;
+                    option.textContent = tech;
+                    techSelect.appendChild(option);
+                }
+            });
+
+            // Source filter
+            const sourceSelect = document.getElementById('source-filter');
+            sourceSelect.innerHTML = '<option value="all">All Sources</option>';
+            sources.forEach(source => {
+                if (source && source !== 'Unknown') {
+                    const option = document.createElement('option');
+                    option.value = source;
+                    option.textContent = source;
+                    sourceSelect.appendChild(option);
+                }
+            });
+        }
+
+        // Update Legend
+        function updateLegend() {
+            const legendContent = document.getElementById('legend-content');
+            legendContent.innerHTML = '';
+
+            // Add status legend items
+            Object.entries(Config.statusColors).forEach(([status, color]) => {
+                const item = document.createElement('div');
+                item.className = 'legend-item';
+                item.innerHTML = `
+                    <div class="legend-color" style="background-color: ${color};"></div>
+                    <span>${status}</span>
+                `;
+                legendContent.appendChild(item);
+            });
+
+            // Add suitability legend if data exists
+            if (WaterDashboard.suitabilityData.length > 0) {
+                const separator = document.createElement('div');
+                separator.style.margin = '8px 0';
+                separator.style.borderTop = '1px solid var(--border)';
+                legendContent.appendChild(separator);
+
+                const title = document.createElement('div');
+                title.style.fontWeight = '600';
+                title.style.marginBottom = '4px';
+                title.textContent = 'Groundwater Suitability:';
+                legendContent.appendChild(title);
+
+                Object.entries(Config.suitabilityColors).forEach(([score, color]) => {
+                    const item = document.createElement('div');
+                    item.className = 'legend-item';
+                    item.innerHTML = `
+                        <div class="legend-color" style="background-color: ${color};"></div>
+                        <span>${getSuitabilityLabel(parseInt(score))} (${score})</span>
+                    `;
+                    legendContent.appendChild(item);
+                });
+            }
+        }
+
+        // Calculate Statistics
+        function calculateStatistics() {
+            // Calculate functional rate
+            const functionalRate = WaterDashboard.stats.totalPoints > 0 ?
+                Math.round((WaterDashboard.stats.functional / WaterDashboard.stats.totalPoints) * 100) : 0;
+
+            // Calculate groundwater percentage
+            const groundwaterPercent = WaterDashboard.stats.totalPoints > 0 ?
+                Math.round((WaterDashboard.stats.groundwaterPoints / WaterDashboard.stats.totalPoints) * 100) : 0;
+
+            // Update global stats
+            WaterDashboard.stats.functionalRate = functionalRate;
+            WaterDashboard.stats.groundwaterPercent = groundwaterPercent;
+        }
+
+        // Update UI
+        function updateUI() {
+            // Update main stats
+            document.getElementById('total-points').textContent =
+                WaterDashboard.stats.totalPoints.toLocaleString();
+            document.getElementById('functional-rate').textContent =
+                `${WaterDashboard.stats.functionalRate}%`;
+            document.getElementById('groundwater-percent').textContent =
+                `${WaterDashboard.stats.groundwaterPercent}%`;
+            document.getElementById('county-count').textContent =
+                WaterDashboard.stats.countiesCount;
+
+            // Update sidebar stats
+            document.getElementById('sidebar-total').textContent =
+                WaterDashboard.stats.totalPoints.toLocaleString();
+            document.getElementById('sidebar-functional').textContent =
+                `${WaterDashboard.stats.functionalRate}%`;
+            document.getElementById('sidebar-asal').textContent =
+                WaterDashboard.stats.countiesCount;
+
+            // Update last updated time
+            const now = new Date();
+            document.getElementById('last-updated').textContent =
+                now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+            // Update charts
+            if (WaterDashboard.charts.status) {
+                WaterDashboard.charts.status.data.datasets[0].data = [
+                    WaterDashboard.stats.functional,
+                    WaterDashboard.stats.nonFunctional,
+                    WaterDashboard.stats.needsRepair,
+                    WaterDashboard.stats.unknown
+                ];
+                WaterDashboard.charts.status.update();
+            }
+        }
+
+        // Update Loading Text
+        function updateLoadingText(text) {
+            const loadingText = document.getElementById('loading-text');
+            if (loadingText) {
+                loadingText.textContent = text;
+            }
+        }
+
+        // Show Error
+        function showError(message) {
+            const loadingOverlay = document.getElementById('map-loading');
+            loadingOverlay.innerHTML = `
+                <div style="text-align: center;">
+                    <i class="fas fa-exclamation-triangle" style="font-size: 48px; color: #e74c3c; margin-bottom: 16px;"></i>
+                    <div class="loading-text">${message}</div>
+                    <button class="btn btn-primary" onclick="location.reload()" style="margin-top: 16px;">
+                        <i class="fas fa-redo"></i>
+                        Reload Dashboard
+                    </button>
+                </div>
+            `;
+        }
+
+        // Create Heatmap
+        function createHeatmap() {
+            if (WaterDashboard.layers.heatmap) {
+                WaterDashboard.map.removeLayer(WaterDashboard.layers.heatmap);
+            }
+
+            const points = WaterDashboard.waterPoints.map(point => {
+                const geometry = point.geometry || {};
+                if (geometry.type === 'Point' && geometry.coordinates) {
+                    const [lng, lat] = geometry.coordinates;
+                    return [lat, lng, 1]; // [lat, lng, intensity]
+                }
+                return null;
+            }).filter(p => p !== null);
+
+            if (points.length > 0) {
+                WaterDashboard.layers.heatmap = L.heatLayer(points, {
+                    radius: 25,
+                    blur: 15,
+                    maxZoom: 17,
+                    gradient: { 0.4: 'blue', 0.65: 'lime', 1: 'red' }
+                }).addTo(WaterDashboard.map);
+            }
+        }
+
+        // Handle Fullscreen Change
+        document.addEventListener('fullscreenchange', handleFullscreenChange);
+        document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+
+        function handleFullscreenChange() {
+            // Adjust map size on fullscreen change
+            setTimeout(() => {
+                WaterDashboard.map.invalidateSize();
+            }, 100);
+        }
+    </script>
+</body>
+
+</html>

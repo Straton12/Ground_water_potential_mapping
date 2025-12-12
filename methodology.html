@@ -1,0 +1,1619 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Methodology | Kenya Water Resources Dashboard</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.min.css" />
+    <style>
+        :root {
+            /* Colors - Professional Dashboard Theme */
+            --primary: #2c3e50;
+            --primary-light: #34495e;
+            --secondary: #3498db;
+            --accent: #1abc9c;
+            --success: #2ecc71;
+            --warning: #f39c12;
+            --danger: #e74c3c;
+            --info: #9b59b6;
+
+            --dark: #1a1a2e;
+            --light: #f8f9fa;
+            --gray: #6c757d;
+            --gray-light: #e9ecef;
+            --border: #dee2e6;
+
+            /* Backgrounds */
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8f9fa;
+            --bg-sidebar: #2c3e50;
+            --bg-card: #ffffff;
+
+            /* Typography */
+            --font-xs: 0.75rem;
+            --font-sm: 0.875rem;
+            --font-base: 0.9375rem;
+            --font-md: 1rem;
+            --font-lg: 1.125rem;
+            --font-xl: 1.25rem;
+            --font-2xl: 1.5rem;
+            --font-3xl: 1.75rem;
+
+            /* Spacing */
+            --space-1: 0.25rem;
+            --space-2: 0.5rem;
+            --space-3: 0.75rem;
+            --space-4: 1rem;
+            --space-5: 1.25rem;
+            --space-6: 1.5rem;
+            --space-7: 1.75rem;
+            --space-8: 2rem;
+            --space-9: 2.5rem;
+            --space-10: 3rem;
+
+            /* Design Elements */
+            --radius-sm: 0.25rem;
+            --radius: 0.375rem;
+            --radius-lg: 0.5rem;
+            --radius-xl: 0.75rem;
+
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+            --shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.1);
+
+            --transition: all 0.2s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            font-size: var(--font-base);
+            line-height: 1.5;
+            color: var(--dark);
+            background-color: var(--light);
+            overflow-x: hidden;
+        }
+
+        .dashboard-container {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background: var(--bg-sidebar);
+            color: white;
+            padding: var(--space-6);
+            position: fixed;
+            width: 280px;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 1000;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            margin-bottom: var(--space-8);
+            padding-bottom: var(--space-4);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-header i {
+            font-size: var(--font-2xl);
+            color: var(--accent);
+        }
+
+        .sidebar-header h1 {
+            font-size: var(--font-lg);
+            font-weight: 600;
+            line-height: 1.2;
+        }
+
+        .sidebar-nav {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-2);
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            padding: var(--space-3) var(--space-4);
+            border-radius: var(--radius);
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .nav-item.active {
+            background: var(--secondary);
+            color: white;
+            font-weight: 500;
+        }
+
+        .nav-item i {
+            width: 20px;
+            text-align: center;
+        }
+
+        .sidebar-section {
+            margin-top: var(--space-8);
+        }
+
+        .sidebar-section h3 {
+            font-size: var(--font-sm);
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.6);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: var(--space-3);
+        }
+
+        /* Main Content */
+        .main-content {
+            grid-column: 2;
+            padding: var(--space-4);
+            background: var(--bg-secondary);
+        }
+
+        /* Top Bar */
+        .top-bar {
+            background: var(--bg-primary);
+            border-radius: var(--radius-lg);
+            padding: var(--space-4) var(--space-6);
+            margin-bottom: var(--space-4);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow);
+        }
+
+        .page-title {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+        }
+
+        .page-title h2 {
+            font-size: var(--font-xl);
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .page-title i {
+            color: var(--secondary);
+        }
+
+        .toolbar {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+        }
+
+        /* Content Cards */
+        .content-card {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            padding: var(--space-5);
+            box-shadow: var(--shadow);
+            margin-bottom: var(--space-4);
+            transition: var(--transition);
+        }
+
+        .content-card:hover {
+            box-shadow: var(--shadow-md);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-4);
+            padding-bottom: var(--space-3);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .card-header h3 {
+            font-size: var(--font-lg);
+            font-weight: 600;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+        }
+
+        /* Methodology Flow */
+        .methodology-flow {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-4);
+            margin: var(--space-4) 0;
+            position: relative;
+        }
+
+        .methodology-flow::before {
+            content: '';
+            position: absolute;
+            left: 28px;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: linear-gradient(135deg, var(--secondary) 0%, var(--accent) 100%);
+            z-index: 1;
+        }
+
+        .flow-step {
+            display: flex;
+            gap: var(--space-4);
+            align-items: flex-start;
+            position: relative;
+            z-index: 2;
+        }
+
+        .step-number {
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, var(--secondary) 0%, #2980b9 100%);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: var(--font-lg);
+            font-weight: 700;
+            flex-shrink: 0;
+            box-shadow: var(--shadow-md);
+            z-index: 3;
+        }
+
+        .step-content {
+            background: white;
+            padding: var(--space-4);
+            border-radius: var(--radius);
+            flex: 1;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            transition: var(--transition);
+        }
+
+        .step-content:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .step-content h4 {
+            font-size: var(--font-md);
+            margin-bottom: var(--space-2);
+            color: var(--primary);
+        }
+
+        .step-content ul {
+            list-style: none;
+            margin: var(--space-2) 0;
+        }
+
+        .step-content li {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--space-2);
+            margin-bottom: var(--space-1);
+            font-size: var(--font-sm);
+            color: var(--gray);
+        }
+
+        .step-content li:before {
+            content: '•';
+            color: var(--secondary);
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        /* Data Sources Grid */
+        .sources-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: var(--space-4);
+            margin: var(--space-4) 0;
+        }
+
+        .source-card {
+            background: white;
+            padding: var(--space-4);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            transition: var(--transition);
+        }
+
+        .source-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--secondary);
+        }
+
+        .source-icon {
+            font-size: var(--font-xl);
+            color: var(--secondary);
+            margin-bottom: var(--space-3);
+        }
+
+        .source-card h4 {
+            font-size: var(--font-md);
+            margin-bottom: var(--space-3);
+            color: var(--dark);
+            font-weight: 600;
+        }
+
+        .source-card ul {
+            list-style: none;
+            margin: var(--space-2) 0;
+        }
+
+        .source-card li {
+            margin-bottom: var(--space-2);
+            font-size: var(--font-sm);
+            color: var(--gray);
+        }
+
+        .source-card strong {
+            color: var(--dark);
+        }
+
+        /* Highlight Box */
+        .highlight-box {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            padding: var(--space-4);
+            border-radius: var(--radius);
+            margin: var(--space-4) 0;
+            border-left: 4px solid var(--secondary);
+        }
+
+        .highlight-box h4 {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            font-size: var(--font-md);
+            margin-bottom: var(--space-3);
+            color: var(--dark);
+        }
+
+        .highlight-box ul {
+            list-style: none;
+            margin: var(--space-3) 0;
+        }
+
+        .highlight-box li {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--space-3);
+            margin-bottom: var(--space-2);
+            font-size: var(--font-sm);
+        }
+
+        .highlight-box li:before {
+            content: '✓';
+            color: var(--success);
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        /* Technical Specs */
+        .technical-box {
+            background: var(--bg-secondary);
+            padding: var(--space-4);
+            border-radius: var(--radius);
+            margin: var(--space-4) 0;
+            border: 1px solid var(--border);
+        }
+
+        .technical-box h4 {
+            font-size: var(--font-md);
+            margin-bottom: var(--space-4);
+            color: var(--dark);
+        }
+
+        /* Data Table */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: var(--space-4) 0;
+            background: white;
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            font-size: var(--font-sm);
+        }
+
+        .data-table thead {
+            background: var(--primary);
+        }
+
+        .data-table th {
+            padding: var(--space-3);
+            text-align: left;
+            font-weight: 600;
+            color: white;
+            white-space: nowrap;
+        }
+
+        .data-table td {
+            padding: var(--space-3);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .data-table tbody tr:hover {
+            background: var(--bg-secondary);
+        }
+
+        .data-table strong {
+            color: var(--primary);
+        }
+
+        /* Spec Grid */
+        .spec-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: var(--space-3);
+            margin: var(--space-4) 0;
+        }
+
+        .spec-item {
+            background: white;
+            padding: var(--space-3);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            text-align: center;
+            border: 1px solid var(--border);
+            transition: var(--transition);
+        }
+
+        .spec-item:hover {
+            transform: translateY(-2px);
+            border-color: var(--secondary);
+        }
+
+        .spec-item h5 {
+            font-size: var(--font-sm);
+            margin-bottom: var(--space-2);
+            color: var(--dark);
+        }
+
+        .metric-value {
+            font-size: var(--font-lg);
+            font-weight: 700;
+            color: var(--secondary);
+            margin-bottom: var(--space-1);
+            line-height: 1;
+        }
+
+        .spec-item p {
+            color: var(--gray);
+            font-size: var(--font-xs);
+        }
+
+        /* Software Grid */
+        .software-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: var(--space-3);
+            margin: var(--space-4) 0;
+        }
+
+        .software-item {
+            background: rgba(52, 152, 219, 0.1);
+            padding: var(--space-3);
+            border-radius: var(--radius);
+            text-align: center;
+            border: 1px solid rgba(52, 152, 219, 0.2);
+            transition: var(--transition);
+        }
+
+        .software-item:hover {
+            background: rgba(52, 152, 219, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .software-icon {
+            font-size: var(--font-lg);
+            color: var(--secondary);
+            margin-bottom: var(--space-2);
+        }
+
+        .software-item h5 {
+            color: var(--primary);
+            font-size: var(--font-sm);
+            margin-bottom: var(--space-1);
+        }
+
+        .software-item p {
+            color: var(--gray);
+            font-size: var(--font-xs);
+            line-height: 1.4;
+        }
+
+        /* Validation Grid */
+        .validation-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: var(--space-3);
+            margin: var(--space-4) 0;
+        }
+
+        .metric-box {
+            background: white;
+            padding: var(--space-3);
+            border-radius: var(--radius);
+            text-align: center;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            transition: var(--transition);
+        }
+
+        .metric-box:hover {
+            transform: translateY(-2px);
+            border-color: var(--secondary);
+        }
+
+        .metric-box .metric-value {
+            font-size: var(--font-lg);
+            font-weight: 700;
+            color: var(--secondary);
+            margin-bottom: var(--space-1);
+        }
+
+        .metric-box h5 {
+            font-size: var(--font-sm);
+            margin-bottom: var(--space-1);
+            color: var(--dark);
+        }
+
+        .metric-box p {
+            color: var(--gray);
+            font-size: var(--font-xs);
+        }
+
+        /* Insight Card */
+        .insight-card {
+            background: white;
+            padding: var(--space-4);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            margin: var(--space-4) 0;
+            border-left: 4px solid var(--success);
+        }
+
+        .insight-card h4 {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            font-size: var(--font-md);
+            margin-bottom: var(--space-2);
+            color: var(--dark);
+        }
+
+        .insight-card h4 i {
+            color: var(--success);
+        }
+
+        .insight-card p {
+            color: var(--gray);
+            font-size: var(--font-sm);
+            line-height: 1.4;
+        }
+
+        /* Content Lists */
+        .content-list {
+            background: white;
+            padding: var(--space-4);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            margin-bottom: var(--space-4);
+            border: 1px solid var(--border);
+        }
+
+        .content-list h4 {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            font-size: var(--font-md);
+            margin-bottom: var(--space-3);
+            color: var(--dark);
+        }
+
+        .content-list h4 i {
+            color: var(--warning);
+        }
+
+        .content-list ul {
+            list-style: none;
+            margin: var(--space-2) 0;
+        }
+
+        .content-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--space-3);
+            margin-bottom: var(--space-2);
+            font-size: var(--font-sm);
+            color: var(--gray);
+        }
+
+        .content-list li:before {
+            content: '•';
+            color: var(--secondary);
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        /* Two Column Layout */
+        .two-column {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--space-4);
+            margin: var(--space-4) 0;
+        }
+
+        /* Button Styles */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--space-2);
+            padding: var(--space-2) var(--space-4);
+            border-radius: var(--radius);
+            font-size: var(--font-sm);
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2980b9;
+            transform: translateY(-1px);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--gray);
+        }
+
+        .btn-outline:hover {
+            border-color: var(--secondary);
+            color: var(--secondary);
+        }
+
+        /* Loading */
+        .loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.9);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            border-radius: var(--radius-lg);
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--gray-light);
+            border-top: 3px solid var(--secondary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: var(--space-3);
+        }
+
+        .loading-text {
+            font-size: var(--font-sm);
+            color: var(--gray);
+            font-weight: 500;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Modal */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            padding: var(--space-4);
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: var(--space-5);
+            max-width: 600px;
+            width: 100%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-4);
+        }
+
+        .modal-title {
+            font-size: var(--font-lg);
+            font-weight: 600;
+            color: var(--dark);
+            margin: 0;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: var(--font-lg);
+            cursor: pointer;
+            color: var(--gray);
+            padding: var(--space-1);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .dashboard-container {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                position: relative;
+                width: 100%;
+                height: auto;
+            }
+
+            .main-content {
+                grid-column: 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sources-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .spec-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .software-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .validation-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .top-bar {
+                flex-direction: column;
+                gap: var(--space-3);
+                align-items: stretch;
+            }
+
+            .methodology-flow::before {
+                left: 24px;
+            }
+
+            .flow-step {
+                gap: var(--space-3);
+            }
+
+            .step-number {
+                width: 48px;
+                height: 48px;
+                font-size: var(--font-md);
+            }
+
+            .data-table {
+                font-size: var(--font-xs);
+            }
+
+            .data-table th,
+            .data-table td {
+                padding: var(--space-2);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .sources-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .spec-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .software-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .validation-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .methodology-flow::before {
+                display: none;
+            }
+
+            .flow-step {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+                gap: var(--space-2);
+            }
+
+            .step-content {
+                border-left: none;
+                border-top: 3px solid var(--secondary);
+            }
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-secondary);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--gray);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <i class="fas fa-tint"></i>
+                <div>
+                    <h1>Kenya Water Resources</h1>
+                    <p style="font-size: var(--font-xs); opacity: 0.7;">Dashboard v2.0</p>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="index.html" class="nav-item">
+                    <i class="fas fa-home"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="infrastructure.html" class="nav-item">
+                    <i class="fas fa-network-wired"></i>
+                    <span>Infrastructure</span>
+                </a>
+                <a href="hydrogeology.html" class="nav-item">
+                    <i class="fas fa-layer-group"></i>
+                    <span>Hydrogeology</span>
+                </a>
+                <a href="analysis.html" class="nav-item">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Analysis</span>
+                </a>
+                <a href="reports.html" class="nav-item">
+                    <i class="fas fa-file-alt"></i>
+                    <span>Reports</span>
+                </a>
+                <a href="methodology.html" class="nav-item active">
+                    <i class="fas fa-cogs"></i>
+                    <span>Methodology</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-section">
+                <h3>Methodology Stats</h3>
+                <div style="background: rgba(255,255,255,0.05); padding: var(--space-3); border-radius: var(--radius);">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: var(--space-2);">
+                        <span style="font-size: var(--font-xs); opacity: 0.7;">Data Sources:</span>
+                        <span style="font-weight: 600;" id="sidebar-sources">8</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: var(--space-2);">
+                        <span style="font-size: var(--font-xs); opacity: 0.7;">Accuracy:</span>
+                        <span style="font-weight: 600; color: var(--success);" id="sidebar-accuracy">85%</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between;">
+                        <span style="font-size: var(--font-xs); opacity: 0.7;">AHP Consistency:</span>
+                        <span style="font-weight: 600;" id="sidebar-ahp">0.04</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <h3>Tools Used</h3>
+                <div style="display: flex; flex-direction: column; gap: var(--space-2);">
+                    <div style="display: flex; align-items: center; gap: var(--space-2); font-size: var(--font-xs);">
+                        <i class="fas fa-globe" style="color: var(--secondary);"></i>
+                        <span>QGIS</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: var(--space-2); font-size: var(--font-xs);">
+                        <i class="fas fa-chart-line" style="color: var(--secondary);"></i>
+                        <span>Power BI</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: var(--space-2); font-size: var(--font-xs);">
+                        <i class="fas fa-satellite" style="color: var(--secondary);"></i>
+                        <span>Google Earth Engine</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Top Bar -->
+            <div class="top-bar">
+                <div class="page-title">
+                    <i class="fas fa-cogs"></i>
+                    <div>
+                        <h2>Research Methodology</h2>
+                        <p style="font-size: var(--font-sm); color: var(--gray); margin-top: 2px;">
+                            Integrated approach combining spatial analysis, remote sensing, and multi-criteria decision
+                            analysis
+                        </p>
+                    </div>
+                </div>
+
+                <div class="toolbar">
+                    <div style="margin-right: var(--space-4);">
+                        <p style="font-size: var(--font-xs); color: var(--gray);">Last updated:</p>
+                        <p style="font-size: var(--font-sm); font-weight: 500;" id="last-updated">Today, 10:30 AM</p>
+                    </div>
+                    <button class="btn btn-primary" id="refresh-data">
+                        <i class="fas fa-sync-alt"></i>
+                        Refresh
+                    </button>
+                </div>
+            </div>
+
+            <!-- Overview -->
+            <div class="content-card">
+                <div class="card-header">
+                    <h3><i class="fas fa-crosshairs"></i> Methodological Framework</h3>
+                </div>
+                <p style="color: var(--gray); margin-bottom: var(--space-4);">
+                    Integrated analytical framework combining spatial monitoring with hydrogeological assessment.
+                </p>
+
+                <div class="highlight-box">
+                    <h4><i class="fas fa-crosshairs"></i> Research Objectives</h4>
+                    <div class="two-column">
+                        <ul>
+                            <li>Monitor water point rehabilitation across counties</li>
+                            <li>Assess hydrogeological conditions in ASAL regions</li>
+                            <li>Map groundwater potential zones using GIS/AHP</li>
+                            <li>Develop dashboard for decision support</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Methodology Steps -->
+            <div class="content-card">
+                <div class="card-header">
+                    <h3><i class="fas fa-project-diagram"></i> Methodological Steps</h3>
+                </div>
+
+                <div class="methodology-flow">
+                    <div class="flow-step">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <h4>Data Collection</h4>
+                            <ul>
+                                <li>Water point data from Evidence Action</li>
+                                <li>Sentinel-2 imagery for land cover</li>
+                                <li>SRTM DEM for topography</li>
+                                <li>CHIRPS rainfall data</li>
+                                <li>Geological and soil datasets</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="flow-step">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <h4>GIS & Remote Sensing</h4>
+                            <ul>
+                                <li>Thematic map generation</li>
+                                <li>Land Use/Land Cover classification</li>
+                                <li>Drainage density extraction</li>
+                                <li>Slope analysis from DEM</li>
+                                <li>Spatial interpolation of rainfall</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="flow-step">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <h4>AHP Process</h4>
+                            <ul>
+                                <li>Pairwise comparison of layers</li>
+                                <li>Expert consultation for weights</li>
+                                <li>Consistency ratio calculation</li>
+                                <li>Weight validation</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="flow-step">
+                        <div class="step-number">4</div>
+                        <div class="step-content">
+                            <h4>Weighted Overlay</h4>
+                            <ul>
+                                <li>Integration of thematic layers</li>
+                                <li>Application of AHP weights</li>
+                                <li>Groundwater potential index</li>
+                                <li>Five-category classification</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="flow-step">
+                        <div class="step-number">5</div>
+                        <div class="step-content">
+                            <h4>Dashboard Development</h4>
+                            <ul>
+                                <li>Power BI architecture design</li>
+                                <li>Data integration</li>
+                                <li>Interactive visualization</li>
+                                <li>Spatial mapping integration</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="flow-step">
+                        <div class="step-number">6</div>
+                        <div class="step-content">
+                            <h4>Validation & Reporting</h4>
+                            <ul>
+                                <li>Field validation of zones</li>
+                                <li>Borehole yield comparison</li>
+                                <li>Accuracy assessment</li>
+                                <li>Report generation</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Data Sources -->
+            <div class="content-card">
+                <div class="card-header">
+                    <h3><i class="fas fa-database"></i> Data Sources</h3>
+                </div>
+
+                <div class="sources-grid">
+                    <div class="source-card">
+                        <div class="source-icon">
+                            <i class="fas fa-tint"></i>
+                        </div>
+                        <h4>Water Infrastructure</h4>
+                        <ul>
+                            <li><strong>Source:</strong> Evidence Action</li>
+                            <li><strong>Coverage:</strong> 21,950 water points</li>
+                            <li><strong>Period:</strong> 2023-2024</li>
+                        </ul>
+                    </div>
+
+                    <div class="source-card">
+                        <div class="source-icon">
+                            <i class="fas fa-satellite"></i>
+                        </div>
+                        <h4>Remote Sensing</h4>
+                        <ul>
+                            <li><strong>Sentinel-2:</strong> Land cover</li>
+                            <li><strong>SRTM DEM:</strong> 30m elevation</li>
+                            <li><strong>CHIRPS:</strong> Rainfall data</li>
+                        </ul>
+                    </div>
+
+                    <div class="source-card">
+                        <div class="source-icon">
+                            <i class="fas fa-map"></i>
+                        </div>
+                        <h4>Geospatial Data</h4>
+                        <ul>
+                            <li><strong>Geology:</strong> Survey maps</li>
+                            <li><strong>Soil:</strong> SOTWIS database</li>
+                            <li><strong>Administrative:</strong> Boundaries</li>
+                        </ul>
+                    </div>
+
+                    <div class="source-card">
+                        <div class="source-icon">
+                            <i class="fas fa-chart-bar"></i>
+                        </div>
+                        <h4>Ancillary Data</h4>
+                        <ul>
+                            <li><strong>Population:</strong> KNBS</li>
+                            <li><strong>Climate:</strong> Met Department</li>
+                            <li><strong>Validation:</strong> Borehole records</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AHP Details -->
+            <div class="content-card">
+                <div class="card-header">
+                    <h3><i class="fas fa-balance-scale"></i> AHP Details</h3>
+                </div>
+
+                <div class="technical-box">
+                    <h4>AHP Pairwise Comparison Matrix</h4>
+
+                    <div style="overflow-x: auto;">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Criteria</th>
+                                    <th>Weight</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Rainfall</strong></td>
+                                    <td><strong>38.0%</strong></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Geology</strong></td>
+                                    <td><strong>24.7%</strong></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Slope</strong></td>
+                                    <td><strong>13.1%</strong></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Drainage Density</strong></td>
+                                    <td><strong>8.9%</strong></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Land Use</strong></td>
+                                    <td><strong>6.6%</strong></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Lineament Density</strong></td>
+                                    <td><strong>5.0%</strong></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Soil</strong></td>
+                                    <td><strong>3.7%</strong></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="spec-grid">
+                        <div class="spec-item">
+                            <h5>Consistency Ratio</h5>
+                            <div class="metric-value">0.04</div>
+                            <p>Acceptable (CR < 0.10)</p>
+                        </div>
+
+                        <div class="spec-item">
+                            <h5>Lambda Max</h5>
+                            <div class="metric-value">7.35</div>
+                            <p>Maximum eigenvalue</p>
+                        </div>
+
+                        <div class="spec-item">
+                            <h5>Consistency Index</h5>
+                            <div class="metric-value">0.058</div>
+                            <p>Random Index = 1.32</p>
+                        </div>
+
+                        <div class="spec-item">
+                            <h5>Experts</h5>
+                            <div class="metric-value">8</div>
+                            <p>Hydrogeologists & GIS specialists</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Software Tools -->
+            <div class="content-card"
+                style="background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%); color: white;">
+                <div class="card-header" style="border-bottom-color: rgba(255,255,255,0.2);">
+                    <h3 style="color: white;"><i class="fas fa-laptop-code"></i> Software & Tools</h3>
+                </div>
+
+                <div class="software-grid">
+                    <div class="software-item">
+                        <div class="software-icon">
+                            <i class="fas fa-globe"></i>
+                        </div>
+                        <h5>QGIS</h5>
+                        <p>Geographic Information System</p>
+                    </div>
+
+                    <div class="software-item">
+                        <div class="software-icon">
+                            <i class="fas fa-satellite"></i>
+                        </div>
+                        <h5>Google Earth Engine</h5>
+                        <p>Remote Sensing Platform</p>
+                    </div>
+
+                    <div class="software-item">
+                        <div class="software-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <h5>Power BI</h5>
+                        <p>Dashboard Development</p>
+                    </div>
+
+                    <div class="software-item">
+                        <div class="software-icon">
+                            <i class="fas fa-calculator"></i>
+                        </div>
+                        <h5>Excel AHP</h5>
+                        <p>Multi-criteria Analysis</p>
+                    </div>
+
+                    <div class="software-item">
+                        <div class="software-icon">
+                            <i class="fab fa-python"></i>
+                        </div>
+                        <h5>Python</h5>
+                        <p>Data Processing</p>
+                    </div>
+
+                    <div class="software-item">
+                        <div class="software-icon">
+                            <i class="fas fa-database"></i>
+                        </div>
+                        <h5>PostGIS</h5>
+                        <p>Spatial Database</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Validation Metrics -->
+            <div class="content-card">
+                <div class="card-header">
+                    <h3><i class="fas fa-check-circle"></i> Validation & Accuracy</h3>
+                </div>
+
+                <div class="validation-grid">
+                    <div class="metric-box">
+                        <div class="metric-value">85%</div>
+                        <h5>Overall Accuracy</h5>
+                        <p>Groundwater classification</p>
+                    </div>
+
+                    <div class="metric-box">
+                        <div class="metric-value">0.78</div>
+                        <h5>Kappa Coefficient</h5>
+                        <p>Classification agreement</p>
+                    </div>
+
+                    <div class="metric-box">
+                        <div class="metric-value">92%</div>
+                        <h5>Producer's Accuracy</h5>
+                        <p>High potential zones</p>
+                    </div>
+
+                    <div class="metric-box">
+                        <div class="metric-value">88%</div>
+                        <h5>User's Accuracy</h5>
+                        <p>Low potential zones</p>
+                    </div>
+                </div>
+
+                <div class="insight-card">
+                    <h4><i class="fas fa-check-circle"></i> Validation Methodology</h4>
+                    <p>Maps validated using 120 borehole yield records. High potential zones showed 85% correlation with
+                        productive boreholes (>5 m³/hour).</p>
+                </div>
+            </div>
+
+            <!-- Limitations -->
+            <div class="content-card">
+                <div class="card-header">
+                    <h3><i class="fas fa-exclamation-triangle"></i> Limitations & Future Improvements</h3>
+                </div>
+
+                <div class="two-column">
+                    <div class="content-list">
+                        <h4><i class="fas fa-exclamation-triangle"></i> Data Limitations</h4>
+                        <ul>
+                            <li>Limited temporal depth in monitoring data</li>
+                            <li>Incomplete technology classification (27%)</li>
+                            <li>Spatial resolution constraints</li>
+                            <li>Seasonal variations not captured</li>
+                        </ul>
+                    </div>
+
+                    <div class="content-list">
+                        <h4><i class="fas fa-cogs"></i> Methodological Constraints</h4>
+                        <ul>
+                            <li>AHP subjectivity in weight assignment</li>
+                            <li>Simplified hydrogeological processes</li>
+                            <li>Limited validation in remote ASAL</li>
+                            <li>Static analysis without dynamics</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="content-list">
+                    <h4><i class="fas fa-forward"></i> Future Improvements</h4>
+                    <ul>
+                        <li>Machine learning for pattern recognition</li>
+                        <li>Real-time IoT sensor networks</li>
+                        <li>Higher resolution imagery</li>
+                        <li>Climate change projections</li>
+                        <li>Community participatory validation</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Workflow Modal -->
+    <div id="workflowModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Methodological Framework</h3>
+                <button class="modal-close" onclick="closeWorkflowModal()">&times;</button>
+            </div>
+
+            <div style="margin-bottom: var(--space-4);">
+                <div
+                    style="background: var(--bg-secondary); padding: var(--space-4); border-radius: var(--radius); margin-bottom: var(--space-3); text-align: center;">
+                    <i class="fas fa-project-diagram"
+                        style="font-size: var(--font-xl); color: var(--secondary); margin-bottom: var(--space-2); display: block;"></i>
+                    <h4 style="margin: 0 0 var(--space-2) 0; font-size: var(--font-md);">Integrated Workflow</h4>
+                    <p style="color: var(--gray); font-size: var(--font-sm);">Six-step process from data collection to
+                        validation</p>
+                </div>
+
+                <div
+                    style="display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-3); margin-bottom: var(--space-3);">
+                    <div
+                        style="background: #f0f9ff; padding: var(--space-3); border-radius: var(--radius); border-left: 3px solid var(--secondary);">
+                        <h5 style="margin: 0 0 var(--space-2) 0; font-size: var(--font-sm);">Phase 1: Data</h5>
+                        <p style="color: var(--gray); margin: 0; font-size: var(--font-xs);">Multi-source data
+                            integration</p>
+                    </div>
+                    <div
+                        style="background: #f0f9ff; padding: var(--space-3); border-radius: var(--radius); border-left: 3px solid var(--secondary);">
+                        <h5 style="margin: 0 0 var(--space-2) 0; font-size: var(--font-sm);">Phase 2: GIS</h5>
+                        <p style="color: var(--gray); margin: 0; font-size: var(--font-xs);">Thematic layer generation
+                        </p>
+                    </div>
+                    <div
+                        style="background: #f0f9ff; padding: var(--space-3); border-radius: var(--radius); border-left: 3px solid var(--secondary);">
+                        <h5 style="margin: 0 0 var(--space-2) 0; font-size: var(--font-sm);">Phase 3: AHP</h5>
+                        <p style="color: var(--gray); margin: 0; font-size: var(--font-xs);">Multi-criteria analysis</p>
+                    </div>
+                    <div
+                        style="background: #f0f9ff; padding: var(--space-3); border-radius: var(--radius); border-left: 3px solid var(--secondary);">
+                        <h5 style="margin: 0 0 var(--space-2) 0; font-size: var(--font-sm);">Phase 4: Integration</h5>
+                        <p style="color: var(--gray); margin: 0; font-size: var(--font-xs);">Groundwater mapping</p>
+                    </div>
+                </div>
+
+                <div style="background: var(--bg-secondary); padding: var(--space-3); border-radius: var(--radius);">
+                    <h5 style="margin: 0 0 var(--space-3) 0; font-size: var(--font-sm);">Key Components</h5>
+                    <div style="display: flex; flex-wrap: wrap; gap: var(--space-2);">
+                        <span
+                            style="background: white; padding: var(--space-1) var(--space-2); border-radius: var(--radius); font-size: var(--font-xs); color: var(--primary); border: 1px solid var(--border);">
+                            Geospatial Analysis
+                        </span>
+                        <span
+                            style="background: white; padding: var(--space-1) var(--space-2); border-radius: var(--radius); font-size: var(--font-xs); color: var(--primary); border: 1px solid var(--border);">
+                            Remote Sensing
+                        </span>
+                        <span
+                            style="background: white; padding: var(--space-1) var(--space-2); border-radius: var(--radius); font-size: var(--font-xs); color: var(--primary); border: 1px solid var(--border);">
+                            AHP Methodology
+                        </span>
+                        <span
+                            style="background: white; padding: var(--space-1) var(--space-2); border-radius: var(--radius); font-size: var(--font-xs); color: var(--primary); border: 1px solid var(--border);">
+                            Data Validation
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: var(--space-3);">
+                <button onclick="downloadWorkflow()" class="btn btn-primary" style="flex: 1;">
+                    <i class="fas fa-download"></i> Download Diagram
+                </button>
+                <button onclick="closeWorkflowModal()" class="btn btn-outline" style="flex: 1;">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize sidebar statistics
+        function updateSidebarStats() {
+            document.getElementById('sidebar-sources').textContent = '8';
+            document.getElementById('sidebar-accuracy').textContent = '85%';
+            document.getElementById('sidebar-ahp').textContent = '0.04';
+
+            // Update last updated time
+            const now = new Date();
+            document.getElementById('last-updated').textContent =
+                now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        }
+
+        // Workflow modal functions
+        function viewWorkflowDiagram() {
+            document.getElementById('workflowModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+            showNotification('Workflow diagram loaded');
+        }
+
+        function closeWorkflowModal() {
+            document.getElementById('workflowModal').classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        function downloadWorkflow() {
+            showNotification('Downloading workflow diagram...');
+            setTimeout(() => {
+                showNotification('Diagram downloaded successfully');
+                closeWorkflowModal();
+            }, 1500);
+        }
+
+        // Show notification
+        function showNotification(message) {
+            // Remove existing notification
+            const existing = document.querySelector('.notification');
+            if (existing) existing.remove();
+
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            notification.style.cssText = `
+                position: fixed;
+                top: var(--space-4);
+                right: var(--space-4);
+                padding: var(--space-3) var(--space-4);
+                background: var(--secondary);
+                color: white;
+                border-radius: var(--radius);
+                font-size: var(--font-sm);
+                z-index: 10001;
+                animation: slideIn 0.3s ease;
+                max-width: 280px;
+                box-shadow: var(--shadow-md);
+                display: flex;
+                align-items: center;
+                gap: var(--space-3);
+            `;
+
+            notification.innerHTML = `
+                <i class="fas fa-info-circle"></i>
+                <span>${message}</span>
+            `;
+
+            document.body.appendChild(notification);
+
+            // Add animation if not present
+            if (!document.querySelector('#notification-styles')) {
+                const style = document.createElement('style');
+                style.id = 'notification-styles';
+                style.textContent = `
+                    @keyframes slideIn {
+                        from { transform: translateX(100%); opacity: 0; }
+                        to { transform: translateX(0); opacity: 1; }
+                    }
+                    @keyframes slideOut {
+                        from { transform: translateX(0); opacity: 1; }
+                        to { transform: translateX(100%); opacity: 0; }
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
+        // Event Listeners
+        document.addEventListener('DOMContentLoaded', () => {
+            // Update sidebar stats
+            updateSidebarStats();
+
+            // Refresh button
+            document.getElementById('refresh-data').addEventListener('click', () => {
+                location.reload();
+            });
+
+            // Close modal on escape
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') closeWorkflowModal();
+            });
+
+            // Close modal on outside click
+            document.getElementById('workflowModal').addEventListener('click', (e) => {
+                if (e.target === document.getElementById('workflowModal')) {
+                    closeWorkflowModal();
+                }
+            });
+
+            // Add click event for workflow button
+            const workflowBtn = document.createElement('button');
+            workflowBtn.className = 'btn btn-primary';
+            workflowBtn.innerHTML = '<i class="fas fa-expand"></i> View Workflow Diagram';
+            workflowBtn.style.marginTop = 'var(--space-3)';
+            workflowBtn.onclick = viewWorkflowDiagram;
+
+            // Add button to appropriate location
+            const methodologyCard = document.querySelector('.content-card:nth-child(2) .card-header');
+            if (methodologyCard) {
+                methodologyCard.appendChild(workflowBtn);
+            }
+        });
+    </script>
+</body>
+
+</html>
