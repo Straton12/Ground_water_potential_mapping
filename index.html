@@ -33,38 +33,38 @@
             --bg-sidebar: #2c3e50;
             --bg-card: #ffffff;
 
-            /* Reduced Typography */
-            --font-xs: 0.7rem;
-            --font-sm: 0.8rem;
-            --font-base: 0.85rem;
-            --font-md: 0.9rem;
-            --font-lg: 1rem;
-            --font-xl: 1.1rem;
-            --font-2xl: 1.25rem;
-            --font-3xl: 1.5rem;
+            /* Typography */
+            --font-xs: 0.75rem;
+            --font-sm: 0.875rem;
+            --font-base: 0.9375rem;
+            --font-md: 1rem;
+            --font-lg: 1.125rem;
+            --font-xl: 1.25rem;
+            --font-2xl: 1.5rem;
+            --font-3xl: 1.75rem;
 
-            /* Reduced Spacing */
-            --space-1: 0.2rem;
-            --space-2: 0.35rem;
-            --space-3: 0.5rem;
-            --space-4: 0.75rem;
-            --space-5: 1rem;
-            --space-6: 1.25rem;
-            --space-7: 1.5rem;
-            --space-8: 1.75rem;
-            --space-9: 2rem;
-            --space-10: 2.5rem;
+            /* Spacing */
+            --space-1: 0.25rem;
+            --space-2: 0.5rem;
+            --space-3: 0.75rem;
+            --space-4: 1rem;
+            --space-5: 1.25rem;
+            --space-6: 1.5rem;
+            --space-7: 1.75rem;
+            --space-8: 2rem;
+            --space-9: 2.5rem;
+            --space-10: 3rem;
 
             /* Design Elements */
-            --radius-sm: 0.2rem;
-            --radius: 0.3rem;
-            --radius-lg: 0.4rem;
-            --radius-xl: 0.5rem;
+            --radius-sm: 0.25rem;
+            --radius: 0.375rem;
+            --radius-lg: 0.5rem;
+            --radius-xl: 0.75rem;
 
-            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.08);
-            --shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
-            --shadow-md: 0 3px 8px rgba(0, 0, 0, 0.1);
-            --shadow-lg: 0 6px 16px rgba(0, 0, 0, 0.1);
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+            --shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.1);
 
             --transition: all 0.2s ease;
         }
@@ -78,7 +78,7 @@
         body {
             font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
             font-size: var(--font-base);
-            line-height: 1.4;
+            line-height: 1.5;
             color: var(--dark);
             background-color: var(--light);
             overflow-x: hidden;
@@ -86,18 +86,17 @@
 
         .dashboard-container {
             display: grid;
-            grid-template-columns: 240px 1fr;
+            grid-template-columns: 280px 1fr;
             min-height: 100vh;
-            gap: 0;
         }
 
         /* Sidebar */
         .sidebar {
             background: var(--bg-sidebar);
             color: white;
-            padding: var(--space-4);
+            padding: var(--space-6);
             position: fixed;
-            width: 240px;
+            width: 280px;
             height: 100vh;
             overflow-y: auto;
             z-index: 1000;
@@ -107,19 +106,19 @@
         .sidebar-header {
             display: flex;
             align-items: center;
-            gap: var(--space-2);
-            margin-bottom: var(--space-6);
-            padding-bottom: var(--space-3);
+            gap: var(--space-3);
+            margin-bottom: var(--space-8);
+            padding-bottom: var(--space-4);
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .sidebar-header i {
-            font-size: var(--font-xl);
+            font-size: var(--font-2xl);
             color: var(--accent);
         }
 
         .sidebar-header h1 {
-            font-size: var(--font-md);
+            font-size: var(--font-lg);
             font-weight: 600;
             line-height: 1.2;
         }
@@ -127,19 +126,18 @@
         .sidebar-nav {
             display: flex;
             flex-direction: column;
-            gap: var(--space-1);
+            gap: var(--space-2);
         }
 
         .nav-item {
             display: flex;
             align-items: center;
-            gap: var(--space-2);
-            padding: var(--space-2) var(--space-3);
+            gap: var(--space-3);
+            padding: var(--space-3) var(--space-4);
             border-radius: var(--radius);
             color: rgba(255, 255, 255, 0.8);
             text-decoration: none;
             transition: var(--transition);
-            font-size: var(--font-sm);
         }
 
         .nav-item:hover {
@@ -154,39 +152,36 @@
         }
 
         .nav-item i {
-            width: 18px;
+            width: 20px;
             text-align: center;
-            font-size: var(--font-md);
         }
 
         .sidebar-section {
-            margin-top: var(--space-6);
+            margin-top: var(--space-8);
         }
 
         .sidebar-section h3 {
-            font-size: var(--font-xs);
+            font-size: var(--font-sm);
             font-weight: 600;
             color: rgba(255, 255, 255, 0.6);
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            margin-bottom: var(--space-2);
+            margin-bottom: var(--space-3);
         }
 
         /* Main Content */
         .main-content {
             grid-column: 2;
-            padding: var(--space-3);
+            padding: var(--space-4);
             background: var(--bg-secondary);
-            overflow-y: auto;
-            height: 100vh;
         }
 
         /* Top Bar */
         .top-bar {
             background: var(--bg-primary);
-            border-radius: var(--radius);
-            padding: var(--space-3) var(--space-4);
-            margin-bottom: var(--space-3);
+            border-radius: var(--radius-lg);
+            padding: var(--space-4) var(--space-6);
+            margin-bottom: var(--space-4);
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -196,11 +191,11 @@
         .page-title {
             display: flex;
             align-items: center;
-            gap: var(--space-2);
+            gap: var(--space-3);
         }
 
         .page-title h2 {
-            font-size: var(--font-lg);
+            font-size: var(--font-xl);
             font-weight: 600;
             color: var(--primary);
         }
@@ -212,31 +207,31 @@
         .toolbar {
             display: flex;
             align-items: center;
-            gap: var(--space-2);
+            gap: var(--space-3);
         }
 
         /* Stats Cards */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-            gap: var(--space-3);
-            margin-bottom: var(--space-3);
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--space-4);
+            margin-bottom: var(--space-4);
         }
 
         .stat-card {
             background: var(--bg-card);
-            border-radius: var(--radius);
-            padding: var(--space-3);
+            border-radius: var(--radius-lg);
+            padding: var(--space-5);
             display: flex;
             align-items: center;
-            gap: var(--space-3);
+            gap: var(--space-4);
             box-shadow: var(--shadow);
             transition: var(--transition);
-            border-left: 3px solid transparent;
+            border-left: 4px solid transparent;
         }
 
         .stat-card:hover {
-            transform: translateY(-1px);
+            transform: translateY(-2px);
             box-shadow: var(--shadow-md);
         }
 
@@ -257,13 +252,13 @@
         }
 
         .stat-icon {
-            width: 40px;
-            height: 40px;
+            width: 48px;
+            height: 48px;
             border-radius: var(--radius);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: var(--font-lg);
+            font-size: var(--font-xl);
             color: white;
         }
 
@@ -284,63 +279,62 @@
         }
 
         .stat-content h3 {
-            font-size: var(--font-lg);
+            font-size: var(--font-2xl);
             font-weight: 700;
             margin-bottom: var(--space-1);
         }
 
         .stat-content p {
-            font-size: var(--font-xs);
+            font-size: var(--font-sm);
             color: var(--gray);
         }
 
         /* Main Dashboard Grid */
         .dashboard-grid {
             display: grid;
-            grid-template-columns: 3fr 1fr;
-            gap: var(--space-3);
-            margin-bottom: var(--space-3);
-            height: calc(100vh - 250px);
+            grid-template-columns: 2fr 1fr;
+            gap: var(--space-4);
+            margin-bottom: var(--space-4);
         }
 
-        /* Map Container - Increased Size */
+        /* Map Container */
         .map-container {
             background: var(--bg-card);
-            border-radius: var(--radius);
+            border-radius: var(--radius-lg);
             overflow: hidden;
             box-shadow: var(--shadow);
-            height: 100%;
+            height: 600px;
             position: relative;
         }
 
         #main-map {
             width: 100%;
             height: 100%;
-            border-radius: var(--radius);
+            border-radius: var(--radius-lg);
         }
 
         /* Map Controls */
         .map-controls-container {
             background: var(--bg-card);
-            border-radius: var(--radius);
-            padding: var(--space-3);
+            border-radius: var(--radius-lg);
+            padding: var(--space-4);
             box-shadow: var(--shadow);
-            height: 100%;
+            height: 600px;
             overflow-y: auto;
         }
 
         .control-section {
-            margin-bottom: var(--space-4);
+            margin-bottom: var(--space-6);
         }
 
         .control-section h4 {
-            font-size: var(--font-sm);
+            font-size: var(--font-md);
             font-weight: 600;
-            margin-bottom: var(--space-2);
+            margin-bottom: var(--space-3);
             color: var(--primary);
             display: flex;
             align-items: center;
-            gap: var(--space-1);
+            gap: var(--space-2);
         }
 
         .control-section h4 i {
@@ -349,24 +343,24 @@
 
         /* Filter Controls */
         .filter-group {
-            margin-bottom: var(--space-3);
+            margin-bottom: var(--space-4);
         }
 
         .filter-group label {
             display: block;
-            font-size: var(--font-xs);
+            font-size: var(--font-sm);
             font-weight: 500;
-            margin-bottom: var(--space-1);
+            margin-bottom: var(--space-2);
             color: var(--gray);
         }
 
         .filter-select,
         .filter-input {
             width: 100%;
-            padding: var(--space-1) var(--space-2);
+            padding: var(--space-2) var(--space-3);
             border: 1px solid var(--border);
-            border-radius: var(--radius-sm);
-            font-size: var(--font-xs);
+            border-radius: var(--radius);
+            font-size: var(--font-sm);
             background: var(--bg-primary);
             transition: var(--transition);
         }
@@ -375,26 +369,26 @@
         .filter-input:focus {
             outline: none;
             border-color: var(--secondary);
-            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.1);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
         }
 
         .filter-checkboxes {
             display: flex;
             flex-direction: column;
-            gap: var(--space-1);
+            gap: var(--space-2);
         }
 
         .filter-checkbox {
             display: flex;
             align-items: center;
-            gap: var(--space-1);
+            gap: var(--space-2);
             cursor: pointer;
-            font-size: var(--font-xs);
+            font-size: var(--font-sm);
         }
 
         .filter-checkbox input[type="checkbox"] {
-            width: 14px;
-            height: 14px;
+            width: 16px;
+            height: 16px;
             cursor: pointer;
         }
 
@@ -402,18 +396,17 @@
         .layer-controls {
             display: flex;
             flex-direction: column;
-            gap: var(--space-1);
+            gap: var(--space-2);
         }
 
         .layer-control {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: var(--space-1) var(--space-2);
+            padding: var(--space-2) var(--space-3);
             background: var(--bg-secondary);
-            border-radius: var(--radius-sm);
+            border-radius: var(--radius);
             transition: var(--transition);
-            font-size: var(--font-xs);
         }
 
         .layer-control:hover {
@@ -423,12 +416,12 @@
         .layer-info {
             display: flex;
             align-items: center;
-            gap: var(--space-1);
+            gap: var(--space-2);
         }
 
         .layer-color {
-            width: 10px;
-            height: 10px;
+            width: 12px;
+            height: 12px;
             border-radius: 2px;
             display: inline-block;
         }
@@ -438,10 +431,10 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: var(--space-1);
-            padding: var(--space-1) var(--space-3);
-            border-radius: var(--radius-sm);
-            font-size: var(--font-xs);
+            gap: var(--space-2);
+            padding: var(--space-2) var(--space-4);
+            border-radius: var(--radius);
+            font-size: var(--font-sm);
             font-weight: 500;
             border: none;
             cursor: pointer;
@@ -471,27 +464,27 @@
         }
 
         .btn-sm {
-            padding: var(--space-1) var(--space-2);
+            padding: var(--space-1) var(--space-3);
             font-size: var(--font-xs);
         }
 
         .btn-group {
             display: flex;
-            gap: var(--space-1);
+            gap: var(--space-2);
         }
 
         /* Charts Grid */
         .charts-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: var(--space-3);
-            margin-bottom: var(--space-3);
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--space-4);
+            margin-bottom: var(--space-4);
         }
 
         .chart-card {
             background: var(--bg-card);
-            border-radius: var(--radius);
-            padding: var(--space-3);
+            border-radius: var(--radius-lg);
+            padding: var(--space-4);
             box-shadow: var(--shadow);
         }
 
@@ -499,35 +492,35 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: var(--space-2);
+            margin-bottom: var(--space-3);
         }
 
         .chart-header h4 {
-            font-size: var(--font-sm);
+            font-size: var(--font-md);
             font-weight: 600;
             color: var(--primary);
         }
 
         .chart-container {
-            height: 200px;
+            height: 250px;
             position: relative;
         }
 
         /* Map Overlay Controls */
         .map-overlay-controls {
             position: absolute;
-            top: var(--space-2);
-            right: var(--space-2);
+            top: var(--space-4);
+            right: var(--space-4);
             z-index: 1000;
             display: flex;
             flex-direction: column;
-            gap: var(--space-1);
+            gap: var(--space-2);
         }
 
         .map-btn {
-            width: 32px;
-            height: 32px;
-            border-radius: var(--radius-sm);
+            width: 36px;
+            height: 36px;
+            border-radius: var(--radius);
             background: white;
             border: 1px solid var(--border);
             display: flex;
@@ -536,7 +529,6 @@
             cursor: pointer;
             transition: var(--transition);
             box-shadow: var(--shadow);
-            font-size: var(--font-sm);
         }
 
         .map-btn:hover {
@@ -548,15 +540,15 @@
         /* Legend */
         .map-legend {
             position: absolute;
-            bottom: var(--space-2);
-            right: var(--space-2);
+            bottom: var(--space-4);
+            right: var(--space-4);
             background: white;
-            border-radius: var(--radius-sm);
-            padding: var(--space-2);
+            border-radius: var(--radius);
+            padding: var(--space-3);
             box-shadow: var(--shadow);
             z-index: 1000;
-            max-width: 200px;
-            max-height: 250px;
+            max-width: 250px;
+            max-height: 300px;
             overflow-y: auto;
         }
 
@@ -564,11 +556,11 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: var(--space-1);
+            margin-bottom: var(--space-2);
         }
 
         .legend-header h5 {
-            font-size: var(--font-xs);
+            font-size: var(--font-sm);
             font-weight: 600;
             color: var(--primary);
         }
@@ -576,19 +568,19 @@
         .legend-content {
             display: flex;
             flex-direction: column;
-            gap: var(--space-1);
+            gap: var(--space-2);
         }
 
         .legend-item {
             display: flex;
             align-items: center;
-            gap: var(--space-1);
+            gap: var(--space-2);
             font-size: var(--font-xs);
         }
 
         .legend-color {
-            width: 12px;
-            height: 12px;
+            width: 16px;
+            height: 16px;
             border-radius: var(--radius-sm);
             flex-shrink: 0;
         }
@@ -600,27 +592,27 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(255, 255, 255, 0.95);
+            background: rgba(255, 255, 255, 0.9);
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             z-index: 2000;
-            border-radius: var(--radius);
+            border-radius: var(--radius-lg);
         }
 
         .loading-spinner {
-            width: 30px;
-            height: 30px;
-            border: 2px solid var(--gray-light);
-            border-top: 2px solid var(--secondary);
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--gray-light);
+            border-top: 3px solid var(--secondary);
             border-radius: 50%;
             animation: spin 1s linear infinite;
-            margin-bottom: var(--space-2);
+            margin-bottom: var(--space-3);
         }
 
         .loading-text {
-            font-size: var(--font-xs);
+            font-size: var(--font-sm);
             color: var(--gray);
             font-weight: 500;
         }
@@ -638,15 +630,15 @@
         /* County Info Panel */
         .county-info-panel {
             position: absolute;
-            top: var(--space-2);
-            left: var(--space-2);
+            top: var(--space-4);
+            left: var(--space-4);
             background: white;
-            border-radius: var(--radius-sm);
-            padding: var(--space-2);
+            border-radius: var(--radius);
+            padding: var(--space-3);
             box-shadow: var(--shadow);
             z-index: 1000;
-            max-width: 250px;
-            max-height: 350px;
+            max-width: 300px;
+            max-height: 400px;
             overflow-y: auto;
         }
 
@@ -654,13 +646,13 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: var(--space-1);
-            padding-bottom: var(--space-1);
+            margin-bottom: var(--space-2);
+            padding-bottom: var(--space-2);
             border-bottom: 1px solid var(--border);
         }
 
         .info-header h5 {
-            font-size: var(--font-xs);
+            font-size: var(--font-sm);
             font-weight: 600;
             color: var(--primary);
         }
@@ -668,19 +660,19 @@
         .info-stats {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: var(--space-1);
-            margin-top: var(--space-1);
+            gap: var(--space-2);
+            margin-top: var(--space-2);
         }
 
         .info-stat {
             text-align: center;
-            padding: var(--space-1);
+            padding: var(--space-2);
             background: var(--bg-secondary);
-            border-radius: var(--radius-sm);
+            border-radius: var(--radius);
         }
 
         .info-stat-value {
-            font-size: var(--font-md);
+            font-size: var(--font-lg);
             font-weight: 700;
             color: var(--primary);
         }
@@ -694,20 +686,20 @@
         .tabs {
             display: flex;
             background: var(--bg-secondary);
-            border-radius: var(--radius-sm);
+            border-radius: var(--radius);
             padding: var(--space-1);
-            margin-bottom: var(--space-3);
+            margin-bottom: var(--space-4);
         }
 
         .tab {
             flex: 1;
-            padding: var(--space-1) var(--space-2);
+            padding: var(--space-2) var(--space-3);
             text-align: center;
-            font-size: var(--font-xs);
+            font-size: var(--font-sm);
             font-weight: 500;
             color: var(--gray);
             cursor: pointer;
-            border-radius: calc(var(--radius-sm) - var(--space-1));
+            border-radius: calc(var(--radius) - var(--space-1));
             transition: var(--transition);
         }
 
@@ -733,7 +725,7 @@
             transform: translateX(-50%);
             background: var(--dark);
             color: white;
-            padding: var(--space-1) var(--space-2);
+            padding: var(--space-2) var(--space-3);
             border-radius: var(--radius-sm);
             font-size: var(--font-xs);
             white-space: nowrap;
@@ -745,7 +737,6 @@
         @media (max-width: 1200px) {
             .dashboard-grid {
                 grid-template-columns: 1fr;
-                height: auto;
             }
 
             .dashboard-container {
@@ -760,12 +751,6 @@
 
             .main-content {
                 grid-column: 1;
-                height: auto;
-                overflow-y: visible;
-            }
-
-            .map-container {
-                height: 500px;
             }
         }
 
@@ -780,17 +765,8 @@
 
             .top-bar {
                 flex-direction: column;
-                gap: var(--space-2);
+                gap: var(--space-3);
                 align-items: stretch;
-            }
-
-            .dashboard-grid {
-                grid-template-columns: 1fr;
-                height: auto;
-            }
-
-            .map-controls-container {
-                height: auto;
             }
         }
 
@@ -802,30 +778,22 @@
             .map-container {
                 height: 400px;
             }
-
-            .sidebar {
-                padding: var(--space-3);
-            }
-
-            .main-content {
-                padding: var(--space-2);
-            }
         }
 
         /* Custom Scrollbar */
         ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
+            width: 8px;
+            height: 8px;
         }
 
         ::-webkit-scrollbar-track {
             background: var(--bg-secondary);
-            border-radius: 3px;
+            border-radius: 4px;
         }
 
         ::-webkit-scrollbar-thumb {
             background: var(--gray);
-            border-radius: 3px;
+            border-radius: 4px;
         }
 
         ::-webkit-scrollbar-thumb:hover {
@@ -875,12 +843,12 @@
 
             <div class="sidebar-section">
                 <h3>Quick Stats</h3>
-                <div style="background: rgba(255,255,255,0.05); padding: var(--space-2); border-radius: var(--radius);">
-                    <div style="display: flex; justify-content: space-between; margin-bottom: var(--space-1);">
+                <div style="background: rgba(255,255,255,0.05); padding: var(--space-3); border-radius: var(--radius);">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: var(--space-2);">
                         <span style="font-size: var(--font-xs); opacity: 0.7;">Total Points:</span>
                         <span style="font-weight: 600;" id="sidebar-total">0</span>
                     </div>
-                    <div style="display: flex; justify-content: space-between; margin-bottom: var(--space-1);">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: var(--space-2);">
                         <span style="font-size: var(--font-xs); opacity: 0.7;">Functional:</span>
                         <span style="font-weight: 600; color: var(--success);" id="sidebar-functional">0%</span>
                     </div>
@@ -893,16 +861,16 @@
 
             <div class="sidebar-section">
                 <h3>Data Sources</h3>
-                <div style="display: flex; flex-direction: column; gap: var(--space-1);">
-                    <div style="display: flex; align-items: center; gap: var(--space-1); font-size: var(--font-xs);">
+                <div style="display: flex; flex-direction: column; gap: var(--space-2);">
+                    <div style="display: flex; align-items: center; gap: var(--space-2); font-size: var(--font-xs);">
                         <i class="fas fa-check-circle" style="color: var(--success);"></i>
                         <span>Evidence Action</span>
                     </div>
-                    <div style="display: flex; align-items: center; gap: var(--space-1); font-size: var(--font-xs);">
+                    <div style="display: flex; align-items: center; gap: var(--space-2); font-size: var(--font-xs);">
                         <i class="fas fa-check-circle" style="color: var(--success);"></i>
                         <span>Water Institute</span>
                     </div>
-                    <div style="display: flex; align-items: center; gap: var(--space-1); font-size: var(--font-xs);">
+                    <div style="display: flex; align-items: center; gap: var(--space-2); font-size: var(--font-xs);">
                         <i class="fas fa-check-circle" style="color: var(--success);"></i>
                         <span>NASA EarthData</span>
                     </div>
@@ -918,16 +886,16 @@
                     <i class="fas fa-water"></i>
                     <div>
                         <h2>Water Resources Dashboard</h2>
-                        <p style="font-size: var(--font-xs); color: var(--gray); margin-top: 1px;">
+                        <p style="font-size: var(--font-sm); color: var(--gray); margin-top: 2px;">
                             Real-time monitoring of water points across Kenya
                         </p>
                     </div>
                 </div>
 
                 <div class="toolbar">
-                    <div style="margin-right: var(--space-3);">
+                    <div style="margin-right: var(--space-4);">
                         <p style="font-size: var(--font-xs); color: var(--gray);">Last updated:</p>
-                        <p style="font-size: var(--font-xs); font-weight: 500;" id="last-updated">Today, 10:30 AM</p>
+                        <p style="font-size: var(--font-sm); font-weight: 500;" id="last-updated">Today, 10:30 AM</p>
                     </div>
                     <button class="btn btn-primary" id="refresh-data">
                         <i class="fas fa-sync-alt"></i>
@@ -1058,22 +1026,22 @@
                             <div class="filter-checkboxes">
                                 <label class="filter-checkbox">
                                     <input type="checkbox" value="Functional" checked>
-                                    <span style="color:#2ecc71; margin-right: 3px;">●</span>
+                                    <span style="color:#2ecc71; margin-right: 4px;">●</span>
                                     Functional
                                 </label>
                                 <label class="filter-checkbox">
                                     <input type="checkbox" value="Non-Functional" checked>
-                                    <span style="color:#e74c3c; margin-right: 3px;">●</span>
+                                    <span style="color:#e74c3c; margin-right: 4px;">●</span>
                                     Non-Functional
                                 </label>
                                 <label class="filter-checkbox">
                                     <input type="checkbox" value="Needs Repair" checked>
-                                    <span style="color:#f39c12; margin-right: 3px;">●</span>
+                                    <span style="color:#f39c12; margin-right: 4px;">●</span>
                                     Needs Repair
                                 </label>
                                 <label class="filter-checkbox">
                                     <input type="checkbox" value="Unknown" checked>
-                                    <span style="color:#95a5a6; margin-right: 3px;">●</span>
+                                    <span style="color:#95a5a6; margin-right: 4px;">●</span>
                                     Unknown
                                 </label>
                             </div>
@@ -1095,7 +1063,7 @@
                             </select>
                         </div>
 
-                        <div class="btn-group" style="margin-top: var(--space-3);">
+                        <div class="btn-group" style="margin-top: var(--space-4);">
                             <button class="btn btn-primary" id="apply-filters">
                                 <i class="fas fa-check"></i>
                                 Apply Filters
@@ -1149,7 +1117,7 @@
                     <div class="control-section">
                         <h4><i class="fas fa-palette"></i> Base Map</h4>
 
-                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-1);">
+                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-2);">
                             <button class="btn btn-outline active" data-basemap="osm">
                                 <i class="fas fa-map"></i>
                                 OpenStreetMap
@@ -1734,43 +1702,43 @@
             const color = Config.statusColors[status] || Config.statusColors['Unknown'];
 
             return `
-                <div style="min-width: 200px; font-family: -apple-system, sans-serif;">
-                    <div style="background: ${color}; color: white; padding: 6px 10px; margin: -8px -8px 8px -8px; border-radius: 3px 3px 0 0;">
+                <div style="min-width: 250px; font-family: -apple-system, sans-serif;">
+                    <div style="background: ${color}; color: white; padding: 8px 12px; margin: -10px -10px 10px -10px; border-radius: 4px 4px 0 0;">
                         <strong>Water Point Details</strong>
                     </div>
-                    <div style="padding: 3px 0;">
-                        <div style="display: grid; grid-template-columns: 80px 1fr; gap: 3px; margin-bottom: 3px;">
+                    <div style="padding: 4px 0;">
+                        <div style="display: grid; grid-template-columns: 100px 1fr; gap: 4px; margin-bottom: 4px;">
                             <strong>Status:</strong>
                             <span style="color: ${color}; font-weight: 500;">${status}</span>
                         </div>
-                        <div style="display: grid; grid-template-columns: 80px 1fr; gap: 3px; margin-bottom: 3px;">
+                        <div style="display: grid; grid-template-columns: 100px 1fr; gap: 4px; margin-bottom: 4px;">
                             <strong>Source:</strong>
                             <span>${props.water_sour || props.WATER_SOUR || 'Unknown'}</span>
                         </div>
-                        <div style="display: grid; grid-template-columns: 80px 1fr; gap: 3px; margin-bottom: 3px;">
+                        <div style="display: grid; grid-template-columns: 100px 1fr; gap: 4px; margin-bottom: 4px;">
                             <strong>Technology:</strong>
                             <span>${props.water_tech || props.WATER_TECH || 'Unknown'}</span>
                         </div>
-                        <div style="display: grid; grid-template-columns: 80px 1fr; gap: 3px; margin-bottom: 3px;">
+                        <div style="display: grid; grid-template-columns: 100px 1fr; gap: 4px; margin-bottom: 4px;">
                             <strong>County:</strong>
                             <span>${props.clean_adm1 || props.COUNTY || 'Unknown'}</span>
                         </div>
-                        <div style="display: grid; grid-template-columns: 80px 1fr; gap: 3px; margin-bottom: 3px;">
+                        <div style="display: grid; grid-template-columns: 100px 1fr; gap: 4px; margin-bottom: 4px;">
                             <strong>Location:</strong>
                             <span>${coordinates[0].toFixed(4)}, ${coordinates[1].toFixed(4)}</span>
                         </div>
                         ${props.install_yea ? `
-                        <div style="display: grid; grid-template-columns: 80px 1fr; gap: 3px; margin-bottom: 3px;">
+                        <div style="display: grid; grid-template-columns: 100px 1fr; gap: 4px; margin-bottom: 4px;">
                             <strong>Install Year:</strong>
                             <span>${props.install_yea}</span>
                         </div>` : ''}
                         ${props.management ? `
-                        <div style="display: grid; grid-template-columns: 80px 1fr; gap: 3px;">
+                        <div style="display: grid; grid-template-columns: 100px 1fr; gap: 4px;">
                             <strong>Management:</strong>
                             <span>${props.management}</span>
                         </div>` : ''}
                     </div>
-                    <div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #eee; text-align: center;">
+                    <div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid #eee; text-align: center;">
                         <small style="color: #666;">Click to highlight | Double-click to zoom</small>
                     </div>
                 </div>
@@ -1914,7 +1882,7 @@
 
                     // Add popup
                     layer.bindPopup(`
-                        <div style="font-size: 11px;">
+                        <div style="font-size: 12px;">
                             <strong>Groundwater Suitability:</strong> ${getSuitabilityLabel(normalizedScore)}<br>
                             <strong>Score:</strong> ${normalizedScore}/7<br>
                             <strong>Original Gridcode:</strong> ${suitability}<br>
@@ -2032,11 +2000,8 @@
                         legend: {
                             position: 'bottom',
                             labels: {
-                                padding: 10,
-                                usePointStyle: true,
-                                font: {
-                                    size: 11
-                                }
+                                padding: 15,
+                                usePointStyle: true
                             }
                         },
                         tooltip: {
@@ -2074,11 +2039,8 @@
                         legend: {
                             position: 'bottom',
                             labels: {
-                                padding: 10,
-                                usePointStyle: true,
-                                font: {
-                                    size: 11
-                                }
+                                padding: 15,
+                                usePointStyle: true
                             }
                         }
                     }
@@ -2451,8 +2413,8 @@
             // Update info panel
             document.getElementById('county-name').textContent = countyName;
             document.getElementById('county-details').innerHTML = `
-                <div style="padding: 6px 0;">
-                    <p style="margin-bottom: 10px; color: #666;">${countyName} County Details</p>
+                <div style="padding: 8px 0;">
+                    <p style="margin-bottom: 12px; color: #666;">${countyName} County Details</p>
                     
                     <div class="info-stats">
                         <div class="info-stat">
@@ -2476,7 +2438,7 @@
                         </div>
                     </div>
                     
-                    <div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid #eee;">
+                    <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #eee;">
                         <button class="btn btn-primary" style="width: 100%;" onclick="zoomToCounty('${countyName}')">
                             <i class="fas fa-search-location"></i>
                             Zoom to County
@@ -2497,7 +2459,7 @@
             WaterDashboard.layers.counties.eachLayer(layer => {
                 const bounds = layer.getBounds();
                 if (bounds.isValid()) {
-                    WaterDashboard.map.fitBounds(bounds, { padding: [30, 30] });
+                    WaterDashboard.map.fitBounds(bounds, { padding: [50, 50] });
                     found = true;
                 }
             });
@@ -2627,13 +2589,13 @@
             // Add suitability legend if data exists
             if (WaterDashboard.suitabilityData.length > 0) {
                 const separator = document.createElement('div');
-                separator.style.margin = '6px 0';
+                separator.style.margin = '8px 0';
                 separator.style.borderTop = '1px solid var(--border)';
                 legendContent.appendChild(separator);
 
                 const title = document.createElement('div');
                 title.style.fontWeight = '600';
-                title.style.marginBottom = '3px';
+                title.style.marginBottom = '4px';
                 title.textContent = 'Groundwater Suitability:';
                 legendContent.appendChild(title);
 
@@ -2714,9 +2676,9 @@
             const loadingOverlay = document.getElementById('map-loading');
             loadingOverlay.innerHTML = `
                 <div style="text-align: center;">
-                    <i class="fas fa-exclamation-triangle" style="font-size: 40px; color: #e74c3c; margin-bottom: 12px;"></i>
+                    <i class="fas fa-exclamation-triangle" style="font-size: 48px; color: #e74c3c; margin-bottom: 16px;"></i>
                     <div class="loading-text">${message}</div>
-                    <button class="btn btn-primary" onclick="location.reload()" style="margin-top: 12px;">
+                    <button class="btn btn-primary" onclick="location.reload()" style="margin-top: 16px;">
                         <i class="fas fa-redo"></i>
                         Reload Dashboard
                     </button>
