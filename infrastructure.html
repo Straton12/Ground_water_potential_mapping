@@ -34,38 +34,38 @@
             --bg-sidebar: #2c3e50;
             --bg-card: #ffffff;
 
-            /* Typography */
-            --font-xs: 0.75rem;
-            --font-sm: 0.875rem;
-            --font-base: 0.9375rem;
-            --font-md: 1rem;
-            --font-lg: 1.125rem;
-            --font-xl: 1.25rem;
-            --font-2xl: 1.5rem;
-            --font-3xl: 1.75rem;
+            /* Reduced Typography */
+            --font-xs: 0.7rem;
+            --font-sm: 0.8rem;
+            --font-base: 0.85rem;
+            --font-md: 0.9rem;
+            --font-lg: 1rem;
+            --font-xl: 1.1rem;
+            --font-2xl: 1.25rem;
+            --font-3xl: 1.5rem;
 
-            /* Spacing */
-            --space-1: 0.25rem;
-            --space-2: 0.5rem;
-            --space-3: 0.75rem;
-            --space-4: 1rem;
-            --space-5: 1.25rem;
-            --space-6: 1.5rem;
-            --space-7: 1.75rem;
-            --space-8: 2rem;
-            --space-9: 2.5rem;
-            --space-10: 3rem;
+            /* Reduced Spacing */
+            --space-1: 0.2rem;
+            --space-2: 0.35rem;
+            --space-3: 0.5rem;
+            --space-4: 0.75rem;
+            --space-5: 1rem;
+            --space-6: 1.25rem;
+            --space-7: 1.5rem;
+            --space-8: 1.75rem;
+            --space-9: 2rem;
+            --space-10: 2.5rem;
 
             /* Design Elements */
-            --radius-sm: 0.25rem;
-            --radius: 0.375rem;
-            --radius-lg: 0.5rem;
-            --radius-xl: 0.75rem;
+            --radius-sm: 0.2rem;
+            --radius: 0.3rem;
+            --radius-lg: 0.4rem;
+            --radius-xl: 0.5rem;
 
-            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
-            --shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
-            --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.1);
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.08);
+            --shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+            --shadow-md: 0 3px 8px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 6px 16px rgba(0, 0, 0, 0.1);
 
             --transition: all 0.2s ease;
         }
@@ -79,7 +79,7 @@
         body {
             font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
             font-size: var(--font-base);
-            line-height: 1.5;
+            line-height: 1.4;
             color: var(--dark);
             background-color: var(--light);
             overflow-x: hidden;
@@ -87,7 +87,7 @@
 
         .dashboard-container {
             display: grid;
-            grid-template-columns: 280px 1fr;
+            grid-template-columns: 240px 1fr;
             min-height: 100vh;
         }
 
@@ -95,9 +95,9 @@
         .sidebar {
             background: var(--bg-sidebar);
             color: white;
-            padding: var(--space-6);
+            padding: var(--space-4);
             position: fixed;
-            width: 280px;
+            width: 240px;
             height: 100vh;
             overflow-y: auto;
             z-index: 1000;
@@ -107,19 +107,19 @@
         .sidebar-header {
             display: flex;
             align-items: center;
-            gap: var(--space-3);
-            margin-bottom: var(--space-8);
-            padding-bottom: var(--space-4);
+            gap: var(--space-2);
+            margin-bottom: var(--space-6);
+            padding-bottom: var(--space-3);
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .sidebar-header i {
-            font-size: var(--font-2xl);
+            font-size: var(--font-xl);
             color: var(--accent);
         }
 
         .sidebar-header h1 {
-            font-size: var(--font-lg);
+            font-size: var(--font-md);
             font-weight: 600;
             line-height: 1.2;
         }
@@ -127,18 +127,19 @@
         .sidebar-nav {
             display: flex;
             flex-direction: column;
-            gap: var(--space-2);
+            gap: var(--space-1);
         }
 
         .nav-item {
             display: flex;
             align-items: center;
-            gap: var(--space-3);
-            padding: var(--space-3) var(--space-4);
+            gap: var(--space-2);
+            padding: var(--space-2) var(--space-3);
             border-radius: var(--radius);
             color: rgba(255, 255, 255, 0.8);
             text-decoration: none;
             transition: var(--transition);
+            font-size: var(--font-sm);
         }
 
         .nav-item:hover {
@@ -153,36 +154,37 @@
         }
 
         .nav-item i {
-            width: 20px;
+            width: 18px;
             text-align: center;
+            font-size: var(--font-md);
         }
 
         .sidebar-section {
-            margin-top: var(--space-8);
+            margin-top: var(--space-6);
         }
 
         .sidebar-section h3 {
-            font-size: var(--font-sm);
+            font-size: var(--font-xs);
             font-weight: 600;
             color: rgba(255, 255, 255, 0.6);
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            margin-bottom: var(--space-3);
+            margin-bottom: var(--space-2);
         }
 
         /* Main Content */
         .main-content {
             grid-column: 2;
-            padding: var(--space-4);
+            padding: var(--space-3);
             background: var(--bg-secondary);
         }
 
         /* Top Bar */
         .top-bar {
             background: var(--bg-primary);
-            border-radius: var(--radius-lg);
-            padding: var(--space-4) var(--space-6);
-            margin-bottom: var(--space-4);
+            border-radius: var(--radius);
+            padding: var(--space-3) var(--space-4);
+            margin-bottom: var(--space-3);
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -192,11 +194,11 @@
         .page-title {
             display: flex;
             align-items: center;
-            gap: var(--space-3);
+            gap: var(--space-2);
         }
 
         .page-title h2 {
-            font-size: var(--font-xl);
+            font-size: var(--font-lg);
             font-weight: 600;
             color: var(--primary);
         }
@@ -208,31 +210,31 @@
         .toolbar {
             display: flex;
             align-items: center;
-            gap: var(--space-3);
+            gap: var(--space-2);
         }
 
         /* Stats Cards */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: var(--space-4);
-            margin-bottom: var(--space-4);
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: var(--space-3);
+            margin-bottom: var(--space-3);
         }
 
         .stat-card {
             background: var(--bg-card);
-            border-radius: var(--radius-lg);
-            padding: var(--space-5);
+            border-radius: var(--radius);
+            padding: var(--space-3);
             display: flex;
             align-items: center;
-            gap: var(--space-4);
+            gap: var(--space-3);
             box-shadow: var(--shadow);
             transition: var(--transition);
-            border-left: 4px solid transparent;
+            border-left: 3px solid transparent;
         }
 
         .stat-card:hover {
-            transform: translateY(-2px);
+            transform: translateY(-1px);
             box-shadow: var(--shadow-md);
         }
 
@@ -253,13 +255,13 @@
         }
 
         .stat-icon {
-            width: 48px;
-            height: 48px;
+            width: 40px;
+            height: 40px;
             border-radius: var(--radius);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: var(--font-xl);
+            font-size: var(--font-lg);
             color: white;
         }
 
@@ -280,41 +282,41 @@
         }
 
         .stat-content h3 {
-            font-size: var(--font-2xl);
+            font-size: var(--font-lg);
             font-weight: 700;
             margin-bottom: var(--space-1);
         }
 
         .stat-content p {
-            font-size: var(--font-sm);
+            font-size: var(--font-xs);
             color: var(--gray);
         }
 
         /* Infrastructure-specific styles */
         .analysis-section {
             background: var(--bg-card);
-            border-radius: var(--radius-lg);
-            padding: var(--space-6);
-            margin-bottom: var(--space-4);
+            border-radius: var(--radius);
+            padding: var(--space-4);
+            margin-bottom: var(--space-3);
             box-shadow: var(--shadow);
         }
 
         .section-header {
             display: flex;
             align-items: center;
-            gap: var(--space-3);
-            margin-bottom: var(--space-6);
-            padding-bottom: var(--space-3);
-            border-bottom: 2px solid var(--gray-light);
+            gap: var(--space-2);
+            margin-bottom: var(--space-4);
+            padding-bottom: var(--space-2);
+            border-bottom: 1px solid var(--gray-light);
         }
 
         .section-header i {
             color: var(--secondary);
-            font-size: var(--font-xl);
+            font-size: var(--font-lg);
         }
 
         .section-header h3 {
-            font-size: var(--font-lg);
+            font-size: var(--font-md);
             font-weight: 600;
             color: var(--primary);
         }
@@ -322,21 +324,21 @@
         /* Technology Grid */
         .tech-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: var(--space-4);
-            margin-bottom: var(--space-6);
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: var(--space-3);
+            margin-bottom: var(--space-4);
         }
 
         .tech-card {
             background: var(--bg-primary);
-            border-radius: var(--radius);
-            padding: var(--space-4);
+            border-radius: var(--radius-sm);
+            padding: var(--space-3);
             border: 1px solid var(--border);
             transition: var(--transition);
         }
 
         .tech-card:hover {
-            transform: translateY(-2px);
+            transform: translateY(-1px);
             box-shadow: var(--shadow-md);
             border-color: var(--secondary);
         }
@@ -344,24 +346,24 @@
         .tech-header {
             display: flex;
             align-items: center;
-            gap: var(--space-3);
-            margin-bottom: var(--space-3);
+            gap: var(--space-2);
+            margin-bottom: var(--space-2);
         }
 
         .tech-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: var(--radius);
+            width: 35px;
+            height: 35px;
+            border-radius: var(--radius-sm);
             background: var(--secondary);
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
-            font-size: var(--font-lg);
+            font-size: var(--font-md);
         }
 
         .tech-title {
-            font-size: var(--font-md);
+            font-size: var(--font-sm);
             font-weight: 600;
             color: var(--primary);
         }
@@ -370,17 +372,17 @@
             display: flex;
             justify-content: space-between;
             align-items: baseline;
-            margin-bottom: var(--space-2);
+            margin-bottom: var(--space-1);
         }
 
         .tech-count {
-            font-size: var(--font-2xl);
+            font-size: var(--font-lg);
             font-weight: 700;
             color: var(--primary);
         }
 
         .tech-percentage {
-            font-size: var(--font-sm);
+            font-size: var(--font-xs);
             font-weight: 600;
             color: var(--success);
             background: rgba(46, 204, 113, 0.1);
@@ -389,31 +391,31 @@
         }
 
         .tech-desc {
-            font-size: var(--font-sm);
+            font-size: var(--font-xs);
             color: var(--gray);
-            line-height: 1.4;
+            line-height: 1.3;
         }
 
         /* Status Distribution */
         .status-distribution {
             background: var(--bg-primary);
-            border-radius: var(--radius);
-            padding: var(--space-4);
-            margin-bottom: var(--space-6);
+            border-radius: var(--radius-sm);
+            padding: var(--space-3);
+            margin-bottom: var(--space-4);
             border: 1px solid var(--border);
         }
 
         .status-bar {
-            height: 12px;
+            height: 10px;
             background: var(--gray-light);
-            border-radius: 6px;
-            margin: var(--space-3) 0;
+            border-radius: 5px;
+            margin: var(--space-2) 0;
             overflow: hidden;
         }
 
         .status-fill {
             height: 100%;
-            border-radius: 6px;
+            border-radius: 5px;
             transition: width 0.8s ease;
         }
 
@@ -421,62 +423,62 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: var(--space-2);
+            margin-bottom: var(--space-1);
         }
 
         .status-name {
             display: flex;
             align-items: center;
-            gap: var(--space-2);
-            font-size: var(--font-sm);
+            gap: var(--space-1);
+            font-size: var(--font-xs);
             font-weight: 500;
         }
 
         .status-dot {
-            width: 8px;
-            height: 8px;
+            width: 6px;
+            height: 6px;
             border-radius: 50%;
         }
 
         /* Charts Container */
         .charts-container {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: var(--space-4);
-            margin-bottom: var(--space-4);
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--space-3);
+            margin-bottom: var(--space-3);
         }
 
         .chart-card {
             background: var(--bg-card);
-            border-radius: var(--radius-lg);
-            padding: var(--space-4);
+            border-radius: var(--radius);
+            padding: var(--space-3);
             box-shadow: var(--shadow);
-            height: 350px;
+            height: 280px;
         }
 
         .chart-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: var(--space-3);
+            margin-bottom: var(--space-2);
         }
 
         .chart-header h4 {
-            font-size: var(--font-md);
+            font-size: var(--font-sm);
             font-weight: 600;
             color: var(--primary);
         }
 
         .chart-container {
-            height: 280px;
+            height: 220px;
             position: relative;
         }
 
         /* Data Table */
         .data-table-container {
             background: var(--bg-card);
-            border-radius: var(--radius-lg);
-            padding: var(--space-4);
+            border-radius: var(--radius);
+            padding: var(--space-3);
             box-shadow: var(--shadow);
             overflow-x: auto;
         }
@@ -484,21 +486,23 @@
         .data-table {
             width: 100%;
             border-collapse: collapse;
-            font-size: var(--font-sm);
+            font-size: var(--font-xs);
         }
 
         .data-table th {
             background: var(--bg-secondary);
-            padding: var(--space-3);
+            padding: var(--space-2);
             text-align: left;
             font-weight: 600;
             color: var(--primary);
             border-bottom: 2px solid var(--border);
+            font-size: var(--font-xs);
         }
 
         .data-table td {
-            padding: var(--space-3);
+            padding: var(--space-2);
             border-bottom: 1px solid var(--border);
+            font-size: var(--font-xs);
         }
 
         .data-table tbody tr:hover {
@@ -508,7 +512,7 @@
         /* Badge */
         .badge {
             display: inline-block;
-            padding: var(--space-1) var(--space-2);
+            padding: var(--space-1) var(--space-1);
             border-radius: var(--radius-sm);
             font-size: var(--font-xs);
             font-weight: 600;
@@ -531,10 +535,10 @@
 
         /* Alert */
         .alert {
-            padding: var(--space-4);
-            border-radius: var(--radius);
-            margin-bottom: var(--space-4);
-            border-left: 4px solid;
+            padding: var(--space-3);
+            border-radius: var(--radius-sm);
+            margin-bottom: var(--space-3);
+            border-left: 3px solid;
         }
 
         .alert-warning {
@@ -545,13 +549,13 @@
         .alert-header {
             display: flex;
             align-items: center;
-            gap: var(--space-3);
-            margin-bottom: var(--space-2);
+            gap: var(--space-2);
+            margin-bottom: var(--space-1);
         }
 
         .alert-header i {
             color: var(--warning);
-            font-size: var(--font-lg);
+            font-size: var(--font-md);
         }
 
         /* Button Styles */
@@ -559,10 +563,10 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: var(--space-2);
-            padding: var(--space-2) var(--space-4);
-            border-radius: var(--radius);
-            font-size: var(--font-sm);
+            gap: var(--space-1);
+            padding: var(--space-1) var(--space-3);
+            border-radius: var(--radius-sm);
+            font-size: var(--font-xs);
             font-weight: 500;
             border: none;
             cursor: pointer;
@@ -591,6 +595,11 @@
             color: var(--secondary);
         }
 
+        .btn-sm {
+            padding: var(--space-1) var(--space-2);
+            font-size: var(--font-xs);
+        }
+
         /* Loading Overlay */
         .loading-overlay {
             position: absolute;
@@ -598,23 +607,23 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(255, 255, 255, 0.9);
+            background: rgba(255, 255, 255, 0.95);
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             z-index: 2000;
-            border-radius: var(--radius-lg);
+            border-radius: var(--radius);
         }
 
         .loading-spinner {
-            width: 40px;
-            height: 40px;
-            border: 3px solid var(--gray-light);
-            border-top: 3px solid var(--secondary);
+            width: 30px;
+            height: 30px;
+            border: 2px solid var(--gray-light);
+            border-top: 2px solid var(--secondary);
             border-radius: 50%;
             animation: spin 1s linear infinite;
-            margin-bottom: var(--space-3);
+            margin-bottom: var(--space-2);
         }
 
         @keyframes spin {
@@ -659,12 +668,12 @@
 
             .top-bar {
                 flex-direction: column;
-                gap: var(--space-3);
+                gap: var(--space-2);
                 align-items: stretch;
             }
 
             .chart-card {
-                height: 300px;
+                height: 250px;
             }
         }
 
@@ -672,22 +681,30 @@
             .stats-grid {
                 grid-template-columns: 1fr;
             }
+
+            .sidebar {
+                padding: var(--space-3);
+            }
+
+            .main-content {
+                padding: var(--space-2);
+            }
         }
 
         /* Custom Scrollbar */
         ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
+            width: 6px;
+            height: 6px;
         }
 
         ::-webkit-scrollbar-track {
             background: var(--bg-secondary);
-            border-radius: 4px;
+            border-radius: 3px;
         }
 
         ::-webkit-scrollbar-thumb {
             background: var(--gray);
-            border-radius: 4px;
+            border-radius: 3px;
         }
 
         ::-webkit-scrollbar-thumb:hover {
@@ -737,12 +754,12 @@
 
             <div class="sidebar-section">
                 <h3>Infrastructure Stats</h3>
-                <div style="background: rgba(255,255,255,0.05); padding: var(--space-3); border-radius: var(--radius);">
-                    <div style="display: flex; justify-content: space-between; margin-bottom: var(--space-2);">
+                <div style="background: rgba(255,255,255,0.05); padding: var(--space-2); border-radius: var(--radius);">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: var(--space-1);">
                         <span style="font-size: var(--font-xs); opacity: 0.7;">Total Points:</span>
                         <span style="font-weight: 600;" id="sidebar-total">Loading...</span>
                     </div>
-                    <div style="display: flex; justify-content: space-between; margin-bottom: var(--space-2);">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: var(--space-1);">
                         <span style="font-size: var(--font-xs); opacity: 0.7;">Motorized:</span>
                         <span style="font-weight: 600; color: var(--info);" id="sidebar-motorized">Loading...</span>
                     </div>
@@ -755,16 +772,16 @@
 
             <div class="sidebar-section">
                 <h3>Data Sources</h3>
-                <div style="display: flex; flex-direction: column; gap: var(--space-2);">
-                    <div style="display: flex; align-items: center; gap: var(--space-2); font-size: var(--font-xs);">
+                <div style="display: flex; flex-direction: column; gap: var(--space-1);">
+                    <div style="display: flex; align-items: center; gap: var(--space-1); font-size: var(--font-xs);">
                         <i class="fas fa-check-circle" style="color: var(--success);"></i>
                         <span>Evidence Action</span>
                     </div>
-                    <div style="display: flex; align-items: center; gap: var(--space-2); font-size: var(--font-xs);">
+                    <div style="display: flex; align-items: center; gap: var(--space-1); font-size: var(--font-xs);">
                         <i class="fas fa-check-circle" style="color: var(--success);"></i>
                         <span>Water Institute</span>
                     </div>
-                    <div style="display: flex; align-items: center; gap: var(--space-2); font-size: var(--font-xs);">
+                    <div style="display: flex; align-items: center; gap: var(--space-1); font-size: var(--font-xs);">
                         <i class="fas fa-check-circle" style="color: var(--success);"></i>
                         <span>NASA EarthData</span>
                     </div>
@@ -780,16 +797,16 @@
                     <i class="fas fa-network-wired"></i>
                     <div>
                         <h2>Infrastructure Analysis</h2>
-                        <p style="font-size: var(--font-sm); color: var(--gray); margin-top: 2px;">
+                        <p style="font-size: var(--font-xs); color: var(--gray); margin-top: 1px;">
                             Detailed assessment of water infrastructure across Kenya
                         </p>
                     </div>
                 </div>
 
                 <div class="toolbar">
-                    <div style="margin-right: var(--space-4);">
+                    <div style="margin-right: var(--space-3);">
                         <p style="font-size: var(--font-xs); color: var(--gray);">Last updated:</p>
-                        <p style="font-size: var(--font-sm); font-weight: 500;" id="last-updated">Loading...</p>
+                        <p style="font-size: var(--font-xs); font-weight: 500;" id="last-updated">Loading...</p>
                     </div>
                     <button class="btn btn-primary" id="refresh-data">
                         <i class="fas fa-sync-alt"></i>
@@ -860,9 +877,9 @@
 
                 <div class="tech-grid" id="tech-grid">
                     <!-- Tech cards will be populated dynamically -->
-                    <div class="tech-card" style="text-align: center; padding: var(--space-8);">
+                    <div class="tech-card" style="text-align: center; padding: var(--space-6);">
                         <div class="loading-spinner"></div>
-                        <p style="margin-top: var(--space-3); color: var(--gray);">Loading technology data...</p>
+                        <p style="margin-top: var(--space-2); color: var(--gray);">Loading technology data...</p>
                     </div>
                 </div>
             </div>
@@ -876,35 +893,35 @@
 
                 <div class="status-distribution" id="status-distribution">
                     <!-- Status distribution will be populated dynamically -->
-                    <div style="text-align: center; padding: var(--space-6);">
+                    <div style="text-align: center; padding: var(--space-4);">
                         <div class="loading-spinner"></div>
-                        <p style="margin-top: var(--space-3); color: var(--gray);">Loading status data...</p>
+                        <p style="margin-top: var(--space-2); color: var(--gray);">Loading status data...</p>
                     </div>
                 </div>
 
                 <div id="geographic-insights" style="display: none;">
                     <div
-                        style="display: grid; grid-template-columns: 2fr 1fr; gap: var(--space-4); margin-top: var(--space-6);">
+                        style="display: grid; grid-template-columns: 2fr 1fr; gap: var(--space-3); margin-top: var(--space-4);">
                         <div>
                             <h4
-                                style="font-size: var(--font-md); margin-bottom: var(--space-3); color: var(--primary);">
+                                style="font-size: var(--font-sm); margin-bottom: var(--space-2); color: var(--primary);">
                                 Geographic Patterns
                             </h4>
                             <ul id="geographic-patterns"
-                                style="list-style: none; display: flex; flex-direction: column; gap: var(--space-3);">
+                                style="list-style: none; display: flex; flex-direction: column; gap: var(--space-2);">
                                 <!-- Will be populated dynamically -->
                             </ul>
                         </div>
 
                         <div
-                            style="background: var(--bg-secondary); padding: var(--space-4); border-radius: var(--radius);">
+                            style="background: var(--bg-secondary); padding: var(--space-3); border-radius: var(--radius);">
                             <div
-                                style="display: flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-2);">
+                                style="display: flex; align-items: center; gap: var(--space-2); margin-bottom: var(--space-1);">
                                 <i class="fas fa-lightbulb"
-                                    style="color: var(--warning); font-size: var(--font-lg);"></i>
-                                <h4 style="font-size: var(--font-md); color: var(--primary);">Key Insight</h4>
+                                    style="color: var(--warning); font-size: var(--font-md);"></i>
+                                <h4 style="font-size: var(--font-sm); color: var(--primary);">Key Insight</h4>
                             </div>
-                            <p style="font-size: var(--font-sm); color: var(--gray); line-height: 1.5;"
+                            <p style="font-size: var(--font-xs); color: var(--gray); line-height: 1.4;"
                                 id="key-insight">
                                 Loading...
                             </p>
@@ -918,7 +935,7 @@
                 <div class="chart-card">
                     <div class="chart-header">
                         <h4>Technology Distribution</h4>
-                        <div class="btn-group">
+                        <div class="btn-group" style="display: flex; gap: var(--space-1);">
                             <button class="btn btn-sm btn-outline active" data-chart="pie">Pie</button>
                             <button class="btn btn-sm btn-outline" data-chart="bar">Bar</button>
                         </div>
@@ -931,7 +948,7 @@
                 <div class="chart-card">
                     <div class="chart-header">
                         <h4>Status by County</h4>
-                        <div class="btn-group">
+                        <div class="btn-group" style="display: flex; gap: var(--space-1);">
                             <button class="btn btn-sm btn-outline active" data-chart="top10">Top 10</button>
                             <button class="btn btn-sm btn-outline" data-chart="all">All Counties</button>
                         </div>
@@ -962,16 +979,16 @@
                         </thead>
                         <tbody id="sample-data-body">
                             <tr>
-                                <td colspan="5" style="text-align: center; padding: var(--space-8);">
+                                <td colspan="5" style="text-align: center; padding: var(--space-6);">
                                     <div class="loading-spinner" style="margin: 0 auto;"></div>
-                                    <p style="margin-top: var(--space-3); color: var(--gray);">Loading data...</p>
+                                    <p style="margin-top: var(--space-2); color: var(--gray);">Loading data...</p>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
 
-                <div style="display: flex; justify-content: flex-end; gap: var(--space-3); margin-top: var(--space-4);">
+                <div style="display: flex; justify-content: flex-end; gap: var(--space-2); margin-top: var(--space-3);">
                     <button class="btn btn-outline" id="export-data">
                         <i class="fas fa-download"></i>
                         Export Data
@@ -1407,7 +1424,7 @@
                             <div class="status-dot" style="background: ${color};"></div>
                             <span>${status}</span>
                         </div>
-                        <span style="font-weight: 600; font-size: var(--font-md);">${percentage}%</span>
+                        <span style="font-weight: 600; font-size: var(--font-sm);">${percentage}%</span>
                     </div>
                     <div class="status-bar">
                         <div class="status-fill" style="width: ${percentage}%; background: ${color};"></div>
@@ -1446,17 +1463,17 @@
             // Update geographic patterns
             const patternsList = document.getElementById('geographic-patterns');
             const patterns = [
-                `<li style="display: flex; align-items: center; gap: var(--space-3);">
-                    <div style="width: 8px; height: 8px; background: var(--success); border-radius: 50%;"></div>
-                    <span style="font-size: var(--font-sm);">High functionality in ${functionalCounties.map(c => c[0]).join(', ')}</span>
+                `<li style="display: flex; align-items: center; gap: var(--space-2);">
+                    <div style="width: 6px; height: 6px; background: var(--success); border-radius: 50%;"></div>
+                    <span style="font-size: var(--font-xs);">High functionality in ${functionalCounties.map(c => c[0]).join(', ')}</span>
                 </li>`,
-                `<li style="display: flex; align-items: center; gap: var(--space-3);">
-                    <div style="width: 8px; height: 8px; background: var(--danger); border-radius: 50%;"></div>
-                    <span style="font-size: var(--font-sm);">Repair needs in ${nonFunctionalCounties.map(c => c[0]).join(', ')}</span>
+                `<li style="display: flex; align-items: center; gap: var(--space-2);">
+                    <div style="width: 6px; height: 6px; background: var(--danger); border-radius: 50%;"></div>
+                    <span style="font-size: var(--font-xs);">Repair needs in ${nonFunctionalCounties.map(c => c[0]).join(', ')}</span>
                 </li>`,
-                `<li style="display: flex; align-items: center; gap: var(--space-3);">
-                    <div style="width: 8px; height: 8px; background: var(--warning); border-radius: 50%;"></div>
-                    <span style="font-size: var(--font-sm);">Technology varies significantly across counties</span>
+                `<li style="display: flex; align-items: center; gap: var(--space-2);">
+                    <div style="width: 6px; height: 6px; background: var(--warning); border-radius: 50%;"></div>
+                    <span style="font-size: var(--font-xs);">Technology varies significantly across counties</span>
                 </li>`
             ];
 
@@ -1507,10 +1524,10 @@
                         legend: {
                             position: 'right',
                             labels: {
-                                padding: 15,
+                                padding: 10,
                                 usePointStyle: true,
                                 font: {
-                                    size: 11
+                                    size: 10
                                 }
                             }
                         },
@@ -1580,10 +1597,10 @@
                         legend: {
                             position: 'top',
                             labels: {
-                                padding: 10,
+                                padding: 8,
                                 usePointStyle: true,
                                 font: {
-                                    size: 11
+                                    size: 10
                                 }
                             }
                         },
@@ -1605,7 +1622,7 @@
                             },
                             ticks: {
                                 font: {
-                                    size: 10
+                                    size: 9
                                 },
                                 maxRotation: 45
                             }
@@ -1616,7 +1633,7 @@
                             ticks: {
                                 callback: (value) => `${value}%`,
                                 font: {
-                                    size: 10
+                                    size: 9
                                 }
                             },
                             grid: {
@@ -1826,7 +1843,7 @@
             }
             loading.innerHTML = `
                 <div class="loading-spinner"></div>
-                <div class="loading-text" style="font-size: var(--font-sm);">${message}</div>
+                <div style="font-size: var(--font-sm);">${message}</div>
             `;
             loading.style.display = 'flex';
         }
@@ -1849,20 +1866,20 @@
             notification.className = 'notification';
             notification.style.cssText = `
                 position: fixed;
-                top: 20px;
-                right: 20px;
-                padding: 12px 20px;
+                top: 15px;
+                right: 15px;
+                padding: 10px 15px;
                 background: ${type === 'success' ? '#2ecc71' : type === 'error' ? '#e74c3c' : '#3498db'};
                 color: white;
                 border-radius: var(--radius);
                 font-size: var(--font-sm);
                 z-index: 10000;
                 animation: slideIn 0.3s ease;
-                max-width: 300px;
+                max-width: 250px;
                 box-shadow: var(--shadow-md);
                 display: flex;
                 align-items: center;
-                gap: 10px;
+                gap: 8px;
             `;
 
             const icon = type === 'success' ? 'fa-check' : type === 'error' ? 'fa-exclamation' : 'fa-info';

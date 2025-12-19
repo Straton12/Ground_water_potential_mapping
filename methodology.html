@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Methodology | Kenya Water Resources Dashboard</title>
+    <title>Hydrogeology | Kenya Water Resources Dashboard</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
@@ -20,6 +20,9 @@
             --warning: #f39c12;
             --danger: #e74c3c;
             --info: #9b59b6;
+            --geology-purple: #8e44ad;
+            --suitability-green: #27ae60;
+            --rainfall-blue: #2980b9;
 
             --dark: #1a1a2e;
             --light: #f8f9fa;
@@ -33,38 +36,38 @@
             --bg-sidebar: #2c3e50;
             --bg-card: #ffffff;
 
-            /* Typography */
-            --font-xs: 0.75rem;
-            --font-sm: 0.875rem;
-            --font-base: 0.9375rem;
-            --font-md: 1rem;
-            --font-lg: 1.125rem;
-            --font-xl: 1.25rem;
-            --font-2xl: 1.5rem;
-            --font-3xl: 1.75rem;
+            /* Reduced Typography */
+            --font-xs: 0.7rem;
+            --font-sm: 0.8rem;
+            --font-base: 0.85rem;
+            --font-md: 0.9rem;
+            --font-lg: 1rem;
+            --font-xl: 1.1rem;
+            --font-2xl: 1.25rem;
+            --font-3xl: 1.5rem;
 
-            /* Spacing */
-            --space-1: 0.25rem;
-            --space-2: 0.5rem;
-            --space-3: 0.75rem;
-            --space-4: 1rem;
-            --space-5: 1.25rem;
-            --space-6: 1.5rem;
-            --space-7: 1.75rem;
-            --space-8: 2rem;
-            --space-9: 2.5rem;
-            --space-10: 3rem;
+            /* Reduced Spacing */
+            --space-1: 0.2rem;
+            --space-2: 0.35rem;
+            --space-3: 0.5rem;
+            --space-4: 0.75rem;
+            --space-5: 1rem;
+            --space-6: 1.25rem;
+            --space-7: 1.5rem;
+            --space-8: 1.75rem;
+            --space-9: 2rem;
+            --space-10: 2.5rem;
 
             /* Design Elements */
-            --radius-sm: 0.25rem;
-            --radius: 0.375rem;
-            --radius-lg: 0.5rem;
-            --radius-xl: 0.75rem;
+            --radius-sm: 0.2rem;
+            --radius: 0.3rem;
+            --radius-lg: 0.4rem;
+            --radius-xl: 0.5rem;
 
-            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
-            --shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
-            --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.1);
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.08);
+            --shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+            --shadow-md: 0 3px 8px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 6px 16px rgba(0, 0, 0, 0.1);
 
             --transition: all 0.2s ease;
         }
@@ -78,7 +81,7 @@
         body {
             font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
             font-size: var(--font-base);
-            line-height: 1.5;
+            line-height: 1.4;
             color: var(--dark);
             background-color: var(--light);
             overflow-x: hidden;
@@ -86,7 +89,7 @@
 
         .dashboard-container {
             display: grid;
-            grid-template-columns: 280px 1fr;
+            grid-template-columns: 240px 1fr;
             min-height: 100vh;
         }
 
@@ -94,9 +97,9 @@
         .sidebar {
             background: var(--bg-sidebar);
             color: white;
-            padding: var(--space-6);
+            padding: var(--space-4);
             position: fixed;
-            width: 280px;
+            width: 240px;
             height: 100vh;
             overflow-y: auto;
             z-index: 1000;
@@ -106,19 +109,19 @@
         .sidebar-header {
             display: flex;
             align-items: center;
-            gap: var(--space-3);
-            margin-bottom: var(--space-8);
-            padding-bottom: var(--space-4);
+            gap: var(--space-2);
+            margin-bottom: var(--space-6);
+            padding-bottom: var(--space-3);
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .sidebar-header i {
-            font-size: var(--font-2xl);
+            font-size: var(--font-xl);
             color: var(--accent);
         }
 
         .sidebar-header h1 {
-            font-size: var(--font-lg);
+            font-size: var(--font-md);
             font-weight: 600;
             line-height: 1.2;
         }
@@ -126,18 +129,19 @@
         .sidebar-nav {
             display: flex;
             flex-direction: column;
-            gap: var(--space-2);
+            gap: var(--space-1);
         }
 
         .nav-item {
             display: flex;
             align-items: center;
-            gap: var(--space-3);
-            padding: var(--space-3) var(--space-4);
+            gap: var(--space-2);
+            padding: var(--space-2) var(--space-3);
             border-radius: var(--radius);
             color: rgba(255, 255, 255, 0.8);
             text-decoration: none;
             transition: var(--transition);
+            font-size: var(--font-sm);
         }
 
         .nav-item:hover {
@@ -152,36 +156,37 @@
         }
 
         .nav-item i {
-            width: 20px;
+            width: 18px;
             text-align: center;
+            font-size: var(--font-md);
         }
 
         .sidebar-section {
-            margin-top: var(--space-8);
+            margin-top: var(--space-6);
         }
 
         .sidebar-section h3 {
-            font-size: var(--font-sm);
+            font-size: var(--font-xs);
             font-weight: 600;
             color: rgba(255, 255, 255, 0.6);
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            margin-bottom: var(--space-3);
+            margin-bottom: var(--space-2);
         }
 
         /* Main Content */
         .main-content {
             grid-column: 2;
-            padding: var(--space-4);
+            padding: var(--space-3);
             background: var(--bg-secondary);
         }
 
         /* Top Bar */
         .top-bar {
             background: var(--bg-primary);
-            border-radius: var(--radius-lg);
-            padding: var(--space-4) var(--space-6);
-            margin-bottom: var(--space-4);
+            border-radius: var(--radius);
+            padding: var(--space-3) var(--space-4);
+            margin-bottom: var(--space-3);
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -191,11 +196,11 @@
         .page-title {
             display: flex;
             align-items: center;
-            gap: var(--space-3);
+            gap: var(--space-2);
         }
 
         .page-title h2 {
-            font-size: var(--font-xl);
+            font-size: var(--font-lg);
             font-weight: 600;
             color: var(--primary);
         }
@@ -207,16 +212,16 @@
         .toolbar {
             display: flex;
             align-items: center;
-            gap: var(--space-3);
+            gap: var(--space-2);
         }
 
         /* Content Cards */
         .content-card {
             background: var(--bg-card);
-            border-radius: var(--radius-lg);
-            padding: var(--space-5);
+            border-radius: var(--radius);
+            padding: var(--space-4);
             box-shadow: var(--shadow);
-            margin-bottom: var(--space-4);
+            margin-bottom: var(--space-3);
             transition: var(--transition);
         }
 
@@ -228,448 +233,458 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: var(--space-4);
-            padding-bottom: var(--space-3);
+            margin-bottom: var(--space-3);
+            padding-bottom: var(--space-2);
             border-bottom: 1px solid var(--border);
         }
 
         .card-header h3 {
-            font-size: var(--font-lg);
+            font-size: var(--font-md);
             font-weight: 600;
             color: var(--primary);
             display: flex;
             align-items: center;
-            gap: var(--space-3);
-        }
-
-        /* Methodology Flow */
-        .methodology-flow {
-            display: flex;
-            flex-direction: column;
-            gap: var(--space-4);
-            margin: var(--space-4) 0;
-            position: relative;
-        }
-
-        .methodology-flow::before {
-            content: '';
-            position: absolute;
-            left: 28px;
-            top: 0;
-            bottom: 0;
-            width: 3px;
-            background: linear-gradient(135deg, var(--secondary) 0%, var(--accent) 100%);
-            z-index: 1;
-        }
-
-        .flow-step {
-            display: flex;
-            gap: var(--space-4);
-            align-items: flex-start;
-            position: relative;
-            z-index: 2;
-        }
-
-        .step-number {
-            width: 56px;
-            height: 56px;
-            background: linear-gradient(135deg, var(--secondary) 0%, #2980b9 100%);
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: var(--font-lg);
-            font-weight: 700;
-            flex-shrink: 0;
-            box-shadow: var(--shadow-md);
-            z-index: 3;
-        }
-
-        .step-content {
-            background: white;
-            padding: var(--space-4);
-            border-radius: var(--radius);
-            flex: 1;
-            box-shadow: var(--shadow);
-            border: 1px solid var(--border);
-            transition: var(--transition);
-        }
-
-        .step-content:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-md);
-        }
-
-        .step-content h4 {
-            font-size: var(--font-md);
-            margin-bottom: var(--space-2);
-            color: var(--primary);
-        }
-
-        .step-content ul {
-            list-style: none;
-            margin: var(--space-2) 0;
-        }
-
-        .step-content li {
-            display: flex;
-            align-items: flex-start;
             gap: var(--space-2);
-            margin-bottom: var(--space-1);
-            font-size: var(--font-sm);
-            color: var(--gray);
         }
 
-        .step-content li:before {
-            content: '•';
-            color: var(--secondary);
-            font-weight: bold;
-            flex-shrink: 0;
-        }
-
-        /* Data Sources Grid */
-        .sources-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: var(--space-4);
-            margin: var(--space-4) 0;
-        }
-
-        .source-card {
-            background: white;
-            padding: var(--space-4);
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-            border: 1px solid var(--border);
-            transition: var(--transition);
-        }
-
-        .source-card:hover {
-            transform: translateY(-2px);
-            border-color: var(--secondary);
-        }
-
-        .source-icon {
-            font-size: var(--font-xl);
-            color: var(--secondary);
-            margin-bottom: var(--space-3);
-        }
-
-        .source-card h4 {
-            font-size: var(--font-md);
-            margin-bottom: var(--space-3);
-            color: var(--dark);
-            font-weight: 600;
-        }
-
-        .source-card ul {
-            list-style: none;
-            margin: var(--space-2) 0;
-        }
-
-        .source-card li {
-            margin-bottom: var(--space-2);
-            font-size: var(--font-sm);
-            color: var(--gray);
-        }
-
-        .source-card strong {
-            color: var(--dark);
-        }
-
-        /* Highlight Box */
-        .highlight-box {
-            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
-            padding: var(--space-4);
-            border-radius: var(--radius);
-            margin: var(--space-4) 0;
-            border-left: 4px solid var(--secondary);
-        }
-
-        .highlight-box h4 {
-            display: flex;
-            align-items: center;
-            gap: var(--space-3);
-            font-size: var(--font-md);
-            margin-bottom: var(--space-3);
-            color: var(--dark);
-        }
-
-        .highlight-box ul {
-            list-style: none;
-            margin: var(--space-3) 0;
-        }
-
-        .highlight-box li {
-            display: flex;
-            align-items: flex-start;
-            gap: var(--space-3);
-            margin-bottom: var(--space-2);
-            font-size: var(--font-sm);
-        }
-
-        .highlight-box li:before {
-            content: '✓';
-            color: var(--success);
-            font-weight: bold;
-            flex-shrink: 0;
-        }
-
-        /* Technical Specs */
-        .technical-box {
-            background: var(--bg-secondary);
-            padding: var(--space-4);
-            border-radius: var(--radius);
-            margin: var(--space-4) 0;
-            border: 1px solid var(--border);
-        }
-
-        .technical-box h4 {
-            font-size: var(--font-md);
-            margin-bottom: var(--space-4);
-            color: var(--dark);
-        }
-
-        /* Data Table */
-        .data-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: var(--space-4) 0;
-            background: white;
-            border-radius: var(--radius);
-            overflow: hidden;
-            box-shadow: var(--shadow);
-            font-size: var(--font-sm);
-        }
-
-        .data-table thead {
-            background: var(--primary);
-        }
-
-        .data-table th {
-            padding: var(--space-3);
-            text-align: left;
-            font-weight: 600;
-            color: white;
-            white-space: nowrap;
-        }
-
-        .data-table td {
-            padding: var(--space-3);
-            border-bottom: 1px solid var(--border);
-        }
-
-        .data-table tbody tr:hover {
-            background: var(--bg-secondary);
-        }
-
-        .data-table strong {
-            color: var(--primary);
-        }
-
-        /* Spec Grid */
-        .spec-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: var(--space-3);
-            margin: var(--space-4) 0;
-        }
-
-        .spec-item {
-            background: white;
-            padding: var(--space-3);
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-            text-align: center;
-            border: 1px solid var(--border);
-            transition: var(--transition);
-        }
-
-        .spec-item:hover {
-            transform: translateY(-2px);
-            border-color: var(--secondary);
-        }
-
-        .spec-item h5 {
-            font-size: var(--font-sm);
-            margin-bottom: var(--space-2);
-            color: var(--dark);
-        }
-
-        .metric-value {
-            font-size: var(--font-lg);
-            font-weight: 700;
-            color: var(--secondary);
-            margin-bottom: var(--space-1);
-            line-height: 1;
-        }
-
-        .spec-item p {
-            color: var(--gray);
-            font-size: var(--font-xs);
-        }
-
-        /* Software Grid */
-        .software-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-            gap: var(--space-3);
-            margin: var(--space-4) 0;
-        }
-
-        .software-item {
-            background: rgba(52, 152, 219, 0.1);
-            padding: var(--space-3);
-            border-radius: var(--radius);
-            text-align: center;
-            border: 1px solid rgba(52, 152, 219, 0.2);
-            transition: var(--transition);
-        }
-
-        .software-item:hover {
-            background: rgba(52, 152, 219, 0.2);
-            transform: translateY(-2px);
-        }
-
-        .software-icon {
-            font-size: var(--font-lg);
-            color: var(--secondary);
-            margin-bottom: var(--space-2);
-        }
-
-        .software-item h5 {
-            color: var(--primary);
-            font-size: var(--font-sm);
-            margin-bottom: var(--space-1);
-        }
-
-        .software-item p {
-            color: var(--gray);
-            font-size: var(--font-xs);
-            line-height: 1.4;
-        }
-
-        /* Validation Grid */
-        .validation-grid {
+        /* Potential Classes */
+        .potential-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
             gap: var(--space-3);
-            margin: var(--space-4) 0;
+            margin: var(--space-3) 0;
         }
 
-        .metric-box {
-            background: white;
+        .potential-class {
             padding: var(--space-3);
             border-radius: var(--radius);
-            text-align: center;
+            color: white;
             box-shadow: var(--shadow);
-            border: 1px solid var(--border);
             transition: var(--transition);
         }
 
-        .metric-box:hover {
-            transform: translateY(-2px);
-            border-color: var(--secondary);
+        .potential-class:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
         }
 
-        .metric-box .metric-value {
-            font-size: var(--font-lg);
-            font-weight: 700;
-            color: var(--secondary);
-            margin-bottom: var(--space-1);
-        }
-
-        .metric-box h5 {
+        .potential-class h4 {
             font-size: var(--font-sm);
             margin-bottom: var(--space-1);
-            color: var(--dark);
+            font-weight: 600;
         }
 
-        .metric-box p {
-            color: var(--gray);
+        .potential-class p {
             font-size: var(--font-xs);
+            opacity: 0.9;
+            margin-bottom: var(--space-1);
+            line-height: 1.3;
+        }
+
+        .class-percentage {
+            font-size: var(--font-xs);
+            font-weight: 600;
+            opacity: 0.95;
+        }
+
+        .class-1 {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+        }
+
+        .class-2 {
+            background: linear-gradient(135deg, #f39c12 0%, #d35400 100%);
+        }
+
+        .class-3 {
+            background: linear-gradient(135deg, #f1c40f 0%, #f39c12 100%);
+        }
+
+        .class-4 {
+            background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+        }
+
+        .class-5 {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
         }
 
         /* Insight Card */
         .insight-card {
-            background: white;
-            padding: var(--space-4);
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-            margin: var(--space-4) 0;
-            border-left: 4px solid var(--success);
+            background: var(--bg-secondary);
+            padding: var(--space-3);
+            border-radius: var(--radius-sm);
+            border-left: 3px solid var(--secondary);
+            margin: var(--space-3) 0;
         }
 
         .insight-card h4 {
             display: flex;
             align-items: center;
-            gap: var(--space-3);
-            font-size: var(--font-md);
-            margin-bottom: var(--space-2);
+            gap: var(--space-2);
+            font-size: var(--font-sm);
+            margin-bottom: var(--space-1);
             color: var(--dark);
-        }
-
-        .insight-card h4 i {
-            color: var(--success);
         }
 
         .insight-card p {
             color: var(--gray);
-            font-size: var(--font-sm);
+            font-size: var(--font-xs);
             line-height: 1.4;
         }
 
-        /* Content Lists */
-        .content-list {
+        /* Geology Table */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: var(--space-3) 0;
             background: white;
-            padding: var(--space-4);
             border-radius: var(--radius);
+            overflow: hidden;
             box-shadow: var(--shadow);
-            margin-bottom: var(--space-4);
-            border: 1px solid var(--border);
+            font-size: var(--font-xs);
         }
 
-        .content-list h4 {
+        .data-table th {
+            background: var(--primary);
+            color: white;
+            padding: var(--space-2);
+            text-align: left;
+            font-weight: 600;
+            font-size: var(--font-xs);
+        }
+
+        .data-table td {
+            padding: var(--space-2);
+            border-bottom: 1px solid var(--border);
+            font-size: var(--font-xs);
+        }
+
+        .data-table tr:hover {
+            background: var(--bg-secondary);
+        }
+
+        /* Badges */
+        .badge {
+            display: inline-block;
+            padding: var(--space-1) var(--space-1);
+            border-radius: var(--radius-sm);
+            font-size: var(--font-xs);
+            font-weight: 600;
+        }
+
+        .badge-success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .badge-warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .badge-danger {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .badge-info {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        /* Layer Grid */
+        .layer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: var(--space-3);
+            margin: var(--space-3) 0;
+        }
+
+        .layer-card {
+            background: white;
+            border-radius: var(--radius-sm);
+            padding: var(--space-3);
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            transition: var(--transition);
+        }
+
+        .layer-card:hover {
+            transform: translateY(-1px);
+            border-color: var(--secondary);
+        }
+
+        .layer-icon {
+            font-size: var(--font-lg);
+            color: var(--secondary);
+            margin-bottom: var(--space-2);
+        }
+
+        .layer-card h4 {
+            font-size: var(--font-sm);
+            margin-bottom: var(--space-1);
+            color: var(--dark);
+            font-weight: 600;
+        }
+
+        .layer-card p {
+            color: var(--gray);
+            font-size: var(--font-xs);
+            margin-bottom: var(--space-1);
+            line-height: 1.3;
+        }
+
+        .layer-weight {
+            font-size: var(--font-xs);
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        /* AHP Grid */
+        .ahp-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: var(--space-2);
+            margin: var(--space-3) 0;
+        }
+
+        .ahp-item {
+            background: rgba(52, 152, 219, 0.1);
+            padding: var(--space-2);
+            border-radius: var(--radius-sm);
+            text-align: center;
+            border: 1px solid rgba(52, 152, 219, 0.2);
+        }
+
+        .ahp-weight {
+            font-size: var(--font-sm);
+            font-weight: 700;
+            color: var(--secondary);
+            margin-bottom: var(--space-1);
+        }
+
+        .ahp-criteria {
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: var(--space-1);
+            font-size: var(--font-xs);
+        }
+
+        .ahp-item p {
+            color: var(--gray);
+            font-size: var(--font-xs);
+            line-height: 1.3;
+        }
+
+        /* Map Tabs */
+        .map-tabs {
+            display: flex;
+            background: var(--bg-secondary);
+            border-radius: var(--radius-sm);
+            padding: var(--space-1);
+            margin: var(--space-3) 0;
+        }
+
+        .map-tab {
+            flex: 1;
+            padding: var(--space-1) var(--space-2);
+            text-align: center;
+            font-size: var(--font-xs);
+            font-weight: 500;
+            color: var(--gray);
+            cursor: pointer;
+            border-radius: calc(var(--radius-sm) - var(--space-1));
+            transition: var(--transition);
+        }
+
+        .map-tab:hover {
+            background: var(--gray-light);
+        }
+
+        .map-tab.active {
+            background: var(--secondary);
+            color: white;
+        }
+
+        /* Map Container */
+        .map-container {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            height: 450px;
+            position: relative;
+            margin-bottom: var(--space-3);
+        }
+
+        #geology-map {
+            width: 100%;
+            height: 100%;
+            border-radius: var(--radius);
+        }
+
+        /* Map Controls */
+        .map-controls {
+            position: absolute;
+            top: var(--space-2);
+            right: var(--space-2);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-1);
+        }
+
+        .map-controls .btn {
+            width: 32px;
+            height: 32px;
+            border-radius: var(--radius-sm);
+            background: white;
+            border: 1px solid var(--border);
             display: flex;
             align-items: center;
-            gap: var(--space-3);
-            font-size: var(--font-md);
-            margin-bottom: var(--space-3);
-            color: var(--dark);
-        }
-
-        .content-list h4 i {
-            color: var(--warning);
-        }
-
-        .content-list ul {
-            list-style: none;
-            margin: var(--space-2) 0;
-        }
-
-        .content-list li {
-            display: flex;
-            align-items: flex-start;
-            gap: var(--space-3);
-            margin-bottom: var(--space-2);
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: var(--shadow);
             font-size: var(--font-sm);
-            color: var(--gray);
         }
 
-        .content-list li:before {
-            content: '•';
-            color: var(--secondary);
-            font-weight: bold;
+        .map-controls .btn:hover {
+            background: var(--secondary);
+            color: white;
+            border-color: var(--secondary);
+        }
+
+        /* Legend */
+        .map-legend {
+            position: absolute;
+            bottom: var(--space-2);
+            right: var(--space-2);
+            background: white;
+            border-radius: var(--radius-sm);
+            padding: var(--space-2);
+            box-shadow: var(--shadow);
+            z-index: 1000;
+            max-width: 200px;
+            max-height: 250px;
+            overflow-y: auto;
+        }
+
+        .legend-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-1);
+        }
+
+        .legend-header h5 {
+            font-size: var(--font-xs);
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .legend-content {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-1);
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-1);
+            font-size: var(--font-xs);
+        }
+
+        .legend-color {
+            width: 12px;
+            height: 12px;
+            border-radius: var(--radius-sm);
             flex-shrink: 0;
         }
 
-        /* Two Column Layout */
-        .two-column {
+        /* County Grid */
+        .county-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: var(--space-4);
-            margin: var(--space-4) 0;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--space-3);
+            margin: var(--space-3) 0;
+        }
+
+        .county-card {
+            background: white;
+            padding: var(--space-3);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .county-card:hover {
+            transform: translateY(-1px);
+            border-color: var(--secondary);
+        }
+
+        .county-card h4 {
+            font-size: var(--font-sm);
+            margin-bottom: var(--space-1);
+            color: var(--dark);
+            font-weight: 600;
+        }
+
+        .county-potential {
+            display: inline-block;
+            padding: var(--space-1) var(--space-1);
+            border-radius: var(--radius-sm);
+            font-size: var(--font-xs);
+            font-weight: 600;
+            margin-bottom: var(--space-2);
+        }
+
+        .very-low {
+            background: #fee2e2;
+            color: #dc2626;
+            border-left: 2px solid #dc2626;
+        }
+
+        .low {
+            background: #fef3c7;
+            color: #d97706;
+            border-left: 2px solid #d97706;
+        }
+
+        .moderate-low {
+            background: #fef9c3;
+            color: #ca8a04;
+            border-left: 2px solid #ca8a04;
+        }
+
+        .moderate {
+            background: #d1fae5;
+            color: #059669;
+            border-left: 2px solid #059669;
+        }
+
+        .high {
+            background: #dbeafe;
+            color: #2563eb;
+            border-left: 2px solid #2563eb;
+        }
+
+        .county-card p {
+            color: var(--gray);
+            font-size: var(--font-xs);
+            margin-bottom: var(--space-2);
+            line-height: 1.3;
+        }
+
+        .county-stats {
+            display: flex;
+            justify-content: space-between;
+            font-size: var(--font-xs);
+            color: var(--gray);
+            border-top: 1px solid var(--border);
+            padding-top: var(--space-1);
         }
 
         /* Button Styles */
@@ -677,10 +692,10 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: var(--space-2);
-            padding: var(--space-2) var(--space-4);
-            border-radius: var(--radius);
-            font-size: var(--font-sm);
+            gap: var(--space-1);
+            padding: var(--space-1) var(--space-3);
+            border-radius: var(--radius-sm);
+            font-size: var(--font-xs);
             font-weight: 500;
             border: none;
             cursor: pointer;
@@ -709,30 +724,30 @@
             color: var(--secondary);
         }
 
-        /* Loading */
+        /* Loading Overlay */
         .loading-overlay {
             position: absolute;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(255, 255, 255, 0.9);
+            background: rgba(255, 255, 255, 0.95);
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             z-index: 2000;
-            border-radius: var(--radius-lg);
+            border-radius: var(--radius);
         }
 
         .loading-spinner {
-            width: 40px;
-            height: 40px;
-            border: 3px solid var(--gray-light);
-            border-top: 3px solid var(--secondary);
+            width: 30px;
+            height: 30px;
+            border: 2px solid var(--gray-light);
+            border-top: 2px solid var(--secondary);
             border-radius: 50%;
             animation: spin 1s linear infinite;
-            margin-bottom: var(--space-3);
+            margin-bottom: var(--space-2);
         }
 
         .loading-text {
@@ -763,7 +778,7 @@
             align-items: center;
             justify-content: center;
             z-index: 10000;
-            padding: var(--space-4);
+            padding: var(--space-3);
         }
 
         .modal.active {
@@ -772,11 +787,11 @@
 
         .modal-content {
             background: white;
-            border-radius: var(--radius-lg);
-            padding: var(--space-5);
-            max-width: 600px;
+            border-radius: var(--radius);
+            padding: var(--space-4);
+            max-width: 400px;
             width: 100%;
-            max-height: 80vh;
+            max-height: 70vh;
             overflow-y: auto;
         }
 
@@ -784,11 +799,11 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: var(--space-4);
+            margin-bottom: var(--space-3);
         }
 
         .modal-title {
-            font-size: var(--font-lg);
+            font-size: var(--font-md);
             font-weight: 600;
             color: var(--dark);
             margin: 0;
@@ -821,100 +836,65 @@
         }
 
         @media (max-width: 768px) {
-            .sources-grid {
+            .potential-grid {
                 grid-template-columns: repeat(2, 1fr);
             }
 
-            .spec-grid {
+            .layer-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .ahp-grid {
                 grid-template-columns: repeat(2, 1fr);
             }
 
-            .software-grid {
-                grid-template-columns: repeat(3, 1fr);
-            }
-
-            .validation-grid {
-                grid-template-columns: repeat(2, 1fr);
+            .county-grid {
+                grid-template-columns: 1fr;
             }
 
             .top-bar {
                 flex-direction: column;
-                gap: var(--space-3);
+                gap: var(--space-2);
                 align-items: stretch;
             }
 
-            .methodology-flow::before {
-                left: 24px;
-            }
-
-            .flow-step {
-                gap: var(--space-3);
-            }
-
-            .step-number {
-                width: 48px;
-                height: 48px;
-                font-size: var(--font-md);
-            }
-
-            .data-table {
-                font-size: var(--font-xs);
-            }
-
-            .data-table th,
-            .data-table td {
-                padding: var(--space-2);
+            .map-container {
+                height: 350px;
             }
         }
 
         @media (max-width: 480px) {
-            .sources-grid {
+            .potential-grid {
                 grid-template-columns: 1fr;
             }
 
-            .spec-grid {
+            .ahp-grid {
                 grid-template-columns: 1fr;
             }
 
-            .software-grid {
-                grid-template-columns: repeat(2, 1fr);
+            .sidebar {
+                padding: var(--space-3);
             }
 
-            .validation-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .methodology-flow::before {
-                display: none;
-            }
-
-            .flow-step {
-                flex-direction: column;
-                align-items: center;
-                text-align: center;
-                gap: var(--space-2);
-            }
-
-            .step-content {
-                border-left: none;
-                border-top: 3px solid var(--secondary);
+            .main-content {
+                padding: var(--space-2);
             }
         }
 
         /* Custom Scrollbar */
         ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
+            width: 6px;
+            height: 6px;
         }
 
         ::-webkit-scrollbar-track {
             background: var(--bg-secondary);
-            border-radius: 4px;
+            border-radius: 3px;
         }
 
         ::-webkit-scrollbar-thumb {
             background: var(--gray);
-            border-radius: 4px;
+            border-radius: 3px;
         }
 
         ::-webkit-scrollbar-thumb:hover {
@@ -944,7 +924,7 @@
                     <i class="fas fa-network-wired"></i>
                     <span>Infrastructure</span>
                 </a>
-                <a href="hydrogeology.html" class="nav-item">
+                <a href="hydrogeology.html" class="nav-item active">
                     <i class="fas fa-layer-group"></i>
                     <span>Hydrogeology</span>
                 </a>
@@ -956,44 +936,44 @@
                     <i class="fas fa-file-alt"></i>
                     <span>Reports</span>
                 </a>
-                <a href="methodology.html" class="nav-item active">
+                <a href="methodology.html" class="nav-item">
                     <i class="fas fa-cogs"></i>
                     <span>Methodology</span>
                 </a>
             </nav>
 
             <div class="sidebar-section">
-                <h3>Methodology Stats</h3>
-                <div style="background: rgba(255,255,255,0.05); padding: var(--space-3); border-radius: var(--radius);">
-                    <div style="display: flex; justify-content: space-between; margin-bottom: var(--space-2);">
-                        <span style="font-size: var(--font-xs); opacity: 0.7;">Data Sources:</span>
-                        <span style="font-weight: 600;" id="sidebar-sources">8</span>
+                <h3>Quick Stats</h3>
+                <div style="background: rgba(255,255,255,0.05); padding: var(--space-2); border-radius: var(--radius);">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: var(--space-1);">
+                        <span style="font-size: var(--font-xs); opacity: 0.7;">Suitability Zones:</span>
+                        <span style="font-weight: 600;" id="sidebar-suitability">7</span>
                     </div>
-                    <div style="display: flex; justify-content: space-between; margin-bottom: var(--space-2);">
-                        <span style="font-size: var(--font-xs); opacity: 0.7;">Accuracy:</span>
-                        <span style="font-weight: 600; color: var(--success);" id="sidebar-accuracy">85%</span>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: var(--space-1);">
+                        <span style="font-size: var(--font-xs); opacity: 0.7;">High Potential:</span>
+                        <span style="font-weight: 600; color: var(--success);" id="sidebar-high-potential">25%</span>
                     </div>
                     <div style="display: flex; justify-content: space-between;">
-                        <span style="font-size: var(--font-xs); opacity: 0.7;">AHP Consistency:</span>
-                        <span style="font-weight: 600;" id="sidebar-ahp">0.04</span>
+                        <span style="font-size: var(--font-xs); opacity: 0.7;">Thematic Layers:</span>
+                        <span style="font-weight: 600;" id="sidebar-layers">7</span>
                     </div>
                 </div>
             </div>
 
             <div class="sidebar-section">
-                <h3>Tools Used</h3>
-                <div style="display: flex; flex-direction: column; gap: var(--space-2);">
-                    <div style="display: flex; align-items: center; gap: var(--space-2); font-size: var(--font-xs);">
-                        <i class="fas fa-globe" style="color: var(--secondary);"></i>
-                        <span>QGIS</span>
+                <h3>Data Sources</h3>
+                <div style="display: flex; flex-direction: column; gap: var(--space-1);">
+                    <div style="display: flex; align-items: center; gap: var(--space-1); font-size: var(--font-xs);">
+                        <i class="fas fa-check-circle" style="color: var(--success);"></i>
+                        <span>Geological Survey</span>
                     </div>
-                    <div style="display: flex; align-items: center; gap: var(--space-2); font-size: var(--font-xs);">
-                        <i class="fas fa-chart-line" style="color: var(--secondary);"></i>
-                        <span>Power BI</span>
+                    <div style="display: flex; align-items: center; gap: var(--space-1); font-size: var(--font-xs);">
+                        <i class="fas fa-check-circle" style="color: var(--success);"></i>
+                        <span>NASA EarthData</span>
                     </div>
-                    <div style="display: flex; align-items: center; gap: var(--space-2); font-size: var(--font-xs);">
-                        <i class="fas fa-satellite" style="color: var(--secondary);"></i>
-                        <span>Google Earth Engine</span>
+                    <div style="display: flex; align-items: center; gap: var(--space-1); font-size: var(--font-xs);">
+                        <i class="fas fa-check-circle" style="color: var(--success);"></i>
+                        <span>Kenya Met Dept</span>
                     </div>
                 </div>
             </div>
@@ -1004,20 +984,19 @@
             <!-- Top Bar -->
             <div class="top-bar">
                 <div class="page-title">
-                    <i class="fas fa-cogs"></i>
+                    <i class="fas fa-layer-group"></i>
                     <div>
-                        <h2>Research Methodology</h2>
-                        <p style="font-size: var(--font-sm); color: var(--gray); margin-top: 2px;">
-                            Integrated approach combining spatial analysis, remote sensing, and multi-criteria decision
-                            analysis
+                        <h2>Hydrogeology Assessment</h2>
+                        <p style="font-size: var(--font-xs); color: var(--gray); margin-top: 1px;">
+                            Groundwater potential mapping and geological analysis
                         </p>
                     </div>
                 </div>
 
                 <div class="toolbar">
-                    <div style="margin-right: var(--space-4);">
+                    <div style="margin-right: var(--space-3);">
                         <p style="font-size: var(--font-xs); color: var(--gray);">Last updated:</p>
-                        <p style="font-size: var(--font-sm); font-weight: 500;" id="last-updated">Today, 10:30 AM</p>
+                        <p style="font-size: var(--font-xs); font-weight: 500;" id="last-updated">Today, 10:30 AM</p>
                     </div>
                     <button class="btn btn-primary" id="refresh-data">
                         <i class="fas fa-sync-alt"></i>
@@ -1026,500 +1005,1228 @@
                 </div>
             </div>
 
-            <!-- Overview -->
+            <!-- Groundwater Potential Section -->
             <div class="content-card">
                 <div class="card-header">
-                    <h3><i class="fas fa-crosshairs"></i> Methodological Framework</h3>
+                    <h3><i class="fas fa-water"></i> Groundwater Potential Classification</h3>
                 </div>
-                <p style="color: var(--gray); margin-bottom: var(--space-4);">
-                    Integrated analytical framework combining spatial monitoring with hydrogeological assessment.
+                <p style="color: var(--gray); margin-bottom: var(--space-3);">
+                    Five-tier classification based on integrated analysis of geological and environmental factors.
                 </p>
 
-                <div class="highlight-box">
-                    <h4><i class="fas fa-crosshairs"></i> Research Objectives</h4>
-                    <div class="two-column">
-                        <ul>
-                            <li>Monitor water point rehabilitation across counties</li>
-                            <li>Assess hydrogeological conditions in ASAL regions</li>
-                            <li>Map groundwater potential zones using GIS/AHP</li>
-                            <li>Develop dashboard for decision support</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Methodology Steps -->
-            <div class="content-card">
-                <div class="card-header">
-                    <h3><i class="fas fa-project-diagram"></i> Methodological Steps</h3>
-                </div>
-
-                <div class="methodology-flow">
-                    <div class="flow-step">
-                        <div class="step-number">1</div>
-                        <div class="step-content">
-                            <h4>Data Collection</h4>
-                            <ul>
-                                <li>Water point data from Evidence Action</li>
-                                <li>Sentinel-2 imagery for land cover</li>
-                                <li>SRTM DEM for topography</li>
-                                <li>CHIRPS rainfall data</li>
-                                <li>Geological and soil datasets</li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div class="flow-step">
-                        <div class="step-number">2</div>
-                        <div class="step-content">
-                            <h4>GIS & Remote Sensing</h4>
-                            <ul>
-                                <li>Thematic map generation</li>
-                                <li>Land Use/Land Cover classification</li>
-                                <li>Drainage density extraction</li>
-                                <li>Slope analysis from DEM</li>
-                                <li>Spatial interpolation of rainfall</li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div class="flow-step">
-                        <div class="step-number">3</div>
-                        <div class="step-content">
-                            <h4>AHP Process</h4>
-                            <ul>
-                                <li>Pairwise comparison of layers</li>
-                                <li>Expert consultation for weights</li>
-                                <li>Consistency ratio calculation</li>
-                                <li>Weight validation</li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div class="flow-step">
-                        <div class="step-number">4</div>
-                        <div class="step-content">
-                            <h4>Weighted Overlay</h4>
-                            <ul>
-                                <li>Integration of thematic layers</li>
-                                <li>Application of AHP weights</li>
-                                <li>Groundwater potential index</li>
-                                <li>Five-category classification</li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div class="flow-step">
-                        <div class="step-number">5</div>
-                        <div class="step-content">
-                            <h4>Dashboard Development</h4>
-                            <ul>
-                                <li>Power BI architecture design</li>
-                                <li>Data integration</li>
-                                <li>Interactive visualization</li>
-                                <li>Spatial mapping integration</li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div class="flow-step">
-                        <div class="step-number">6</div>
-                        <div class="step-content">
-                            <h4>Validation & Reporting</h4>
-                            <ul>
-                                <li>Field validation of zones</li>
-                                <li>Borehole yield comparison</li>
-                                <li>Accuracy assessment</li>
-                                <li>Report generation</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Data Sources -->
-            <div class="content-card">
-                <div class="card-header">
-                    <h3><i class="fas fa-database"></i> Data Sources</h3>
-                </div>
-
-                <div class="sources-grid">
-                    <div class="source-card">
-                        <div class="source-icon">
-                            <i class="fas fa-tint"></i>
-                        </div>
-                        <h4>Water Infrastructure</h4>
-                        <ul>
-                            <li><strong>Source:</strong> Evidence Action</li>
-                            <li><strong>Coverage:</strong> 21,950 water points</li>
-                            <li><strong>Period:</strong> 2023-2024</li>
-                        </ul>
-                    </div>
-
-                    <div class="source-card">
-                        <div class="source-icon">
-                            <i class="fas fa-satellite"></i>
-                        </div>
-                        <h4>Remote Sensing</h4>
-                        <ul>
-                            <li><strong>Sentinel-2:</strong> Land cover</li>
-                            <li><strong>SRTM DEM:</strong> 30m elevation</li>
-                            <li><strong>CHIRPS:</strong> Rainfall data</li>
-                        </ul>
-                    </div>
-
-                    <div class="source-card">
-                        <div class="source-icon">
-                            <i class="fas fa-map"></i>
-                        </div>
-                        <h4>Geospatial Data</h4>
-                        <ul>
-                            <li><strong>Geology:</strong> Survey maps</li>
-                            <li><strong>Soil:</strong> SOTWIS database</li>
-                            <li><strong>Administrative:</strong> Boundaries</li>
-                        </ul>
-                    </div>
-
-                    <div class="source-card">
-                        <div class="source-icon">
-                            <i class="fas fa-chart-bar"></i>
-                        </div>
-                        <h4>Ancillary Data</h4>
-                        <ul>
-                            <li><strong>Population:</strong> KNBS</li>
-                            <li><strong>Climate:</strong> Met Department</li>
-                            <li><strong>Validation:</strong> Borehole records</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-
-            <!-- AHP Details -->
-            <div class="content-card">
-                <div class="card-header">
-                    <h3><i class="fas fa-balance-scale"></i> AHP Details</h3>
-                </div>
-
-                <div class="technical-box">
-                    <h4>AHP Pairwise Comparison Matrix</h4>
-
-                    <div style="overflow-x: auto;">
-                        <table class="data-table">
-                            <thead>
-                                <tr>
-                                    <th>Criteria</th>
-                                    <th>Weight</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td><strong>Rainfall</strong></td>
-                                    <td><strong>38.0%</strong></td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Geology</strong></td>
-                                    <td><strong>24.7%</strong></td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Slope</strong></td>
-                                    <td><strong>13.1%</strong></td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Drainage Density</strong></td>
-                                    <td><strong>8.9%</strong></td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Land Use</strong></td>
-                                    <td><strong>6.6%</strong></td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Lineament Density</strong></td>
-                                    <td><strong>5.0%</strong></td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Soil</strong></td>
-                                    <td><strong>3.7%</strong></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <div class="spec-grid">
-                        <div class="spec-item">
-                            <h5>Consistency Ratio</h5>
-                            <div class="metric-value">0.04</div>
-                            <p>Acceptable (CR < 0.10)</p>
-                        </div>
-
-                        <div class="spec-item">
-                            <h5>Lambda Max</h5>
-                            <div class="metric-value">7.35</div>
-                            <p>Maximum eigenvalue</p>
-                        </div>
-
-                        <div class="spec-item">
-                            <h5>Consistency Index</h5>
-                            <div class="metric-value">0.058</div>
-                            <p>Random Index = 1.32</p>
-                        </div>
-
-                        <div class="spec-item">
-                            <h5>Experts</h5>
-                            <div class="metric-value">8</div>
-                            <p>Hydrogeologists & GIS specialists</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Software Tools -->
-            <div class="content-card"
-                style="background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%); color: white;">
-                <div class="card-header" style="border-bottom-color: rgba(255,255,255,0.2);">
-                    <h3 style="color: white;"><i class="fas fa-laptop-code"></i> Software & Tools</h3>
-                </div>
-
-                <div class="software-grid">
-                    <div class="software-item">
-                        <div class="software-icon">
-                            <i class="fas fa-globe"></i>
-                        </div>
-                        <h5>QGIS</h5>
-                        <p>Geographic Information System</p>
-                    </div>
-
-                    <div class="software-item">
-                        <div class="software-icon">
-                            <i class="fas fa-satellite"></i>
-                        </div>
-                        <h5>Google Earth Engine</h5>
-                        <p>Remote Sensing Platform</p>
-                    </div>
-
-                    <div class="software-item">
-                        <div class="software-icon">
-                            <i class="fas fa-chart-line"></i>
-                        </div>
-                        <h5>Power BI</h5>
-                        <p>Dashboard Development</p>
-                    </div>
-
-                    <div class="software-item">
-                        <div class="software-icon">
-                            <i class="fas fa-calculator"></i>
-                        </div>
-                        <h5>Excel AHP</h5>
-                        <p>Multi-criteria Analysis</p>
-                    </div>
-
-                    <div class="software-item">
-                        <div class="software-icon">
-                            <i class="fab fa-python"></i>
-                        </div>
-                        <h5>Python</h5>
-                        <p>Data Processing</p>
-                    </div>
-
-                    <div class="software-item">
-                        <div class="software-icon">
-                            <i class="fas fa-database"></i>
-                        </div>
-                        <h5>PostGIS</h5>
-                        <p>Spatial Database</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Validation Metrics -->
-            <div class="content-card">
-                <div class="card-header">
-                    <h3><i class="fas fa-check-circle"></i> Validation & Accuracy</h3>
-                </div>
-
-                <div class="validation-grid">
-                    <div class="metric-box">
-                        <div class="metric-value">85%</div>
-                        <h5>Overall Accuracy</h5>
-                        <p>Groundwater classification</p>
-                    </div>
-
-                    <div class="metric-box">
-                        <div class="metric-value">0.78</div>
-                        <h5>Kappa Coefficient</h5>
-                        <p>Classification agreement</p>
-                    </div>
-
-                    <div class="metric-box">
-                        <div class="metric-value">92%</div>
-                        <h5>Producer's Accuracy</h5>
-                        <p>High potential zones</p>
-                    </div>
-
-                    <div class="metric-box">
-                        <div class="metric-value">88%</div>
-                        <h5>User's Accuracy</h5>
-                        <p>Low potential zones</p>
+                <div class="potential-grid" id="potential-grid">
+                    <div class="loading-overlay" style="position: relative; height: 180px;">
+                        <div class="loading-spinner"></div>
+                        <div class="loading-text">Loading groundwater data...</div>
                     </div>
                 </div>
 
                 <div class="insight-card">
-                    <h4><i class="fas fa-check-circle"></i> Validation Methodology</h4>
-                    <p>Maps validated using 120 borehole yield records. High potential zones showed 85% correlation with
-                        productive boreholes (>5 m³/hour).</p>
+                    <h4><i class="fas fa-lightbulb"></i> Methodology</h4>
+                    <p>Integrated analysis of geological formations, soil types, drainage patterns, rainfall, slope, and
+                        lineament density using AHP weighting system.</p>
                 </div>
             </div>
 
-            <!-- Limitations -->
+            <!-- Geological Formations -->
             <div class="content-card">
                 <div class="card-header">
-                    <h3><i class="fas fa-exclamation-triangle"></i> Limitations & Future Improvements</h3>
+                    <h3><i class="fas fa-mountain"></i> Geological Formations</h3>
                 </div>
 
-                <div class="two-column">
-                    <div class="content-list">
-                        <h4><i class="fas fa-exclamation-triangle"></i> Data Limitations</h4>
-                        <ul>
-                            <li>Limited temporal depth in monitoring data</li>
-                            <li>Incomplete technology classification (27%)</li>
-                            <li>Spatial resolution constraints</li>
-                            <li>Seasonal variations not captured</li>
-                        </ul>
-                    </div>
-
-                    <div class="content-list">
-                        <h4><i class="fas fa-cogs"></i> Methodological Constraints</h4>
-                        <ul>
-                            <li>AHP subjectivity in weight assignment</li>
-                            <li>Simplified hydrogeological processes</li>
-                            <li>Limited validation in remote ASAL</li>
-                            <li>Static analysis without dynamics</li>
-                        </ul>
+                <div class="data-table" id="geology-table">
+                    <div class="loading-overlay" style="position: relative; height: 250px;">
+                        <div class="loading-spinner"></div>
+                        <div class="loading-text">Loading geology data...</div>
                     </div>
                 </div>
 
-                <div class="content-list">
-                    <h4><i class="fas fa-forward"></i> Future Improvements</h4>
-                    <ul>
-                        <li>Machine learning for pattern recognition</li>
-                        <li>Real-time IoT sensor networks</li>
-                        <li>Higher resolution imagery</li>
-                        <li>Climate change projections</li>
-                        <li>Community participatory validation</li>
-                    </ul>
+                <div
+                    style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: var(--space-3); margin-top: var(--space-3);">
+                    <div class="insight-card">
+                        <h4><i class="fas fa-exclamation-triangle"></i> Key Insight</h4>
+                        <p id="geology-insight">Loading...</p>
+                    </div>
+
+                    <div class="insight-card">
+                        <h4><i class="fas fa-bullseye"></i> Strategy</h4>
+                        <p>Targeted drilling in high-potential areas while avoiding costly failures in low-potential
+                            zones.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Thematic Layers -->
+            <div class="content-card">
+                <div class="card-header">
+                    <h3><i class="fas fa-layer-group"></i> Thematic Layer Analysis</h3>
+                </div>
+                <p style="color: var(--gray); margin-bottom: var(--space-3);">
+                    Seven key parameters integrated for groundwater assessment
+                </p>
+
+                <div class="layer-grid" id="layer-grid">
+                    <div class="loading-overlay" style="position: relative; height: 250px;">
+                        <div class="loading-spinner"></div>
+                        <div class="loading-text">Loading thematic layers...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AHP Weighting -->
+            <div class="content-card"
+                style="background: linear-gradient(135deg, #2c3e50 0%, #1a252f 100%); color: white;">
+                <div class="card-header" style="border-bottom-color: rgba(255,255,255,0.2);">
+                    <h3 style="color: white;"><i class="fas fa-balance-scale"></i> AHP Weighting</h3>
+                </div>
+                <p style="color: rgba(255,255,255,0.8); margin-bottom: var(--space-3);">
+                    Relative importance of thematic layers in groundwater potential assessment
+                </p>
+
+                <div class="ahp-grid" id="ahp-grid">
+                    <div class="loading-overlay"
+                        style="position: relative; height: 180px; background: rgba(255,255,255,0.1);">
+                        <div class="loading-spinner" style="border-top-color: white;"></div>
+                        <div class="loading-text" style="color: white;">Loading AHP weights...</div>
+                    </div>
+                </div>
+
+                <div style="text-align: center; margin-top: var(--space-3);">
+                    <a href="methodology.html#ahp" class="btn"
+                        style="background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.3);">
+                        <i class="fas fa-table"></i>
+                        View Full Matrix
+                    </a>
+                </div>
+            </div>
+
+            <!-- Interactive Map -->
+            <div class="content-card">
+                <div class="card-header">
+                    <h3><i class="fas fa-map-marked-alt"></i> Groundwater Potential Map</h3>
+                </div>
+
+                <div class="map-tabs">
+                    <div class="map-tab active" data-layer="groundwater">Groundwater</div>
+                    <div class="map-tab" data-layer="geology">Geology</div>
+                    <div class="map-tab" data-layer="rainfall">Rainfall</div>
+                    <div class="map-tab" data-layer="drainage">Drainage</div>
+                    <div class="map-tab" data-layer="landuse">Land Use</div>
+                </div>
+
+                <div class="map-container">
+                    <div id="geology-map"></div>
+
+                    <div class="loading-overlay" id="map-loading">
+                        <div class="loading-spinner"></div>
+                        <div class="loading-text">Initializing map...</div>
+                    </div>
+
+                    <!-- Map Controls -->
+                    <div class="map-controls">
+                        <button class="btn" id="reset-view" title="Reset View">
+                            <i class="fas fa-globe-africa"></i>
+                        </button>
+                        <button class="btn" id="locate-me" title="My Location">
+                            <i class="fas fa-location-crosshairs"></i>
+                        </button>
+                        <button class="btn" id="export-map" title="Export Map">
+                            <i class="fas fa-download"></i>
+                        </button>
+                        <button class="btn" id="fullscreen" title="Full Screen">
+                            <i class="fas fa-expand"></i>
+                        </button>
+                    </div>
+
+                    <!-- Legend -->
+                    <div class="map-legend" id="map-legend">
+                        <div class="legend-header">
+                            <h5>Groundwater Potential</h5>
+                            <button class="btn btn-outline" style="padding: 1px 6px; font-size: 10px;"
+                                id="toggle-legend">Hide</button>
+                        </div>
+                        <div class="legend-content" id="legend-content">
+                            <!-- Legend items will be populated dynamically -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- County Analysis -->
+            <div class="content-card">
+                <div class="card-header">
+                    <h3><i class="fas fa-flag"></i> County Analysis</h3>
+                </div>
+                <p style="color: var(--gray); margin-bottom: var(--space-3);">
+                    Groundwater potential assessment for ASAL counties
+                </p>
+
+                <div class="county-grid" id="county-grid">
+                    <div class="loading-overlay" style="position: relative; height: 350px;">
+                        <div class="loading-spinner"></div>
+                        <div class="loading-text">Loading county data...</div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Workflow Modal -->
-    <div id="workflowModal" class="modal">
+    <!-- County Details Modal -->
+    <div id="countyModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 class="modal-title">Methodological Framework</h3>
-                <button class="modal-close" onclick="closeWorkflowModal()">&times;</button>
+                <h3 class="modal-title" id="modalCountyTitle"></h3>
+                <button class="modal-close" onclick="closeCountyModal()">&times;</button>
             </div>
 
-            <div style="margin-bottom: var(--space-4);">
-                <div
-                    style="background: var(--bg-secondary); padding: var(--space-4); border-radius: var(--radius); margin-bottom: var(--space-3); text-align: center;">
-                    <i class="fas fa-project-diagram"
-                        style="font-size: var(--font-xl); color: var(--secondary); margin-bottom: var(--space-2); display: block;"></i>
-                    <h4 style="margin: 0 0 var(--space-2) 0; font-size: var(--font-md);">Integrated Workflow</h4>
-                    <p style="color: var(--gray); font-size: var(--font-sm);">Six-step process from data collection to
-                        validation</p>
+            <div style="margin-bottom: var(--space-3);">
+                <div style="display: flex; align-items: center; gap: var(--space-2); margin-bottom: var(--space-2);">
+                    <span style="font-weight: 600; font-size: var(--font-sm);">Potential:</span>
+                    <span id="modalCountyPotential"
+                        style="padding: var(--space-1) var(--space-2); border-radius: var(--radius-sm); font-size: var(--font-xs); font-weight: 600;"></span>
                 </div>
 
                 <div
-                    style="display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-3); margin-bottom: var(--space-3);">
+                    style="display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-2); margin-bottom: var(--space-2);">
                     <div
-                        style="background: #f0f9ff; padding: var(--space-3); border-radius: var(--radius); border-left: 3px solid var(--secondary);">
-                        <h5 style="margin: 0 0 var(--space-2) 0; font-size: var(--font-sm);">Phase 1: Data</h5>
-                        <p style="color: var(--gray); margin: 0; font-size: var(--font-xs);">Multi-source data
-                            integration</p>
+                        style="background: var(--bg-secondary); padding: var(--space-2); border-radius: var(--radius-sm);">
+                        <div style="font-size: var(--font-xs); color: var(--gray); margin-bottom: var(--space-1);">Water
+                            Points</div>
+                        <div style="font-weight: 700; font-size: var(--font-sm);" id="modalCountyPoints"></div>
                     </div>
                     <div
-                        style="background: #f0f9ff; padding: var(--space-3); border-radius: var(--radius); border-left: 3px solid var(--secondary);">
-                        <h5 style="margin: 0 0 var(--space-2) 0; font-size: var(--font-sm);">Phase 2: GIS</h5>
-                        <p style="color: var(--gray); margin: 0; font-size: var(--font-xs);">Thematic layer generation
-                        </p>
-                    </div>
-                    <div
-                        style="background: #f0f9ff; padding: var(--space-3); border-radius: var(--radius); border-left: 3px solid var(--secondary);">
-                        <h5 style="margin: 0 0 var(--space-2) 0; font-size: var(--font-sm);">Phase 3: AHP</h5>
-                        <p style="color: var(--gray); margin: 0; font-size: var(--font-xs);">Multi-criteria analysis</p>
-                    </div>
-                    <div
-                        style="background: #f0f9ff; padding: var(--space-3); border-radius: var(--radius); border-left: 3px solid var(--secondary);">
-                        <h5 style="margin: 0 0 var(--space-2) 0; font-size: var(--font-sm);">Phase 4: Integration</h5>
-                        <p style="color: var(--gray); margin: 0; font-size: var(--font-xs);">Groundwater mapping</p>
+                        style="background: var(--bg-secondary); padding: var(--space-2); border-radius: var(--radius-sm);">
+                        <div style="font-size: var(--font-xs); color: var(--gray); margin-bottom: var(--space-1);">
+                            Functional Rate</div>
+                        <div style="font-weight: 700; font-size: var(--font-sm); color: var(--success);"
+                            id="modalCountyFunctional"></div>
                     </div>
                 </div>
 
-                <div style="background: var(--bg-secondary); padding: var(--space-3); border-radius: var(--radius);">
-                    <h5 style="margin: 0 0 var(--space-3) 0; font-size: var(--font-sm);">Key Components</h5>
-                    <div style="display: flex; flex-wrap: wrap; gap: var(--space-2);">
-                        <span
-                            style="background: white; padding: var(--space-1) var(--space-2); border-radius: var(--radius); font-size: var(--font-xs); color: var(--primary); border: 1px solid var(--border);">
-                            Geospatial Analysis
-                        </span>
-                        <span
-                            style="background: white; padding: var(--space-1) var(--space-2); border-radius: var(--radius); font-size: var(--font-xs); color: var(--primary); border: 1px solid var(--border);">
-                            Remote Sensing
-                        </span>
-                        <span
-                            style="background: white; padding: var(--space-1) var(--space-2); border-radius: var(--radius); font-size: var(--font-xs); color: var(--primary); border: 1px solid var(--border);">
-                            AHP Methodology
-                        </span>
-                        <span
-                            style="background: white; padding: var(--space-1) var(--space-2); border-radius: var(--radius); font-size: var(--font-xs); color: var(--primary); border: 1px solid var(--border);">
-                            Data Validation
-                        </span>
-                    </div>
+                <div style="background: var(--bg-secondary); padding: var(--space-2); border-radius: var(--radius-sm);">
+                    <div style="font-size: var(--font-xs); color: var(--gray); margin-bottom: var(--space-1);">
+                        Description</div>
+                    <div style="font-size: var(--font-sm); line-height: 1.3;" id="modalCountyDesc"></div>
                 </div>
             </div>
 
-            <div style="display: flex; gap: var(--space-3);">
-                <button onclick="downloadWorkflow()" class="btn btn-primary" style="flex: 1;">
-                    <i class="fas fa-download"></i> Download Diagram
+            <div style="display: flex; gap: var(--space-2);">
+                <button onclick="downloadCountyReport()" class="btn btn-primary" style="flex: 1;">
+                    <i class="fas fa-download"></i> Download Report
                 </button>
-                <button onclick="closeWorkflowModal()" class="btn btn-outline" style="flex: 1;">
+                <button onclick="closeCountyModal()" class="btn btn-outline" style="flex: 1;">
                     Close
                 </button>
             </div>
         </div>
     </div>
 
+    <!-- JavaScript Libraries -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+
     <script>
-        // Initialize sidebar statistics
-        function updateSidebarStats() {
-            document.getElementById('sidebar-sources').textContent = '8';
-            document.getElementById('sidebar-accuracy').textContent = '85%';
-            document.getElementById('sidebar-ahp').textContent = '0.04';
+        // Hydrogeology Dashboard State
+        const HydrogeologyDashboard = {
+            suitabilityData: [],
+            countiesData: [],
+            waterPointsData: [],
+            thematicLayers: {},
+            ahpWeights: {},
+            map: null,
+            currentLayer: 'groundwater',
+            countyStats: {},
+            layers: {
+                suitability: null,
+                counties: null,
+                currentBasemap: 'osm'
+            },
+            basemaps: {
+                osm: L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '© OpenStreetMap contributors',
+                    maxZoom: 19
+                }),
+                satellite: L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+                    attribution: '© Esri, Maxar, Earthstar Geographics',
+                    maxZoom: 19
+                }),
+                topo: L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
+                    attribution: '© OpenTopoMap',
+                    maxZoom: 17
+                }),
+                dark: L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+                    attribution: '© CARTO',
+                    maxZoom: 19
+                })
+            },
+            kenyaBounds: [[-4.9, 33.8], [5.0, 42.0]]
+        };
 
-            // Update last updated time
-            const now = new Date();
-            document.getElementById('last-updated').textContent =
-                now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        // Suitability color mapping
+        const SuitabilityColors = {
+            1: '#e74c3c',  // Very Low
+            2: '#f39c12',  // Low
+            3: '#f1c40f',  // Moderately Low
+            4: '#2ecc71',  // Moderate
+            5: '#3498db',  // Moderately High
+            6: '#2980b9',  // High
+            7: '#8e44ad'   // Very High
+        };
+
+        // Suitability labels
+        const SuitabilityLabels = {
+            1: 'Very Low',
+            2: 'Low',
+            3: 'Moderately Low',
+            4: 'Moderate',
+            5: 'Moderately High',
+            6: 'High',
+            7: 'Very High'
+        };
+
+        // Initialize Application
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                await initializeDashboard();
+                setupEventListeners();
+                updateSidebarStats();
+            } catch (error) {
+                console.error('Failed to initialize dashboard:', error);
+                showError('Failed to load hydrogeology data. Please refresh the page.');
+            }
+        });
+
+        // Initialize Dashboard
+        async function initializeDashboard() {
+            updateLoadingText('Initializing hydrogeology dashboard...');
+
+            // Initialize map
+            initializeMap();
+
+            // Load all data
+            await Promise.all([
+                loadSuitabilityData(),
+                loadCountiesData(),
+                loadWaterPointsData()
+            ]);
+
+            // Update UI components
+            updatePotentialGrid();
+            updateGeologyTable();
+            updateThematicLayers();
+            updateAHPGrid();
+            updateCountyGrid();
+
+            // Hide loading overlay
+            setTimeout(() => {
+                document.getElementById('map-loading').style.opacity = '0';
+                setTimeout(() => {
+                    document.getElementById('map-loading').style.display = 'none';
+                }, 300);
+            }, 500);
         }
 
-        // Workflow modal functions
-        function viewWorkflowDiagram() {
-            document.getElementById('workflowModal').classList.add('active');
+        // Initialize Map
+        function initializeMap() {
+            HydrogeologyDashboard.map = L.map('geology-map', {
+                center: [0.5, 37.8],
+                zoom: 6,
+                minZoom: 5,
+                maxZoom: 18,
+                maxBounds: HydrogeologyDashboard.kenyaBounds,
+                maxBoundsViscosity: 1.0
+            });
+
+            // Add default basemap
+            HydrogeologyDashboard.basemaps.osm.addTo(HydrogeologyDashboard.map);
+
+            // Add scale control
+            L.control.scale({ imperial: false, position: 'bottomleft' }).addTo(HydrogeologyDashboard.map);
+
+            // Add geocoder
+            L.Control.geocoder({
+                defaultMarkGeocode: false,
+                position: 'topleft',
+                placeholder: 'Search location...'
+            })
+                .on('markgeocode', (e) => {
+                    HydrogeologyDashboard.map.fitBounds(e.geocode.bbox);
+                })
+                .addTo(HydrogeologyDashboard.map);
+        }
+
+        // Convert ESRI JSON to GeoJSON
+        function esriToGeoJSON(esriJson) {
+            if (!esriJson || !esriJson.features) {
+                console.error('Invalid ESRI JSON format');
+                return { type: 'FeatureCollection', features: [] };
+            }
+
+            const features = esriJson.features.map(feature => {
+                // Handle ESRI geometry format
+                let geometry = null;
+                if (feature.geometry) {
+                    if (feature.geometry.rings) {
+                        // Polygon geometry
+                        geometry = {
+                            type: 'Polygon',
+                            coordinates: feature.geometry.rings
+                        };
+                    } else if (feature.geometry.x !== undefined && feature.geometry.y !== undefined) {
+                        // Point geometry (coordinates are swapped in ESRI JSON)
+                        geometry = {
+                            type: 'Point',
+                            coordinates: [feature.geometry.x, feature.geometry.y]
+                        };
+                    } else if (feature.geometry.paths) {
+                        // Polyline geometry
+                        geometry = {
+                            type: 'LineString',
+                            coordinates: feature.geometry.paths[0]
+                        };
+                    }
+                }
+
+                return {
+                    type: 'Feature',
+                    properties: feature.attributes || {},
+                    geometry: geometry
+                };
+            });
+
+            return {
+                type: 'FeatureCollection',
+                features: features
+            };
+        }
+
+        // Load suitability data
+        async function loadSuitabilityData() {
+            updateLoadingText('Loading suitability data...');
+
+            try {
+                const paths = [
+                    'data/Suitable_json.json',
+                    'Suitable_json.json',
+                    'data/Suitable.json',
+                    'Suitable.json'
+                ];
+
+                let data = null;
+                for (const path of paths) {
+                    try {
+                        const response = await fetch(path);
+                        if (response.ok) {
+                            data = await response.json();
+                            console.log(`Loaded suitability data from: ${path}`);
+                            break;
+                        }
+                    } catch (e) {
+                        console.log(`Failed to load from ${path}:`, e.message);
+                        continue;
+                    }
+                }
+
+                if (data) {
+                    // Convert ESRI JSON to GeoJSON
+                    const geoJsonData = esriToGeoJSON(data);
+                    HydrogeologyDashboard.suitabilityData = geoJsonData.features || [];
+
+                    // Add suitability layer to map
+                    addSuitabilityLayer();
+
+                    // Analyze suitability distribution
+                    analyzeSuitabilityData();
+                } else {
+                    console.log('No suitability data found');
+                    createFallbackSuitabilityData();
+                }
+
+            } catch (error) {
+                console.error('Error loading suitability data:', error);
+                createFallbackSuitabilityData();
+            }
+        }
+
+        // Create fallback suitability data
+        function createFallbackSuitabilityData() {
+            const fallbackData = [
+                { gridcode: 1, area_percentage: 18, description: 'Minimal chance of accessing underground water' },
+                { gridcode: 2, area_percentage: 22, description: 'Limited availability requiring deeper drilling' },
+                { gridcode: 3, area_percentage: 20, description: 'Slight improvement but uncertain yields' },
+                { gridcode: 4, area_percentage: 25, description: 'Fairly reliable groundwater' },
+                { gridcode: 5, area_percentage: 15, description: 'High likelihood with viable yields' }
+            ];
+
+            HydrogeologyDashboard.suitabilityData = fallbackData.map(item => ({
+                properties: item,
+                geometry: null
+            }));
+
+            console.log('Created fallback suitability data');
+            analyzeSuitabilityData();
+        }
+
+        // Analyze suitability data
+        function analyzeSuitabilityData() {
+            const suitabilityStats = {
+                totalAreas: 0,
+                byClass: {}
+            };
+
+            HydrogeologyDashboard.suitabilityData.forEach(feature => {
+                const props = feature.properties || {};
+                const suitability = props.gridcode || 0;
+
+                if (!suitabilityStats.byClass[suitability]) {
+                    suitabilityStats.byClass[suitability] = {
+                        count: 0,
+                        totalArea: 0
+                    };
+                }
+
+                suitabilityStats.byClass[suitability].count++;
+                suitabilityStats.byClass[suitability].totalArea++;
+                suitabilityStats.totalAreas++;
+            });
+
+            // Calculate percentages
+            Object.keys(suitabilityStats.byClass).forEach(suitability => {
+                const data = suitabilityStats.byClass[suitability];
+                data.percentage = Math.round((data.totalArea / suitabilityStats.totalAreas) * 100);
+            });
+
+            HydrogeologyDashboard.suitabilityStats = suitabilityStats;
+
+            // Update UI
+            updatePotentialGrid();
+            updateLegend();
+        }
+
+        // Load counties data
+        async function loadCountiesData() {
+            try {
+                const paths = [
+                    'data/Asal_counties.json',
+                    'Asal_counties.json'
+                ];
+
+                let data = null;
+                for (const path of paths) {
+                    try {
+                        const response = await fetch(path);
+                        if (response.ok) {
+                            data = await response.json();
+                            console.log(`Loaded counties from: ${path}`);
+                            break;
+                        }
+                    } catch (e) {
+                        continue;
+                    }
+                }
+
+                if (data) {
+                    // Convert ESRI JSON to GeoJSON
+                    const geoJsonData = esriToGeoJSON(data);
+                    HydrogeologyDashboard.countiesData = geoJsonData.features || [];
+                    console.log(`Loaded ${HydrogeologyDashboard.countiesData.length} county features`);
+
+                    // Add counties layer to map
+                    addCountiesLayer();
+                } else {
+                    console.log('No counties data found');
+                }
+
+            } catch (error) {
+                console.error('Error loading counties data:', error);
+            }
+        }
+
+        // Load water points data for county analysis
+        async function loadWaterPointsData() {
+            try {
+                const paths = [
+                    'data/Asal_water_points.json',
+                    'Asal_water_points.json'
+                ];
+
+                let data = null;
+                for (const path of paths) {
+                    try {
+                        const response = await fetch(path);
+                        if (response.ok) {
+                            data = await response.json();
+                            console.log(`Loaded water points from: ${path}`);
+                            break;
+                        }
+                    } catch (e) {
+                        continue;
+                    }
+                }
+
+                if (data) {
+                    // Convert ESRI JSON to GeoJSON
+                    const geoJsonData = esriToGeoJSON(data);
+                    HydrogeologyDashboard.waterPointsData = geoJsonData.features || [];
+                    console.log(`Loaded ${HydrogeologyDashboard.waterPointsData.length} water points`);
+
+                    // Analyze county statistics
+                    analyzeCountyStats();
+                } else {
+                    console.log('No water points data found');
+                }
+
+            } catch (error) {
+                console.error('Error loading water points data:', error);
+            }
+        }
+
+        // Analyze county statistics
+        function analyzeCountyStats() {
+            HydrogeologyDashboard.countyStats = {};
+
+            HydrogeologyDashboard.waterPointsData.forEach(point => {
+                const props = point.properties || {};
+                const county = props.clean_adm1 || props.COUNTY || props.county || 'Unknown';
+
+                if (!HydrogeologyDashboard.countyStats[county]) {
+                    HydrogeologyDashboard.countyStats[county] = {
+                        total: 0,
+                        functional: 0,
+                        nonFunctional: 0,
+                        needsRepair: 0,
+                        unknown: 0
+                    };
+                }
+
+                HydrogeologyDashboard.countyStats[county].total++;
+
+                const status = props.status_cle || props.STATUS || props.status || 'Unknown';
+                const lowerStatus = status.toLowerCase();
+
+                if (lowerStatus.includes('functional') && !lowerStatus.includes('non')) {
+                    HydrogeologyDashboard.countyStats[county].functional++;
+                } else if (lowerStatus.includes('non-functional') || lowerStatus.includes('abandoned')) {
+                    HydrogeologyDashboard.countyStats[county].nonFunctional++;
+                } else if (lowerStatus.includes('repair') || lowerStatus.includes('maintenance')) {
+                    HydrogeologyDashboard.countyStats[county].needsRepair++;
+                } else {
+                    HydrogeologyDashboard.countyStats[county].unknown++;
+                }
+            });
+
+            // Update county grid
+            updateCountyGrid();
+        }
+
+        // Add suitability layer to map
+        function addSuitabilityLayer() {
+            if (!HydrogeologyDashboard.map) return;
+
+            // Clear existing layers
+            if (HydrogeologyDashboard.layers.suitability) {
+                HydrogeologyDashboard.map.removeLayer(HydrogeologyDashboard.layers.suitability);
+            }
+
+            // Create GeoJSON layer from features with geometry
+            const featuresWithGeometry = HydrogeologyDashboard.suitabilityData.filter(f => f.geometry);
+
+            if (featuresWithGeometry.length === 0) {
+                console.log('No geometry data available for suitability layer');
+                return;
+            }
+
+            const geoJsonData = {
+                type: 'FeatureCollection',
+                features: featuresWithGeometry
+            };
+
+            HydrogeologyDashboard.layers.suitability = L.geoJSON(geoJsonData, {
+                style: function (feature) {
+                    const suitability = feature.properties?.gridcode || 1;
+                    const color = SuitabilityColors[suitability] || SuitabilityColors[1];
+
+                    return {
+                        fillColor: color,
+                        weight: 0.5,
+                        opacity: 0.3,
+                        color: color,
+                        fillOpacity: 0.5
+                    };
+                },
+                onEachFeature: function (feature, layer) {
+                    const props = feature.properties || {};
+                    const suitability = props.gridcode || 1;
+                    const label = SuitabilityLabels[suitability] || 'Unknown';
+
+                    layer.bindPopup(`
+                        <div style="font-size: 11px; font-family: -apple-system, sans-serif;">
+                            <div style="background: ${SuitabilityColors[suitability]}; color: white; padding: 6px; margin: -8px -8px 8px -8px; border-radius: 3px 3px 0 0;">
+                                <strong>Groundwater Potential</strong>
+                            </div>
+                            <div style="padding: 3px 0;">
+                                <div style="display: grid; grid-template-columns: 80px 1fr; gap: 3px; margin-bottom: 3px;">
+                                    <strong>Class:</strong>
+                                    <span style="color: ${SuitabilityColors[suitability]}">${suitability}/7</span>
+                                </div>
+                                <div style="display: grid; grid-template-columns: 80px 1fr; gap: 3px; margin-bottom: 3px;">
+                                    <strong>Rating:</strong>
+                                    <span>${label}</span>
+                                </div>
+                                <div>
+                                    <strong>Description:</strong><br>
+                                    <small>${getSuitabilityDescription(suitability)}</small>
+                                </div>
+                            </div>
+                        </div>
+                    `);
+                }
+            }).addTo(HydrogeologyDashboard.map);
+        }
+
+        // Add counties layer to map
+        function addCountiesLayer() {
+            if (!HydrogeologyDashboard.map || !HydrogeologyDashboard.countiesData.length) return;
+
+            const featuresWithGeometry = HydrogeologyDashboard.countiesData.filter(f => f.geometry);
+
+            if (featuresWithGeometry.length === 0) {
+                console.log('No geometry data available for counties layer');
+                return;
+            }
+
+            const geoJsonData = {
+                type: 'FeatureCollection',
+                features: featuresWithGeometry
+            };
+
+            HydrogeologyDashboard.layers.counties = L.geoJSON(geoJsonData, {
+                style: {
+                    color: '#1a5fb4',
+                    weight: 2,
+                    opacity: 0.8,
+                    fillColor: '#1a5fb4',
+                    fillOpacity: 0.05
+                },
+                onEachFeature: function (feature, layer) {
+                    const props = feature.properties || {};
+                    const countyName = props.ADM1_EN || props.county || 'Unknown';
+
+                    layer.bindTooltip(countyName, {
+                        permanent: false,
+                        direction: 'center',
+                        className: 'county-tooltip'
+                    });
+
+                    layer.on('mouseover', (e) => {
+                        e.target.setStyle({
+                            fillOpacity: 0.2,
+                            weight: 3
+                        });
+                    });
+
+                    layer.on('mouseout', (e) => {
+                        e.target.setStyle({
+                            fillOpacity: 0.05,
+                            weight: 2
+                        });
+                        e.target.closeTooltip();
+                    });
+
+                    layer.on('click', () => {
+                        showCountyDetails(countyName);
+                    });
+                }
+            }).addTo(HydrogeologyDashboard.map);
+        }
+
+        // Get suitability description
+        function getSuitabilityDescription(suitability) {
+            const descriptions = {
+                1: 'Very low potential for groundwater development',
+                2: 'Low potential, requires careful assessment',
+                3: 'Moderately low potential with uncertain yields',
+                4: 'Moderate potential for community water supply',
+                5: 'Moderately high potential with viable yields',
+                6: 'High potential suitable for development',
+                7: 'Very high potential for water projects'
+            };
+            return descriptions[suitability] || 'Groundwater potential area';
+        }
+
+        // Update potential grid
+        function updatePotentialGrid() {
+            const grid = document.getElementById('potential-grid');
+            const stats = HydrogeologyDashboard.suitabilityStats;
+
+            if (!stats || !stats.byClass) {
+                grid.innerHTML = '<div class="loading-overlay" style="position: relative; height: 150px;"><div class="loading-spinner"></div><p>Analyzing data...</p></div>';
+                return;
+            }
+
+            const classes = [1, 2, 3, 4, 5]; // We'll use 5 classes
+            const classDescriptions = {
+                1: 'Minimal chance of accessing underground water in crystalline bedrock areas.',
+                2: 'Limited availability requiring deeper drilling in fracture zones.',
+                3: 'Slight improvement but uncertain yields requiring careful assessment.',
+                4: 'Fairly reliable groundwater suitable for basic community use.',
+                5: 'High likelihood with viable yields for borehole development.'
+            };
+
+            const html = classes.map(suitability => {
+                const data = stats.byClass[suitability] || { percentage: 0 };
+                const percentage = data.percentage || 0;
+
+                return `
+                    <div class="potential-class class-${suitability}">
+                        <h4>${suitability}. ${SuitabilityLabels[suitability] || 'Unknown'}</h4>
+                        <p>${classDescriptions[suitability] || 'No description available.'}</p>
+                        <div class="class-percentage">${percentage}% of ASAL area</div>
+                    </div>
+                `;
+            }).join('');
+
+            grid.innerHTML = html;
+        }
+
+        // Update geology table
+        function updateGeologyTable() {
+            const table = document.getElementById('geology-table');
+            const insight = document.getElementById('geology-insight');
+
+            const geologyData = [
+                { formation: 'Quaternary', rock: 'Sand, gravel', potential: 'High', suitability: 'Optimal for development' },
+                { formation: 'Cretaceous', rock: 'Chalk, shale', potential: 'Mod-High', suitability: 'Suitable for supply' },
+                { formation: 'Jurassic', rock: 'Sandstone, limestone', potential: 'Moderate', suitability: 'Medium-scale projects' },
+                { formation: 'Triassic', rock: 'Sandstone, clay', potential: 'Low', suitability: 'Challenging' },
+                { formation: 'Precambrian', rock: 'Granite, gneiss', potential: 'Very Low', suitability: 'Difficult' }
+            ];
+
+            const html = `
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr>
+                            <th>Formation</th>
+                            <th>Rock Type</th>
+                            <th>Potential</th>
+                            <th>Suitability</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${geologyData.map(item => `
+                            <tr>
+                                <td style="padding: var(--space-2); border-bottom: 1px solid var(--border);"><strong>${item.formation}</strong></td>
+                                <td style="padding: var(--space-2); border-bottom: 1px solid var(--border);">${item.rock}</td>
+                                <td style="padding: var(--space-2); border-bottom: 1px solid var(--border);">
+                                    <span class="badge ${getPotentialBadgeClass(item.potential)}">${item.potential}</span>
+                                </td>
+                                <td style="padding: var(--space-2); border-bottom: 1px solid var(--border);">${item.suitability}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+
+            table.innerHTML = html;
+
+            // Update insight
+            const precambrianPercentage = HydrogeologyDashboard.suitabilityStats?.byClass?.[1]?.percentage || 18;
+            insight.textContent = `Precambrian crystalline rocks dominate many ASAL counties (${precambrianPercentage}% very low potential), limiting conventional groundwater development.`;
+        }
+
+        // Get badge class for potential
+        function getPotentialBadgeClass(potential) {
+            const classes = {
+                'High': 'badge-success',
+                'Mod-High': 'badge-info',
+                'Moderate': 'badge-warning',
+                'Low': 'badge-warning',
+                'Very Low': 'badge-danger'
+            };
+            return classes[potential] || 'badge-warning';
+        }
+
+        // Update thematic layers grid
+        function updateThematicLayers() {
+            const grid = document.getElementById('layer-grid');
+
+            const layers = [
+                {
+                    icon: 'fa-cloud-rain',
+                    name: 'Rainfall',
+                    description: 'Most dominant factor. Primary driver of groundwater recharge.',
+                    weight: '38.0%'
+                },
+                {
+                    icon: 'fa-gem',
+                    name: 'Geology',
+                    description: 'Determines subsurface permeability. Influences water storage.',
+                    weight: '24.7%'
+                },
+                {
+                    icon: 'fa-chart-area',
+                    name: 'Slope',
+                    description: 'Influences infiltration time. Gentle slopes favor recharge.',
+                    weight: '13.1%'
+                },
+                {
+                    icon: 'fa-water',
+                    name: 'Drainage Density',
+                    description: 'Inverse proxy for infiltration. Low density indicates high potential.',
+                    weight: '8.9%'
+                },
+                {
+                    icon: 'fa-mountain',
+                    name: 'Land Use',
+                    description: 'Surface characteristics affecting infiltration rates.',
+                    weight: '6.6%'
+                },
+                {
+                    icon: 'fa-road',
+                    name: 'Lineament Density',
+                    description: 'Fracture networks controlling water movement.',
+                    weight: '5.0%'
+                },
+                {
+                    icon: 'fa-seedling',
+                    name: 'Soil Type',
+                    description: 'Influences subsurface infiltration capacity.',
+                    weight: '3.7%'
+                }
+            ];
+
+            const html = layers.map((layer, index) => `
+                <div class="layer-card">
+                    <div class="layer-icon">
+                        <i class="fas ${layer.icon}"></i>
+                    </div>
+                    <h4>${layer.name}</h4>
+                    <p>${layer.description}</p>
+                    <div class="layer-weight">Weight: ${layer.weight}</div>
+                </div>
+            `).join('');
+
+            grid.innerHTML = html;
+        }
+
+        // Update AHP grid
+        function updateAHPGrid() {
+            const grid = document.getElementById('ahp-grid');
+
+            const ahpWeights = [
+                { criteria: 'Rainfall', weight: '38.0%', description: 'Primary recharge driver' },
+                { criteria: 'Geology', weight: '24.7%', description: 'Subsurface permeability' },
+                { criteria: 'Slope', weight: '13.1%', description: 'Infiltration time' },
+                { criteria: 'Drainage', weight: '8.9%', description: 'Infiltration proxy' },
+                { criteria: 'Land Use', weight: '6.6%', description: 'Surface characteristics' },
+                { criteria: 'Lineaments', weight: '5.0%', description: 'Fracture networks' },
+                { criteria: 'Soil Type', weight: '3.7%', description: 'Infiltration capacity' }
+            ];
+
+            const html = ahpWeights.map((item, index) => `
+                <div class="ahp-item">
+                    <div class="ahp-weight">${item.weight}</div>
+                    <div class="ahp-criteria">${item.criteria}</div>
+                    <p>${item.description}</p>
+                </div>
+            `).join('');
+
+            grid.innerHTML = html;
+        }
+
+        // Update legend
+        function updateLegend() {
+            const legendContent = document.getElementById('legend-content');
+
+            const legendHtml = Object.entries(SuitabilityColors)
+                .filter(([key]) => key <= 5) // Only show first 5 classes
+                .map(([suitability, color]) => `
+                    <div class="legend-item">
+                        <span class="legend-color" style="background: ${color};"></span>
+                        <span>${SuitabilityLabels[suitability] || 'Unknown'}</span>
+                    </div>
+                `).join('');
+
+            legendContent.innerHTML = legendHtml;
+        }
+
+        // Update county grid
+        function updateCountyGrid() {
+            const grid = document.getElementById('county-grid');
+
+            // Get top counties with data
+            const counties = Object.entries(HydrogeologyDashboard.countyStats || {})
+                .filter(([county]) => county !== 'Unknown')
+                .sort((a, b) => b[1].total - a[1].total)
+                .slice(0, 6); // Show top 6 counties
+
+            if (counties.length === 0) {
+                // Use sample data if no real data
+                const sampleCounties = [
+                    {
+                        name: 'Turkana',
+                        potential: 'Low',
+                        potentialClass: 'low',
+                        description: 'Precambrian basement rocks with limited storage.',
+                        stats: '71,597 km² | High: 15%'
+                    },
+                    {
+                        name: 'Marsabit',
+                        potential: 'Very Low',
+                        potentialClass: 'very-low',
+                        description: 'Volcanic rocks with limited permeability.',
+                        stats: '66,923 km² | High: 8%'
+                    },
+                    {
+                        name: 'Garissa',
+                        potential: 'Moderate',
+                        potentialClass: 'moderate',
+                        description: 'Sedimentary formations with fair potential.',
+                        stats: '45,720 km² | High: 25%'
+                    },
+                    {
+                        name: 'Wajir',
+                        potential: 'Low',
+                        potentialClass: 'low',
+                        description: 'Limited rainfall and crystalline bedrock.',
+                        stats: '56,686 km² | High: 12%'
+                    },
+                    {
+                        name: 'Mandera',
+                        potential: 'Very Low',
+                        potentialClass: 'very-low',
+                        description: 'Extreme aridity and basement complex.',
+                        stats: '25,797 km² | High: 5%'
+                    },
+                    {
+                        name: 'Isiolo',
+                        potential: 'Mod Low',
+                        potentialClass: 'moderate-low',
+                        description: 'Mixed geology with limited potential.',
+                        stats: '25,336 km² | High: 18%'
+                    }
+                ];
+
+                const html = sampleCounties.map((county, index) => `
+                    <div class="county-card" data-county="${county.name}" onclick="showCountyDetails('${county.name}')">
+                        <h4>${county.name}</h4>
+                        <div class="county-potential ${county.potentialClass}">${county.potential}</div>
+                        <p>${county.description}</p>
+                        <div class="county-stats">
+                            <span>${county.stats}</span>
+                        </div>
+                    </div>
+                `).join('');
+
+                grid.innerHTML = html;
+            } else {
+                // Use real data
+                const html = counties.map(([countyName, stats], index) => {
+                    const functionalRate = stats.total > 0 ?
+                        Math.round((stats.functional / stats.total) * 100) : 0;
+
+                    // Determine potential based on functional rate
+                    let potential = 'Low';
+                    let potentialClass = 'low';
+
+                    if (functionalRate >= 70) {
+                        potential = 'High';
+                        potentialClass = 'high';
+                    } else if (functionalRate >= 50) {
+                        potential = 'Moderate';
+                        potentialClass = 'moderate';
+                    } else if (functionalRate >= 30) {
+                        potential = 'Mod Low';
+                        potentialClass = 'moderate-low';
+                    } else {
+                        potential = 'Low';
+                        potentialClass = 'low';
+                    }
+
+                    const description = `${countyName} County has ${stats.total} water points with ${functionalRate}% functional rate.`;
+
+                    return `
+                        <div class="county-card" data-county="${countyName}" onclick="showCountyDetails('${countyName}')">
+                            <h4>${countyName}</h4>
+                            <div class="county-potential ${potentialClass}">${potential}</div>
+                            <p>${description}</p>
+                            <div class="county-stats">
+                                <span>Points: ${stats.total}</span>
+                                <span>Functional: ${functionalRate}%</span>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+                grid.innerHTML = html;
+            }
+        }
+
+        // Show county details modal
+        function showCountyDetails(countyName) {
+            const stats = HydrogeologyDashboard.countyStats?.[countyName];
+
+            document.getElementById('modalCountyTitle').textContent = `${countyName} County`;
+
+            if (stats) {
+                const functionalRate = stats.total > 0 ?
+                    Math.round((stats.functional / stats.total) * 100) : 0;
+
+                // Determine potential
+                let potential = 'Low';
+                let potentialClass = 'low';
+
+                if (functionalRate >= 70) {
+                    potential = 'High';
+                    potentialClass = 'high';
+                } else if (functionalRate >= 50) {
+                    potential = 'Moderate';
+                    potentialClass = 'moderate';
+                } else if (functionalRate >= 30) {
+                    potential = 'Mod Low';
+                    potentialClass = 'moderate-low';
+                } else {
+                    potential = 'Low';
+                    potentialClass = 'low';
+                }
+
+                document.getElementById('modalCountyPotential').textContent = potential;
+                document.getElementById('modalCountyPotential').className = `county-potential ${potentialClass}`;
+                document.getElementById('modalCountyPoints').textContent = stats.total.toLocaleString();
+                document.getElementById('modalCountyFunctional').textContent = `${functionalRate}%`;
+                document.getElementById('modalCountyDesc').textContent =
+                    `${countyName} County has ${stats.total} water points, with ${stats.functional} functional (${functionalRate}%), ${stats.nonFunctional} non-functional, and ${stats.needsRepair} needing repair.`;
+            } else {
+                // Fallback data
+                const fallbackData = {
+                    'Turkana': { potential: 'Low', class: 'low', points: '2150', functional: '35%', desc: 'Precambrian basement rocks with limited groundwater storage.' },
+                    'Marsabit': { potential: 'Very Low', class: 'very-low', points: '1850', functional: '28%', desc: 'Volcanic rocks with limited permeability. Water mainly in fracture zones.' },
+                    'Garissa': { potential: 'Moderate', class: 'moderate', points: '2450', functional: '45%', desc: 'Sedimentary formations with fair groundwater potential in specific zones.' },
+                    'Wajir': { potential: 'Low', class: 'low', points: '1950', functional: '32%', desc: 'Limited rainfall and crystalline bedrock reduce groundwater availability.' },
+                    'Mandera': { potential: 'Very Low', class: 'very-low', points: '1650', functional: '25%', desc: 'Extreme aridity and basement complex rocks limit groundwater development.' },
+                    'Isiolo': { potential: 'Mod Low', class: 'moderate-low', points: '1750', functional: '38%', desc: 'Mixed geology with some sedimentary formations offering limited potential.' }
+                };
+
+                const data = fallbackData[countyName] || fallbackData['Turkana'];
+                document.getElementById('modalCountyPotential').textContent = data.potential;
+                document.getElementById('modalCountyPotential').className = `county-potential ${data.class}`;
+                document.getElementById('modalCountyPoints').textContent = data.points;
+                document.getElementById('modalCountyFunctional').textContent = data.functional;
+                document.getElementById('modalCountyDesc').textContent = data.desc;
+            }
+
+            document.getElementById('countyModal').classList.add('active');
             document.body.style.overflow = 'hidden';
-            showNotification('Workflow diagram loaded');
         }
 
-        function closeWorkflowModal() {
-            document.getElementById('workflowModal').classList.remove('active');
+        // Close county modal
+        function closeCountyModal() {
+            document.getElementById('countyModal').classList.remove('active');
             document.body.style.overflow = 'auto';
         }
 
-        function downloadWorkflow() {
-            showNotification('Downloading workflow diagram...');
+        // Download county report
+        function downloadCountyReport() {
+            const countyName = document.getElementById('modalCountyTitle').textContent.replace(' County', '');
+            showNotification(`Downloading ${countyName} report...`);
+
+            // Create CSV content
+            let csvContent = "County,Water Points,Functional,Non-Functional,Needs Repair,Functional Rate\n";
+
+            if (HydrogeologyDashboard.countyStats?.[countyName]) {
+                const stats = HydrogeologyDashboard.countyStats[countyName];
+                const functionalRate = stats.total > 0 ?
+                    Math.round((stats.functional / stats.total) * 100) : 0;
+
+                csvContent += `"${countyName}",${stats.total},${stats.functional},${stats.nonFunctional},${stats.needsRepair},${functionalRate}%\n`;
+            }
+
+            // Create download link
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.setAttribute('href', url);
+            link.setAttribute('download', `${countyName.toLowerCase()}_hydrogeology_report.csv`);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
             setTimeout(() => {
-                showNotification('Diagram downloaded successfully');
-                closeWorkflowModal();
-            }, 1500);
+                showNotification('Report downloaded successfully');
+                closeCountyModal();
+            }, 1000);
+        }
+
+        // Map tab switching
+        function switchMapLayer(layer) {
+            const legendTitle = document.querySelector('.map-legend h5');
+            const legendItems = document.querySelector('.legend-content');
+
+            const layers = {
+                groundwater: {
+                    title: 'Groundwater Potential',
+                    items: Object.entries(SuitabilityColors)
+                        .filter(([key]) => key <= 5)
+                        .map(([suitability, color]) => ({
+                            color,
+                            label: SuitabilityLabels[suitability] || 'Unknown'
+                        }))
+                },
+                geology: {
+                    title: 'Geological Formations',
+                    items: [
+                        { color: '#3498db', label: 'Quaternary' },
+                        { color: '#2ecc71', label: 'Cretaceous' },
+                        { color: '#f1c40f', label: 'Jurassic' },
+                        { color: '#f39c12', label: 'Triassic' },
+                        { color: '#e74c3c', label: 'Precambrian' }
+                    ]
+                },
+                rainfall: {
+                    title: 'Rainfall Distribution',
+                    items: [
+                        { color: '#3498db', label: 'High (800+ mm)' },
+                        { color: '#2ecc71', label: 'Moderate' },
+                        { color: '#f39c12', label: 'Low' },
+                        { color: '#e74c3c', label: 'Very Low' }
+                    ]
+                },
+                drainage: {
+                    title: 'Drainage Density',
+                    items: [
+                        { color: '#3498db', label: 'Very Low' },
+                        { color: '#2ecc71', label: 'Low' },
+                        { color: '#f1c40f', label: 'Moderate' },
+                        { color: '#f39c12', label: 'High' }
+                    ]
+                },
+                landuse: {
+                    title: 'Land Use',
+                    items: [
+                        { color: '#2ecc71', label: 'Forest' },
+                        { color: '#f1c40f', label: 'Grassland' },
+                        { color: '#f39c12', label: 'Agricultural' },
+                        { color: '#e74c3c', label: 'Bare Land' }
+                    ]
+                }
+            };
+
+            const config = layers[layer] || layers.groundwater;
+            legendTitle.textContent = config.title;
+
+            const legendHtml = config.items.map(item => `
+                <div class="legend-item">
+                    <span class="legend-color" style="background: ${item.color};"></span>
+                    <span>${item.label}</span>
+                </div>
+            `).join('');
+
+            legendItems.innerHTML = legendHtml;
+
+            // Update current layer
+            HydrogeologyDashboard.currentLayer = layer;
+            showNotification(`Map layer: ${config.title}`);
         }
 
         // Show notification
@@ -1532,20 +2239,20 @@
             notification.className = 'notification';
             notification.style.cssText = `
                 position: fixed;
-                top: var(--space-4);
-                right: var(--space-4);
-                padding: var(--space-3) var(--space-4);
+                top: var(--space-3);
+                right: var(--space-3);
+                padding: var(--space-2) var(--space-3);
                 background: var(--secondary);
                 color: white;
                 border-radius: var(--radius);
                 font-size: var(--font-sm);
                 z-index: 10001;
                 animation: slideIn 0.3s ease;
-                max-width: 280px;
+                max-width: 250px;
                 box-shadow: var(--shadow-md);
                 display: flex;
                 align-items: center;
-                gap: var(--space-3);
+                gap: var(--space-2);
             `;
 
             notification.innerHTML = `
@@ -1578,10 +2285,76 @@
             }, 3000);
         }
 
-        // Event Listeners
-        document.addEventListener('DOMContentLoaded', () => {
-            // Update sidebar stats
-            updateSidebarStats();
+        // Update sidebar statistics
+        function updateSidebarStats() {
+            const stats = HydrogeologyDashboard.suitabilityStats;
+            const highPotential = stats?.byClass?.[5]?.percentage || 15;
+
+            document.getElementById('sidebar-suitability').textContent = '7';
+            document.getElementById('sidebar-high-potential').textContent = `${highPotential}%`;
+            document.getElementById('sidebar-layers').textContent = '7';
+
+            // Update last updated time
+            const now = new Date();
+            document.getElementById('last-updated').textContent =
+                now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        }
+
+        // Update loading text
+        function updateLoadingText(text) {
+            const loadingText = document.getElementById('map-loading')?.querySelector('.loading-text');
+            if (loadingText) {
+                loadingText.textContent = text;
+            }
+        }
+
+        // Show error
+        function showError(message) {
+            const mapContainer = document.querySelector('.map-container');
+            mapContainer.innerHTML = `
+                <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; background: white; border-radius: var(--radius);">
+                    <i class="fas fa-exclamation-triangle" style="font-size: 40px; color: var(--danger); margin-bottom: var(--space-3);"></i>
+                    <div style="font-size: var(--font-sm); color: var(--gray); margin-bottom: var(--space-3); text-align: center;">
+                        ${message}
+                    </div>
+                    <button class="btn btn-primary" onclick="location.reload()">
+                        <i class="fas fa-redo"></i>
+                        Reload Dashboard
+                    </button>
+                </div>
+            `;
+        }
+
+        // Setup Event Listeners
+        function setupEventListeners() {
+            // Map tab switching
+            document.querySelectorAll('.map-tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    // Remove active class from all tabs
+                    document.querySelectorAll('.map-tab').forEach(t => {
+                        t.classList.remove('active');
+                    });
+
+                    // Add active class to clicked tab
+                    tab.classList.add('active');
+
+                    // Switch map layer
+                    const layer = tab.dataset.layer;
+                    switchMapLayer(layer);
+                });
+            });
+
+            // Map controls
+            document.getElementById('reset-view').addEventListener('click', () => {
+                HydrogeologyDashboard.map.fitBounds(HydrogeologyDashboard.kenyaBounds);
+            });
+
+            document.getElementById('locate-me').addEventListener('click', locateUser);
+            document.getElementById('export-map').addEventListener('click', exportMap);
+            document.getElementById('fullscreen').addEventListener('click', toggleFullscreen);
+
+            // Legend toggle
+            document.getElementById('toggle-legend').addEventListener('click', toggleLegend);
 
             // Refresh button
             document.getElementById('refresh-data').addEventListener('click', () => {
@@ -1590,29 +2363,86 @@
 
             // Close modal on escape
             document.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape') closeWorkflowModal();
+                if (e.key === 'Escape') closeCountyModal();
             });
 
             // Close modal on outside click
-            document.getElementById('workflowModal').addEventListener('click', (e) => {
-                if (e.target === document.getElementById('workflowModal')) {
-                    closeWorkflowModal();
+            document.getElementById('countyModal').addEventListener('click', (e) => {
+                if (e.target === document.getElementById('countyModal')) {
+                    closeCountyModal();
                 }
             });
+        }
 
-            // Add click event for workflow button
-            const workflowBtn = document.createElement('button');
-            workflowBtn.className = 'btn btn-primary';
-            workflowBtn.innerHTML = '<i class="fas fa-expand"></i> View Workflow Diagram';
-            workflowBtn.style.marginTop = 'var(--space-3)';
-            workflowBtn.onclick = viewWorkflowDiagram;
+        // Locate User
+        function locateUser() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const { latitude, longitude } = position.coords;
+                        HydrogeologyDashboard.map.setView([latitude, longitude], 12);
 
-            // Add button to appropriate location
-            const methodologyCard = document.querySelector('.content-card:nth-child(2) .card-header');
-            if (methodologyCard) {
-                methodologyCard.appendChild(workflowBtn);
+                        L.marker([latitude, longitude])
+                            .addTo(HydrogeologyDashboard.map)
+                            .bindPopup('Your Location')
+                            .openPopup();
+                    },
+                    (error) => {
+                        showNotification('Unable to get your location. Please enable location services.');
+                    }
+                );
+            } else {
+                showNotification('Geolocation is not supported by your browser.');
             }
-        });
+        }
+
+        // Export Map
+        function exportMap() {
+            showNotification('Export feature would generate a high-resolution map image. In a production environment, this would use html2canvas for client-side export.');
+        }
+
+        // Toggle Fullscreen
+        function toggleFullscreen() {
+            const mapContainer = document.querySelector('.map-container');
+
+            if (!document.fullscreenElement) {
+                if (mapContainer.requestFullscreen) {
+                    mapContainer.requestFullscreen();
+                } else if (mapContainer.webkitRequestFullscreen) {
+                    mapContainer.webkitRequestFullscreen();
+                }
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen();
+                }
+            }
+        }
+
+        // Toggle Legend
+        function toggleLegend() {
+            const legend = document.getElementById('map-legend');
+            const toggleBtn = document.getElementById('toggle-legend');
+
+            if (legend.style.display !== 'none') {
+                legend.style.display = 'none';
+                toggleBtn.textContent = 'Show';
+            } else {
+                legend.style.display = 'block';
+                toggleBtn.textContent = 'Hide';
+            }
+        }
+
+        // Handle Fullscreen Change
+        document.addEventListener('fullscreenchange', handleFullscreenChange);
+        document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+
+        function handleFullscreenChange() {
+            setTimeout(() => {
+                HydrogeologyDashboard.map.invalidateSize();
+            }, 100);
+        }
     </script>
 </body>
 
